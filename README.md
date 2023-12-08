@@ -18,9 +18,9 @@
 - [文件管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/file)
 - [设备管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/device)
 
-展示 Show
+展示 Front
 
-- [展示](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css)
+- [展示](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/front)
 
 ## 信息
 
