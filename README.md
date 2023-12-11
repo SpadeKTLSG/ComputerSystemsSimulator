@@ -18,13 +18,13 @@
 - [文件管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/file)
 - [设备管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/device)
 
-展示 Show
+展示 Front
 
-- [展示](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css)
+- [展示](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/front)
 
 ## 信息
 
-* 8 - 9 完成前端选型和前期技术搜集
+* ~~8 - 9 完成前端选型和前期技术搜集~~
 * 10 - 17 正式开发核心业务 7days
 * 18 - 24 基本完成所有业务 7days
 * 25 - 28 整体运行, 联合调试, 压力测试 3days
