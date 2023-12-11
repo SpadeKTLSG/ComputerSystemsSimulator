@@ -11,7 +11,7 @@
 核心 Core
 
 - [进程管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/process)
-- [内存管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/memory)
+- [内存管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/memory)
 
 外围 Out
 
