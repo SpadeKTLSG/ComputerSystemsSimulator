@@ -1,6 +1,5 @@
 package css.core.process;
 
-import java.util.LinkedList;
 import java.util.concurrent.atomic.AtomicInteger;
 
 public class Constants {

@@ -6,7 +6,7 @@ import java.util.HashMap;
 
 public class Pcb {
 
-    Pcb(){
+    Pcb() {
         this.pcbId = Constants.PID.getAndIncrement();
         this.state = 0;
         register = new HashMap<String, Integer>();
@@ -14,12 +14,12 @@ public class Pcb {
     }
 
     /**
-     *进程标识符
+     * 进程标识符
      */
     private int pcbId;
 
     /**
-     *进程状态：
+     * 进程状态：
      * 0：就绪态
      * 1：运行态
      * 2：阻塞态
@@ -28,17 +28,17 @@ public class Pcb {
     public int state;
 
     /**
-     *寄存器
+     * 寄存器
      */
-    public HashMap<String,Integer> register;
+    public HashMap<String, Integer> register;
 
     /**
-     *运行哪条语句
+     * 运行哪条语句
      */
     public String lines;
 
     /**
-     *阻塞原因
+     * 阻塞原因
      */
-    public String  blockageCause;
+    public String blockageCause;
 }
