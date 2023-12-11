@@ -113,7 +113,6 @@ public class MainGui {
         input_text.setBackground(Color.white);
         p2.add(treepanel);
         p2.add(input_text);
-
         Mframe.add(p2);
 
         JPanel p3=new JPanel();
@@ -121,9 +120,7 @@ public class MainGui {
         p3.setBackground(Color.white);
         p3.setLocation(10,370);
         p3.setBorder(new TitledBorder(new EtchedBorder(), "内存"));
-       
         ramPanel = new JPanel();
-        
 
         // 初始化硬盘颜色数组
         ram = new Color[64];
