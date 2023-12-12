@@ -1,82 +1,18 @@
 package css.out.file;
 
-// 这是一个简单的Java程序的模拟设计，仅供参考，可能存在错误或不足
-// 请在合适的环境中运行和测试
 
-// 导入必要的包
+import css.out.file.entity.FCB;
 
 import java.io.*;
 import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 
-// 定义一个文件系统类
+import static css.out.file.utils.Global.*;
+
+
 public class bing {
-    // 定义一些常量
-    public static final int BLOCK_SIZE = 64; // 块大小
-    public static final int DISK_SIZE = 128; // 磁盘大小
-    public static final int ROOT_DIR = 2; // 根目录块号
-    public static final int END = 514; // 结束标志
-    public static final String DISK_FILE = "disk.txt"; // 磁盘文件名
-    public static final String[] DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"}; // 根子目录名
-    public static final String[] CMD_NAMES = {"create", "copy", "delete", "move", "type", "change", "mkdir", "chdir", "deldir"}; // 命令名
-    
-    // 定义一个文件控制块类
-    public static class FCB {
-        // 定义文件控制块的属性
-        public String name; // 文件名+目录名
-        public String ext; // 扩展名
-        public int flag; // 文件目录标识
-        public int start; // 起始盘块号
-        public int length; // 文件长度
 
-        // 定义文件控制块的构造方法
-        public FCB(String name, String ext, int flag, int start, int length) {
-            this.name = name;
-            this.ext = ext;
-            this.flag = flag;
-            this.start = start;
-            this.length = length;
-        }
-
-        // 定义文件控制块的字节数组转换方法
-        public byte[] toBytes() {
-            // 创建一个8字节的字节数组
-            byte[] bytes = new byte[8];
-            // 将文件名+目录名转换为3字节
-            byte[] nameBytes = name.getBytes();
-            System.arraycopy(nameBytes, 0, bytes, 0, 3);
-            // 将扩展名转换为2字节
-            byte[] extBytes = ext.getBytes();
-            System.arraycopy(extBytes, 0, bytes, 3, 2);
-            // 将文件目录标识转换为1字节
-            bytes[5] = (byte) flag;
-            // 将起始盘块号转换为1字节
-            bytes[6] = (byte) start;
-            // 将文件长度转换为1字节
-            bytes[7] = (byte) length;
-            // 返回字节数组
-            return bytes;
-        }
-
-        // 定义文件控制块的字节数组还原方法
-        public static FCB fromBytes(byte[] bytes) {
-            // 检查字节数组长度是否为8
-            if (bytes.length != 8) {
-                return null;
-            }
-            // 从字节数组中还原文件控制块的属性
-            String name = new String(bytes, 0, 3);
-            String ext = new String(bytes, 3, 2);
-            int flag = bytes[5];
-            int start = bytes[6];
-            int length = bytes[7];
-            // 创建一个文件控制块对象
-            FCB fcb = new FCB(name, ext, flag, start, length);
-            // 返回文件控制块对象
-            return fcb;
-        }
-    }
 
     // 定义一个磁盘类
     public static class Disk {
@@ -90,18 +26,24 @@ public class bing {
             // 初始化位示图
             bitmap = new byte[DISK_SIZE];
             // 初始化文件分配表
+            //直接写死两个FAT, FAT1 and FAT2全局变量
+            //可以直接用List, 下标就是块号, 值就是下一个块号, 514代表没有
             fat = new Map[2];
             fat[0] = new HashMap<>();
             fat[1] = new HashMap<>();
             // 初始化磁盘块
+            //! TODO 这里拉平为一维数组
             blocks = new byte[DISK_SIZE][BLOCK_SIZE];
         }
 
         // 定义磁盘的加载方法
         public void load() throws IOException {
+
+
             // 创建一个文件对象
             File file = new File(DISK_FILE);
-            // 检查文件是否存在
+
+            // 检查文件是否存在 TODO 固定存在否则报错磁盘已拔出
             if (!file.exists()) {
                 // 如果不存在，创建一个新文件
                 file.createNewFile();
@@ -112,9 +54,11 @@ public class bing {
             } else {
                 // 如果存在，读取文件内容
                 FileInputStream fis = new FileInputStream(file);
+
                 // 读取位示图
                 fis.read(bitmap);
-                // 读取文件分配表
+
+                // 读取文件分配表一行一个键值对实现
                 for (int i = 0; i < 2; i++) {
                     // 读取一行键值对
                     String line = readLine(fis);
@@ -131,7 +75,9 @@ public class bing {
                         fat[i].put(key, value);
                     }
                 }
-                // 读取磁盘块
+
+
+                // 读取磁盘块, 无需读取, 需要时候再读取, +线程模拟调入内存
                 for (int i = 0; i < DISK_SIZE; i++) {
                     // 读取一个磁盘块
                     fis.read(blocks[i]);
@@ -173,21 +119,23 @@ public class bing {
 
         // 定义磁盘的初始化根目录方法
         public void initRootDir() {
-            // 设置位示图的第0,1,2块为已分配
+            // !设置位示图的第0,1,2块为已分配 错漏
             bitmap[0] = 1;
             bitmap[1] = 1;
             bitmap[2] = 1;
+
             // 设置文件分配表的第0,1,2项为结束标志
-            fat[0].put(0, END);
-            fat[0].put(1, END);
-            fat[0].put(2, END);
-            fat[1].put(0, END);
-            fat[1].put(1, END);
-            fat[1].put(2, END);
+            fat[0].put(0, Null_Pointer);
+            fat[0].put(1, Null_Pointer);
+            fat[0].put(2, Null_Pointer);
+            fat[1].put(0, Null_Pointer);
+            fat[1].put(1, Null_Pointer);
+            fat[1].put(2, Null_Pointer);
+
             // 创建根子目录的文件控制块
-            for (int i = 0; i < DIR_NAMES.length; i++) {
+            for (int i = 0; i < ROOT_DIR_NAMES.length; i++) {
                 // 创建一个文件控制块对象
-                FCB fcb = new FCB(DIR_NAMES[i], "", 1, 0, 0);
+                FCB fcb = new FCB(ROOT_DIR_NAMES[i], "", 1, 0, 0);
                 // 将文件控制块转换为字节数组
                 byte[] bytes = fcb.toBytes();
                 // 将字节数组复制到磁盘块的第2块
@@ -195,7 +143,7 @@ public class bing {
             }
         }
 
-        // 定义磁盘的读取一行方法
+        // 定义磁盘的读取一行方法 FIXME
         public String readLine(FileInputStream fis) throws IOException {
             // 创建一个字节缓冲区
             ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -214,7 +162,7 @@ public class bing {
             return line;
         }
 
-        // 定义磁盘的分配空闲块方法
+        // 定义磁盘的分配空闲块方法 FIXME
         public int allocBlock() {
             // 遍历位示图
             for (int i = 0; i < DISK_SIZE; i++) {
@@ -223,8 +171,8 @@ public class bing {
                     // 设置位示图为已分配
                     bitmap[i] = 1;
                     // 设置文件分配表为结束标志
-                    fat[0].put(i, END);
-                    fat[1].put(i, END);
+                    fat[0].put(i, Null_Pointer);
+                    fat[1].put(i, Null_Pointer);
                     // 返回空闲块号
                     return i;
                 }
@@ -236,6 +184,7 @@ public class bing {
         // 定义磁盘的释放块方法
         public void freeBlock(int block) {
             // 检查块号是否合法
+            // TODO generate more method for safety
             if (block < 0 || block >= DISK_SIZE) {
                 return;
             }
@@ -255,7 +204,7 @@ public class bing {
             // 定义一个当前块变量
             int current = start;
             // 循环读取文件内容，直到遇到结束标志
-            while (current != END) {
+            while (current != Null_Pointer) {
                 // 将当前块的内容转换为字符串
                 String content = new String(blocks[current]);
                 // 将字符串追加到缓冲区
@@ -283,7 +232,7 @@ public class bing {
                 if (pos % BLOCK_SIZE == 0 && pos > 0) {
                     // 分配一个新的空闲块
                     int next = allocBlock();
-                    // 如果没有空闲块，抛出异常
+                    // 如果没有空闲块，抛出异常 TODO 通知系统核心模块处理, 创建一个问题处理进程
                     if (next == -1) {
                         throw new RuntimeException("Disk is full");
                     }
