@@ -5,7 +5,7 @@ import java.util.List;
 /**
  * 全局变量, 全局信息定义
  */
-public class Global {
+public class GlobalField {
 
     //!磁盘DISK
 
@@ -54,6 +54,13 @@ public class Global {
 
 
     //!目录DIR
+
+    /**
+     * FCB占用的字节数 = 8B
+     */
+    public static int FCB_BYTE_LENGTH = 8;
+
+
     /**
      * 目录标识 = 1
      */
@@ -75,6 +82,18 @@ public class Global {
      */
     public static final String[] ROOT_DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"};
 
+    //文件夹没有类型
+    
+    /**
+     * 默认的文件夹类型为不存在
+     */
+    public static final String EMPTY_DIR_TYPE = "";
+
+    /**
+     * 默认的文件夹名 = 新文件夹
+     */
+    public static final String DEFAULT_DIR_NAME = "新文件夹";
+
 
     //!文件FILE
 
@@ -91,10 +110,19 @@ public class Global {
     public static final int MAX_INPUT_ONCE = 255;
 
     /**
-     * 文件类型 = txt...
+     * 文件类型 = .txt, .exe...
      */
-    public static final List<String> FILE_TYPE = List.of("txt", "docx");
+    public static final List<String> FILE_TYPE = List.of(".txt", ".docx");
 
+    /**
+     * 默认的文件类型为"." 区别于文件夹代表空
+     */
+    public static final String EMPTY_FILE_TYPE = ".";
+
+    /**
+     * 默认的文件名 = 新文件夹
+     */
+    public static final String DEFAULT_FILE_NAME = "新文件";
 
     //! else
 
