@@ -1,9 +1,9 @@
 package css.out.file.entity;
 
+import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.utils.GetBlock.Find_diskNewFreeBlock_of;
 import static css.out.file.utils.GlobalField.*;
 
 /**
@@ -12,137 +12,157 @@ import static css.out.file.utils.GlobalField.*;
  */
 @Slf4j
 @Data
+@AllArgsConstructor
 public class FCB {
 
-
+    //从/(根目录)唯一查找到该文件
     /**
-     * 目录名+文件名, 通过/分割
-     * 通过此字段可以从/(根目录)唯一查找到该文件
-     * -> ROOT_DIR_NAMES/.../FILE_NAME
+     * 目录名(/分割)+ (:分割) + 文件名(不能包含:)
+     * <p>
+     * e.g.
+     * <p>
+     * /home/114514 小本本.txt
+     * <p>
+     * /home/114514 上课文件夹
+     * <p>
+     * /home 114514
      */
     public String pathName; //TODO 通过工具类来获取路径
 
     /**
-     * 扩展名(目录为空)
-     * -> FILE_TYPE
+     * 起始盘块号
+     * <p>
+     * 3 <= startBlock <= 127
      */
-    public String ext; //TODO 通过工具类来获取
+    public Integer startBlock;
+
+    /**
+     * 扩展名(目录为空)
+     */
+    public String extendName; //TODO 通过工具类来获取
 
     /**
      * 文件目录标识
      * -> FILE_SIGNAL:0 / DIR_SIGNAL:1
      */
-    public int flag;
-
-    /**
-     * 起始盘块号
-     * 需要进行磁盘分配
-     */
-    public int start;
+    public Integer typeFlag;
 
     /**
      * 文件长度(目录为空)
      * 单位:字节
      */
-    public int length;
-
-    /**
-     * 一般全量构造
-     *
-     * @param pathName 目录名+文件名
-     * @param ext      扩展名
-     * @param flag     文件目录标识
-     * @param start    起始盘块号
-     * @param length   文件长度
-     */
-    public FCB(String pathName, String ext, int flag, int start, int length) {
-        this.pathName = pathName;
-        this.ext = ext;
-        this.flag = flag;
-        this.start = start;
-        this.length = length;
-    }
+    public Integer fileLength;
 
 
     /**
-     * 在某处(指定目录和磁盘块)默认快速新建文件/文件夹构造
+     * 指定目录和磁盘块快速新建文件/文件夹构造
      *
-     * @param start 起始盘块号
+     * @param pathName   目录名+文件名
+     * @param startBlock 起始盘块号
+     * @param typeFlag   文件or目录标识
      */
-    public FCB(String pathName, int start, int flag) {
-        if (flag == DIR_SIGNAL) {
+    public FCB(String pathName, int startBlock, int typeFlag) {
+        if (typeFlag == DIR_SIGNAL) { //目录
+
             this.pathName = pathName;
-            this.ext = EMPTY_DIR_TYPE;
-            this.flag = FILE_SIGNAL;
-            this.start = start;
-            this.length = FCB_BYTE_LENGTH;
+            this.startBlock = startBlock;
+            //autofill
+            this.extendName = EMPTY_DIR_TYPE;
+            this.typeFlag = DIR_SIGNAL;
+            this.fileLength = FCB_BYTE_LENGTH + DEFAULT_DIR_LENGTH;
 
-        } else if (flag == FILE_SIGNAL) {
+        } else if (typeFlag == FILE_SIGNAL) { //文件
 
-            this.pathName = "新建文件";
-            this.ext = FILE_TYPE.get(0);
-            this.flag = FILE_SIGNAL;
-            this.start = start;
-            this.length = FCB_BYTE_LENGTH;
+            this.pathName = pathName;
+            this.startBlock = startBlock;
+            //autofill
+            this.extendName = EMPTY_FILE_TYPE;
+            this.typeFlag = FILE_SIGNAL;
+            this.fileLength = FCB_BYTE_LENGTH + DEFAULT_FILE_LENGTH;
 
-        } else {
+        } else { //出错
             //TODO 提示用户异常信息
-            log.info("FCB构造失败, flag错误");
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
         }
 
     }
 
 
     /**
-     * 临时默认快速新建文件构造
-     * 默认放在TMP目录下new一个文件
+     * FCB转换为Bytes
+     *
+     * @return Bytes
      */
-    public FCB() {
-        this.pathName = "新建文件";
-        this.ext = FILE_TYPE.get(0);
-        this.flag = FILE_SIGNAL;
-        this.start = Find_diskNewFreeBlock_of(ROOT.tmp); //TODO
-        this.length = FCB_BYTE_LENGTH;
-    }
-
-
-    // 定义文件控制块的字节数组转换方法
     public byte[] toBytes() {
-        //TODO 自己模拟
-        // 创建一个8字节的字节数组
-        byte[] bytes = new byte[8];
-        // 将文件名+目录名转换为3字节
-        byte[] nameBytes = pathName.getBytes();
-        System.arraycopy(nameBytes, 0, bytes, 0, 3);
-        // 将扩展名转换为2字节
-        byte[] extBytes = ext.getBytes();
-        System.arraycopy(extBytes, 0, bytes, 3, 2);
-        // 将文件目录标识转换为1字节
-        bytes[5] = (byte) flag;
-        // 将起始盘块号转换为1字节
-        bytes[6] = (byte) start;
-        // 将文件长度转换为1字节
-        bytes[7] = (byte) length;
+
+        byte[] bytes = new byte[FCB_BYTE_LENGTH]; //初始byte数组
+        int index = 0;
+
+        for (String key : FCB_BYTE_LENGTH_MAP.keySet()) { //遍历FCB_BYTE_LENGTH_MAP
+            byte[] valueBytes = getBytesForType(key);
+            if (valueBytes != null) {
+                System.arraycopy(valueBytes, 0, bytes, index, FCB_BYTE_LENGTH_MAP.get(key)); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
+            }
+            index += FCB_BYTE_LENGTH_MAP.get(key);
+        }
 
         return bytes;
     }
 
-    // 定义文件控制块的字节数组还原方法
-    public FCB fromBytes(byte[] bytes) {
-        // 检查字节数组长度是否为8
-        if (bytes.length != 8) {
-            return null;
-        }
-        // 从字节数组中还原文件控制块的属性
-        String name = new String(bytes, 0, 3);
-        String ext = new String(bytes, 3, 2);
-        int flag = bytes[5];
-        int start = bytes[6];
-        int length = bytes[7];
-        // 创建一个文件控制块对象
-        FCB fcb = new FCB(name, ext, flag, start, length);
-        // 返回文件控制块对象
-        return fcb;
+    /**
+     * 从FCB中获取对应的Bytes
+     *
+     * @param key FCB中的key
+     * @return 对应的Bytes
+     */
+    private byte[] getBytesForType(String key) {
+        return switch (key) {
+            case "pathName" -> pathName.getBytes();
+            case "extendName" -> extendName.getBytes();
+            case "typeFlag" -> typeFlag.toString().getBytes();
+            case "startBlock" -> startBlock.toString().getBytes();
+            case "fileLength" -> fileLength.toString().getBytes();
+            default -> null;
+        };
     }
+
+    /**
+     * Bytes转换为FCB
+     *
+     * @param bytes Bytes
+     * @return FCB
+     */
+    public FCB fromBytes(byte[] bytes) {
+
+        int index = 0;
+        for (String key : FCB_BYTE_LENGTH_MAP.keySet()) {
+            byte[] valueBytes = new byte[FCB_BYTE_LENGTH_MAP.get(key)];
+            System.arraycopy(bytes, index, valueBytes, 0, FCB_BYTE_LENGTH_MAP.get(key));
+            index += FCB_BYTE_LENGTH_MAP.get(key);
+            setBytesForType(key, valueBytes);
+        }
+
+        return this;
+    }
+
+    /**
+     * 从Bytes中设置对应的值
+     *
+     * @param key        FCB中的key
+     * @param valueBytes 对应的Bytes
+     */
+    private void setBytesForType(String key, byte[] valueBytes) {
+        switch (key) {
+            case "pathName" -> pathName = new String(valueBytes);
+            case "extendName" -> extendName = new String(valueBytes);
+            case "typeFlag" -> typeFlag = Integer.parseInt(new String(valueBytes));
+            case "startBlock" -> startBlock = Integer.parseInt(new String(valueBytes));
+            case "fileLength" -> fileLength = Integer.parseInt(new String(valueBytes));
+            default -> {
+            }
+        }
+    }
+
+
 }
 

@@ -1,6 +1,7 @@
 package css.out.file.utils;
 
 import java.util.List;
+import java.util.Map;
 
 /**
  * 全局变量, 全局信息定义
@@ -60,6 +61,22 @@ public class GlobalField {
      */
     public static int FCB_BYTE_LENGTH = 8;
 
+    /**
+     * FCB中每个字段的字节数
+     * 目录路径 3
+     * 磁盘路径 1
+     * 扩展名 2
+     * 类型标识 1
+     * 长度 1
+     */
+    public static Map<String, Integer> FCB_BYTE_LENGTH_MAP = Map.of(
+            "pathName", 3,
+            "startBlock", 1,
+            "extendName", 2,
+            "typeFlag", 1,
+            "fileLength", 1
+    );
+
 
     /**
      * 目录标识 = 1
@@ -83,7 +100,7 @@ public class GlobalField {
     public static final String[] ROOT_DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"};
 
     //文件夹没有类型
-    
+
     /**
      * 默认的文件夹类型为不存在
      */
@@ -94,6 +111,10 @@ public class GlobalField {
      */
     public static final String DEFAULT_DIR_NAME = "新文件夹";
 
+    /**
+     * 默认/初始化的文件夹长度 = 0
+     */
+    public static final int DEFAULT_DIR_LENGTH = 0;
 
     //!文件FILE
 
@@ -124,11 +145,10 @@ public class GlobalField {
      */
     public static final String DEFAULT_FILE_NAME = "新文件";
 
-    //! else
-
     /**
-     * 用户命令接口
+     * 默认/初始化的文件长度 = 0
      */
-    public static final String[] CMD_NAMES = {"create", "copy", "delete", "move", "type", "change", "mkdir", "chdir", "deldir"};
+    public static final int DEFAULT_FILE_LENGTH = 0;
+
 
 }

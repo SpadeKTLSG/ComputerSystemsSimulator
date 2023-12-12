@@ -1,7 +1,7 @@
-package css.out.file.entity;
+package css.out.file.enums;
 
 /**
- * 根目录下的八个目录对应的枚举常量:
+ * 根目录列表
  * home
  * app
  * tmp
@@ -11,7 +11,7 @@ package css.out.file.entity;
  * lib
  * boot
  */
-public enum ROOT {
+public enum ROOT_PATH {
 
     //home 用户子目录
     //app 应用程序目录
