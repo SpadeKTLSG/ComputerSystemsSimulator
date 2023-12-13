@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.utils.GlobalField.DEFAULT_DIR_NAME;
 import static css.out.file.utils.HandleBlock.GetFreeBlock;
-import static css.out.file.utils.HandlePath.GetDefaultPath;
+import static css.out.file.utils.HandlePath.getROOT_DIRPath;
 
 @Slf4j
 @Data
@@ -41,7 +41,7 @@ public class dir {
      * <p>默认走/tmp目录</p>
      */
     public dir() {
-        this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR);
+        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR);
         //TODO 标记磁盘块为已使用
     }
 

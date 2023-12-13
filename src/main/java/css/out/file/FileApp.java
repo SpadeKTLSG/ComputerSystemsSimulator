@@ -23,7 +23,6 @@ public class FileApp {
 
     /**
      * 初始化两个static系统
-     * TODO 单例优化
      */
     public FileApp() {
         diskSyS = initialDiskSyS();

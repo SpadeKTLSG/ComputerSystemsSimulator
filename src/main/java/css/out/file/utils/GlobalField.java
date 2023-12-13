@@ -76,6 +76,11 @@ public class GlobalField {
     public static int FCB_BYTE_LENGTH = 8;
 
     /**
+     * 文件目录树结构的名称
+     */
+    public static final String FILE_TREE_NAME = "尤克特拉希尔";
+
+    /**
      * FCB中每个字段的字节数
      * <p>目录路径 3</p>
      * <p>磁盘路径 1</p>
@@ -97,17 +102,7 @@ public class GlobalField {
      */
     public static final String ROOT_AUTH = "root";
 
-    /**
-     * 根目录下的子目录名
-     * <p>|  home 用户子目录</p>
-     * <p>|  app 应用程序目录</p>
-     * <p>|  tmp 临时可变目录</p>
-     * <p>|  conf 配置文件目录</p>
-     * <p>|  mnt 设备挂载目录</p>
-     * <p>|  bin 可执行命令目录</p>
-     * <p>|  lib 系统库文件以及系统资料目录</p>
-     * <p>|  boot 系统内核程序目录</p>
-     */
+
     public static final String[] ROOT_DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"};
 
     //文件夹没有类型

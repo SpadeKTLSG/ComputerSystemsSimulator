@@ -2,6 +2,7 @@ package css.out.file.utils;
 
 import css.out.file.enums.ROOT_PATH;
 
+
 /**
  * 路径序列相关工具类
  * 获得路径之后用空格分隔文件与目录, 组成pathName
@@ -14,33 +15,11 @@ public class HandlePath {
      * @param path 八大路径之一
      * @return 对应路径的String序列
      */
-    public static String GetDefaultPath(ROOT_PATH path) {
-        switch (path) {
-            case home -> {
-                return "/home";
-            }
-            case app -> {
-                return "/app";
-            }
-            case tmp -> {
-                return "/tmp";
-            }
-            case conf -> {
-                return "/conf";
-            }
-            case mnt -> {
-                return "/mnt";
-            }
-            case bin -> {
-                return "/bin";
-            }
-            case lib -> {
-                return "/lib";
-            }
-            case boot -> {
-                return "/boot";
-            }
-        }
+    public static String getROOT_DIRPath(ROOT_PATH path) {
+
+        //从ROOT_DIR_NAMES中提取目录列表
+        //如果 path 在 ROOT_PATH中的话, 将其前面加上/ 后返回
+
         return "114"; //FIXME
     }
 }
