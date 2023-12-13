@@ -18,6 +18,12 @@ public class FileApp {
      */
     public FileSyS fileSyS;
 
+    void FtoD() {
+        //模拟磁盘系统向文件系统调用
+        this.diskSyS = new DiskSyS();
+        this.fileSyS = new FileSyS();
+
+    }
 
     void initialize() {
         //TODO

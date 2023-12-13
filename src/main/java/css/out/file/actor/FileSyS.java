@@ -17,9 +17,12 @@ public class FileSyS {
 
     public FileSyS() {
 
-        //TODO 创建8个初始文件夹
+        //TODO 根节点特殊处理, 创建8个初始文件夹
     }
 
-    //文件系统执行命令
+    //文件系统找到磁盘系统执行命令
+    public void tell() {
+        DiskSyS diskSyS = new DiskSyS();
+    }
 
 }

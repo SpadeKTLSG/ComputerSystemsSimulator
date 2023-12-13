@@ -8,4 +8,6 @@ package css.out.file.enums;
 public enum FileDirTYPE {
 
     FILE, DIR;
+
+
 }

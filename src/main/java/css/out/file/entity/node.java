@@ -4,7 +4,8 @@ package css.out.file.entity;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.utils.GlobalField.ROOT_AUTH;
+import static css.out.file.enums.FileDirTYPE.DIR;
+import static css.out.file.utils.GlobalField.*;
 
 /**
  * 虚拟节点, 用于存储文件系统结构
@@ -41,9 +42,15 @@ public class node {
         this.right = null;
     }
 
+    /**
+     * 根节点特殊处理, 传入根目录的权限
+     * <p>不挂载到磁盘, 手动指定大小为0</p>
+     *
+     * @param auth 根目录权限
+     */
     public node(String auth) {
         if (auth.equals(ROOT_AUTH)) {
-            this.fcb = new FCB(":/", 2, "", "DIR", 0);
+            this.fcb = new FCB(":" + "/", ROOT_DIR_BLOCK_WHERE, EMPTY_DIR_EXTEND, DIR, DEFAULT_DIR_LENGTH);
         } else {
             log.error("非法的根目录创建!");
         }
