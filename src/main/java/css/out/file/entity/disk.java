@@ -5,8 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static css.out.file.utils.GlobalField.DISK_FILE_PATH;
 import static css.out.file.utils.GlobalField.DISK_NAME;
 import static css.out.file.utils.HandleBlock.*;
+import static css.out.file.utils.HandleDISK.writeDISK;
 
 /**
  * 磁盘
@@ -55,117 +57,12 @@ public class disk {
         this.FAT2 = getDefaultFAT2(); //获得FAT2对象
         Byte[] FAT2_Byte = getFATBytes(this.FAT1); //获得FAT2字节对象
         mountFAT(this.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
-        //TODO 写入文本文件@DISK_FILE
+        //TODO 写入文本文件@DISK_FILE common/file/disk.txt
+        writeDISK(this.BLOCKS, DISK_FILE_PATH); //写入磁盘
+
         log.info("{}初始化完成!", this.name);
     }
 
-
-    // 定义磁盘的加载方法
-//    public void load() throws IOException {
-//
-//
-//        // 创建一个文件对象
-//        File file = new File(DISK_FILE);
-//
-//        // 检查文件是否存在 TODO 固定存在否则报错磁盘已拔出
-//        if (!file.exists()) {
-//            // 如果不存在，创建一个新文件
-//            file.createNewFile();
-//            // 初始化根目录
-//            initRootDir();
-//            // 保存磁盘到文件
-//            save();
-//        } else {
-//            // 如果存在，读取文件内容
-//            FileInputStream fis = new FileInputStream(file);
-//
-//            // 读取位示图
-//            fis.read(bitmap);
-//
-//            // 读取文件分配表一行一个键值对实现
-//            for (int i = 0; i < 2; i++) {
-//                // 读取一行键值对
-//                String line = readLine(fis);
-//                // 按空格分割键值对
-//                String[] pairs = line.split(" ");
-//                // 遍历键值对
-//                for (String pair : pairs) {
-//                    // 按冒号分割键和值
-//                    String[] kv = pair.split(":");
-//                    // 将键和值转换为整数
-//                    int key = Integer.parseInt(kv[0]);
-//                    int value = Integer.parseInt(kv[1]);
-//                    // 将键值对存入文件分配表
-//                    fat[i].put(key, value);
-//                }
-//            }
-//
-//
-//            // 读取磁盘块, 无需读取, 需要时候再读取, +线程模拟调入内存
-//            for (int i = 0; i < DISK_SIZE; i++) {
-//                // 读取一个磁盘块
-//                fis.read(blocks[i]);
-//            }
-//            // 关闭文件输入流
-//            fis.close();
-//        }
-//    }
-
-    // 定义磁盘的保存方法
-//    public void save() throws IOException {
-//        // 创建一个文件对象
-//        File file = new File(DISK_FILE);
-//        // 创建一个文件输出流
-//        FileOutputStream fos = new FileOutputStream(file);
-//        // 写入位示图
-//        fos.write(bitmap);
-//        // 写入文件分配表
-//        for (int i = 0; i < 2; i++) {
-//            // 遍历文件分配表
-//            for (Map.Entry<Integer, Integer> entry : fat[i].entrySet()) {
-//                // 将键和值转换为字符串
-//                String key = String.valueOf(entry.getKey());
-//                String value = String.valueOf(entry.getValue());
-//                // 将键值对写入文件
-//                fos.write((key + ":" + value + " ").getBytes());
-//            }
-//            // 写入换行符
-//            fos.write("\n".getBytes());
-//        }
-//        // 写入磁盘块
-//        for (int i = 0; i < DISK_SIZE; i++) {
-//            // 写入一个磁盘块
-//            fos.write(blocks[i]);
-//        }
-//        // 关闭文件输出流
-//        fos.close();
-//    }
-
-    // 定义磁盘的初始化根目录方法
-//    public void initRootDir() {
-//        // !设置位示图的第0,1,2块为已分配 错漏
-//        bitmap[0] = 1;
-//        bitmap[1] = 1;
-//        bitmap[2] = 1;
-//
-//        // 设置文件分配表的第0,1,2项为结束标志
-//        fat[0].put(0, Null_Pointer);
-//        fat[0].put(1, Null_Pointer);
-//        fat[0].put(2, Null_Pointer);
-//        fat[1].put(0, Null_Pointer);
-//        fat[1].put(1, Null_Pointer);
-//        fat[1].put(2, Null_Pointer);
-//
-//        // 创建根子目录的文件控制块
-//        for (int i = 0; i < ROOT_DIR_NAMES.length; i++) {
-//            // 创建一个文件控制块对象
-//            FCB fcb = new FCB(ROOT_DIR_NAMES[i], "", 1, 0, 0);
-//            // 将文件控制块转换为字节数组
-//            byte[] bytes = fcb.toBytes();
-//            // 将字节数组复制到磁盘块的第2块
-//            System.arraycopy(bytes, 0, blocks[2], i * 8, 8);
-//        }
-//    }
 
     // 定义磁盘的读取一行方法 FIXME
 //    public String readLine(FileInputStream fis) throws IOException {
