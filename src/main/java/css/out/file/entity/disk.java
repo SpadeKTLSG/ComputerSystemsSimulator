@@ -1,36 +1,66 @@
 package css.out.file.entity;
 
+import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+
+import static css.out.file.utils.GlobalField.DISK_NAME;
+import static css.out.file.utils.HandleBlock.*;
+
+/**
+ * 磁盘
+ */
+@Data
+@Slf4j
 public class disk {
-//
-//    /**
-//     * FAT文件分配表
-//     * 位示图(下标位置) + 显示链接的指针(值)
-//     * 空值->Null_Pointer
-//     */
-//    public List<Integer> FAT;
-//
-//    /**
-//     * 一维磁盘块阵列
-//     * ->DISK_SIZE / BLOCK_SIZE
-//     */
-//    public byte[] blocks;
-//
-//    // 定义磁盘的构造方法
-//    public void Disk() {
-//        // 初始化位示图
-//        bitmap = new byte[DISK_SIZE];
-//        // 初始化文件分配表
-//        //直接写死两个FAT, FAT1 and FAT2全局变量
-//        //可以直接用List, 下标就是块号, 值就是下一个块号, 514代表没有
-//        fat = new Map[2];
-//        fat[0] = new HashMap<>();
-//        fat[1] = new HashMap<>();
-//        // 初始化磁盘块
-//        //! TODO 这里拉平为一维数组
-//        blocks = new byte[DISK_SIZE][BLOCK_SIZE];
-//    }
-//
-//    // 定义磁盘的加载方法
+
+    /**
+     * 磁盘名
+     */
+    public String name;
+
+    /**
+     * FAT1文件分配表1
+     * <p>位示图(下标位置) + 显示链接的指针(值)</p>
+     * <p>下标代表当前块号, 值就是下一个块号</p>
+     * <p>空值->Null_Pointer</p>
+     */
+    public List<Integer> FAT1;
+
+    /**
+     * FAT2文件分配表2
+     * <p>位示图(下标位置) + 显示链接的指针(值)</p>
+     * <p>空值->Null_Pointer</p>
+     */
+    public List<Integer> FAT2;
+
+    /**
+     * 一维磁盘块阵列
+     * <p>->DISK_SIZE</p>
+     */
+    public List<block> BLOCKS;
+
+
+    /**
+     * 磁盘限定构造
+     * <p>只允许初始化构造, 不允许自定义</p>
+     */
+    public void Disk() {
+        this.name = DISK_NAME;
+        this.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
+        this.FAT1 = getDefaultFAT1(); //获得FAT1对象
+        Byte[] FAT1_Byte = getFATBytes(this.FAT1); //获得FAT1字节对象
+        mountFAT(this.BLOCKS, FAT1_Byte, 1); //挂载FAT1字节对象
+        this.FAT2 = getDefaultFAT2(); //获得FAT2对象
+        Byte[] FAT2_Byte = getFATBytes(this.FAT1); //获得FAT2字节对象
+        mountFAT(this.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
+        //TODO 写入文本文件@DISK_FILE
+        log.info("{}初始化完成!", this.name);
+    }
+
+
+    // 定义磁盘的加载方法
 //    public void load() throws IOException {
 //
 //
@@ -80,8 +110,8 @@ public class disk {
 //            fis.close();
 //        }
 //    }
-//
-//    // 定义磁盘的保存方法
+
+    // 定义磁盘的保存方法
 //    public void save() throws IOException {
 //        // 创建一个文件对象
 //        File file = new File(DISK_FILE);
@@ -110,8 +140,8 @@ public class disk {
 //        // 关闭文件输出流
 //        fos.close();
 //    }
-//
-//    // 定义磁盘的初始化根目录方法
+
+    // 定义磁盘的初始化根目录方法
 //    public void initRootDir() {
 //        // !设置位示图的第0,1,2块为已分配 错漏
 //        bitmap[0] = 1;
@@ -136,8 +166,8 @@ public class disk {
 //            System.arraycopy(bytes, 0, blocks[2], i * 8, 8);
 //        }
 //    }
-//
-//    // 定义磁盘的读取一行方法 FIXME
+
+    // 定义磁盘的读取一行方法 FIXME
 //    public String readLine(FileInputStream fis) throws IOException {
 //        // 创建一个字节缓冲区
 //        ByteArrayOutputStream baos = new ByteArrayOutputStream();
@@ -155,8 +185,8 @@ public class disk {
 //        // 返回字符串
 //        return line;
 //    }
-//
-//    // 定义磁盘的分配空闲块方法 FIXME
+
+    // 定义磁盘的分配空闲块方法 FIXME
 //    public int allocBlock() {
 //        // 遍历位示图
 //        for (int i = 0; i < DISK_SIZE; i++) {
@@ -174,8 +204,8 @@ public class disk {
 //        // 如果没有找到空闲块，返回-1
 //        return -1;
 //    }
-//
-//    // 定义磁盘的释放块方法
+
+    // 定义磁盘的释放块方法
 //    public void freeBlock(int block) {
 //        // 检查块号是否合法
 //        // TODO generate more method for safety
@@ -190,8 +220,8 @@ public class disk {
 //        // 清空磁盘块内容
 //        Arrays.fill(blocks[block], (byte) 0);
 //    }
-//
-//    // 定义磁盘的读取文件内容方法
+
+    // 定义磁盘的读取文件内容方法
 //    public String readFile(int start) {
 //        // 创建一个字符串缓冲区
 //        StringBuilder sb = new StringBuilder();
@@ -211,8 +241,8 @@ public class disk {
 //        // 返回字符串
 //        return file;
 //    }
-//
-//    // 定义磁盘的写入文件内容方法
+
+    // 定义磁盘的写入文件内容方法
 //    public void writeFile(int start, String file) {
 //        // 定义一个当前块变量
 //        int current = start;

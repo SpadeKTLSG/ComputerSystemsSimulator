@@ -1,4 +1,4 @@
 package css.out.file.Actor;
 
-public class FileAct {
+public class FileSyS {
 }

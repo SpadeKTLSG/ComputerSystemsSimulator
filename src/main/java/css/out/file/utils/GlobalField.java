@@ -4,31 +4,36 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 全局变量, 全局信息定义
+ * 全局变量&信息定义
  */
 public class GlobalField {
 
     //!磁盘DISK
 
     /**
-     * 磁盘文件名 = disk.txt
+     * 默认磁盘名 = 西数8KB磁盘
+     */
+    public static final String DISK_NAME = "西数8KB磁盘";
+
+    /**
+     * 模拟磁盘文件名 = disk.txt
      */
     public static final String DISK_FILE = "disk.txt";
 
     /**
-     * 磁盘文件路径固定
+     * 模拟磁盘文件路径固定
      */
     public static final String DISK_FILE_PATH = "common/file/disk.txt";
 
     /**
      * 磁盘大小 = 128
-     * 单磁盘, 块数128个盘块
+     * <p>单磁盘, 块数128个盘块</p>
      */
     public static final int DISK_SIZE = 128;
 
     /**
      * 磁盘块大小 = 64
-     * 单磁盘, 每个盘块64字节
+     * <p>单磁盘, 每个盘块64字节</p>
      */
     public static final int BLOCK_SIZE = 64;
 
@@ -43,13 +48,17 @@ public class GlobalField {
     public static final int FAT2_DIR = 1;
 
     /**
+     * FAT 大小  = BLOCK_SIZE
+     */
+    public static final int FAT_SIZE = BLOCK_SIZE;
+
+    /**
      * 根目录位置 = 2号盘块
      */
     public static final int ROOT_DIR = 2;
 
     /**
      * FAT分配表中的Null指针 = 514
-     * FAT : List[] 下标代表当前块号, 值就是下一个块号, 514代表next = Null
      */
     public static final int Null_Pointer = 514;
 
@@ -63,11 +72,11 @@ public class GlobalField {
 
     /**
      * FCB中每个字段的字节数
-     * 目录路径 3
-     * 磁盘路径 1
-     * 扩展名 2
-     * 类型标识 1
-     * 长度 1
+     * <p>目录路径 3</p>
+     * <p>磁盘路径 1</p>
+     * <p>扩展名 2</p>
+     * <p>类型标识 1</p>
+     * <p>长度 1</p>
      */
     public static Map<String, Integer> FCB_BYTE_LENGTH_MAP = Map.of(
             "pathName", 3,
@@ -86,16 +95,14 @@ public class GlobalField {
 
     /**
      * 根目录名
-     * <p>
-     * |  home 用户子目录
-     * |  app 应用程序目录
-     * |  tmp 临时可变目录
-     * |  conf 配置文件目录
-     * |  mnt 设备挂载目录
-     * |  bin 可执行命令目录
-     * |  lib 系统库文件以及系统资料目录
-     * |  boot 系统内核程序目录
-     * </p>
+     * <p>|  home 用户子目录</p>
+     * <p>|  app 应用程序目录</p>
+     * <p>|  tmp 临时可变目录</p>
+     * <p>|  conf 配置文件目录</p>
+     * <p>|  mnt 设备挂载目录</p>
+     * <p>|  bin 可执行命令目录</p>
+     * <p>|  lib 系统库文件以及系统资料目录</p>
+     * <p>|  boot 系统内核程序目录</p>
      */
     public static final String[] ROOT_DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"};
 
@@ -124,9 +131,8 @@ public class GlobalField {
     public static final int FILE_SIGNAL = 0;
 
     /**
-     * 一次输入的最大字符数 = 255
-     * 代表一个字节的容量
-     * 输入长度超过时自动分配空间
+     * 一次输入的最大字符数 = 255/一个字节容量
+     * <p>输入长度超过时自动分配空间</p>
      */
     public static final int MAX_INPUT_ONCE = 255;
 

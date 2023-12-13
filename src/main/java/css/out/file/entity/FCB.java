@@ -15,24 +15,19 @@ import static css.out.file.utils.GlobalField.*;
 @AllArgsConstructor
 public class FCB {
 
-    //从/(根目录)唯一查找到该文件
     /**
-     * 目录名(/分割)+ (:分割) + 文件名(不能包含:)
-     * <p>
-     * e.g.
-     * <p>
-     * /home/114514 小本本.txt
-     * <p>
-     * /home/114514 上课文件夹
-     * <p>
-     * /home 114514
+     * 目录名(/分割)+ (:) +文件名(不包含:)
+     * <p>从/(根目录)唯一查找到该文件</p>
+     * <p>e.g.</p>
+     * <p>/home/114514 小本本.txt</p>
+     * <p>/home/114514 上课文件夹</p>
+     * <p>/home 114514</p>
      */
     public String pathName; //TODO 通过工具类来获取路径
 
     /**
      * 起始盘块号
-     * <p>
-     * 3 <= startBlock <= 127
+     * <p>3 <= startBlock <= 127</p>
      */
     public Integer startBlock;
 
@@ -43,13 +38,13 @@ public class FCB {
 
     /**
      * 文件目录标识
-     * -> FILE_SIGNAL:0 / DIR_SIGNAL:1
+     * <p> -> FILE_SIGNAL:0 / DIR_SIGNAL:1</p>
      */
     public Integer typeFlag;
 
     /**
      * 文件长度(目录为空)
-     * 单位:字节
+     * <p>单位:字节</p>
      */
     public Integer fileLength;
 

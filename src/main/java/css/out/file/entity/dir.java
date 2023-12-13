@@ -4,7 +4,8 @@ import css.out.file.enums.ROOT_PATH;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.utils.GlobalField.*;
+import static css.out.file.utils.GlobalField.DEFAULT_DIR_NAME;
+import static css.out.file.utils.GlobalField.DIR_SIGNAL;
 import static css.out.file.utils.HandleBlock.GetFreeBlock;
 import static css.out.file.utils.HandlePath.GetDefaultPath;
 
@@ -19,7 +20,7 @@ public class dir {
 
     /**
      * 文件内容
-     * 锁定为""
+     * <p>锁定为""</p>
      */
     private final String content = "";
 
@@ -37,11 +38,12 @@ public class dir {
 
     /**
      * 文件夹临时生成
-     * 默认走/tmp目录
+     * <p>默认走/tmp目录</p>
      */
     public dir() {
         this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR_SIGNAL);
         //TODO 标记磁盘块为已使用
     }
 
+    //TODO FILE -> byte[]
 }

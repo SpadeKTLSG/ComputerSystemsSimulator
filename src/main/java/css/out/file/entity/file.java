@@ -48,7 +48,7 @@ public class file {
 
     /**
      * 无内容文件临时生成
-     * 默认走/tmp目录
+     * <p>默认走/tmp目录</p>
      */
     public file() {
         this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_FILE_NAME, GetFreeBlock(), FILE_SIGNAL);
@@ -56,5 +56,5 @@ public class file {
         //TODO 标记磁盘块为已使用
     }
 
-
+//TODO FILE -> byte[]
 }
