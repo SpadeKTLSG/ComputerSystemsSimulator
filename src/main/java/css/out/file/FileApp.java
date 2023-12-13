@@ -1,28 +1,33 @@
 package css.out.file;
 
-import css.out.file.actor.DiskSyS;
-import css.out.file.actor.FileSyS;
+import css.out.file.system.DiskSyS;
+import css.out.file.system.FileSyS;
+
+import static css.out.file.utils.SinFactory.initialDiskSyS;
+import static css.out.file.utils.SinFactory.initialFileSys;
 
 /**
- * 文件系统
+ * 文件系统Application
  */
 public class FileApp {
 
     /**
      * 磁盘系统
      */
-    public DiskSyS diskSyS;
+    public static DiskSyS diskSyS;
 
     /**
      * 文件系统
      */
-    public FileSyS fileSyS;
+    public static FileSyS fileSyS;
 
-    void FtoD() {
-        //模拟磁盘系统向文件系统调用
-        this.diskSyS = new DiskSyS();
-        this.fileSyS = new FileSyS();
-
+    /**
+     * 初始化两个static系统
+     * TODO 单例优化
+     */
+    public FileApp() {
+        diskSyS = initialDiskSyS();
+        fileSyS = initialFileSys();
     }
 
     void initialize() {
@@ -36,4 +41,6 @@ public class FileApp {
     void start() {
         //TODO
     }
+
+
 }

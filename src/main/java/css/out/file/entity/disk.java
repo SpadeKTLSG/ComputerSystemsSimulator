@@ -46,7 +46,7 @@ public class disk {
      * 磁盘限定构造
      * <p>只允许初始化构造, 不允许自定义</p>
      */
-    public void Disk() {
+    public disk() {
         this.name = DISK_NAME;
         this.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
 

@@ -1,11 +1,10 @@
-package css.out.file.actor;
+package css.out.file.system;
 
 import css.out.file.entity.disk;
 import lombok.Data;
 
 /**
- * 磁盘系统
- *  TODO 调整可见性
+ * 单例实现磁盘系统
  */
 @Data
 public class DiskSyS {
@@ -18,4 +17,5 @@ public class DiskSyS {
     public DiskSyS() {
         this.disk = new disk(); //挂载磁盘
     }
+
 }

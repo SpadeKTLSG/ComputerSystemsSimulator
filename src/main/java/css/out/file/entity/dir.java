@@ -4,8 +4,8 @@ import css.out.file.enums.ROOT_PATH;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.utils.GlobalField.DEFAULT_DIR_NAME;
-import static css.out.file.utils.GlobalField.DIR_SIGNAL;
 import static css.out.file.utils.HandleBlock.GetFreeBlock;
 import static css.out.file.utils.HandlePath.GetDefaultPath;
 
@@ -31,7 +31,7 @@ public class dir {
      * @param startBlock 起始盘块号
      */
     public dir(String pathName, int startBlock) {
-        this.fcb = new FCB(pathName, startBlock, DIR_SIGNAL);
+        this.fcb = new FCB(pathName, startBlock, DIR);
         //TODO 标记磁盘块为已使用
     }
 
@@ -41,7 +41,7 @@ public class dir {
      * <p>默认走/tmp目录</p>
      */
     public dir() {
-        this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR_SIGNAL);
+        this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR);
         //TODO 标记磁盘块为已使用
     }
 
