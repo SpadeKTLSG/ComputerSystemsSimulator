@@ -5,10 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
-import static css.out.file.utils.GlobalField.DISK_FILE_PATH;
 import static css.out.file.utils.GlobalField.DISK_NAME;
 import static css.out.file.utils.HandleBlock.*;
-import static css.out.file.utils.HandleDISK.writeDISK;
 
 /**
  * 磁盘
@@ -51,15 +49,17 @@ public class disk {
     public void Disk() {
         this.name = DISK_NAME;
         this.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
+
         this.FAT1 = getDefaultFAT1(); //获得FAT1对象
         Byte[] FAT1_Byte = getFATBytes(this.FAT1); //获得FAT1字节对象
         mountFAT(this.BLOCKS, FAT1_Byte, 1); //挂载FAT1字节对象
+
         this.FAT2 = getDefaultFAT2(); //获得FAT2对象
         Byte[] FAT2_Byte = getFATBytes(this.FAT1); //获得FAT2字节对象
         mountFAT(this.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
-        //TODO 写入文本文件@DISK_FILE common/file/disk.txt
-        writeDISK(this.BLOCKS, DISK_FILE_PATH); //写入磁盘
 
+        //TODO 写入文本文件@DISK_FILE common/file/disk.txt
+//        writeDISK(this.BLOCKS, DISK_FILE_PATH); //写入磁盘
         log.info("{}初始化完成!", this.name);
     }
 

@@ -1,9 +1,12 @@
 package css.out.file.entity;
 
+import css.out.file.enums.FileDirTYPE;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.enums.FileDirTYPE.DIR;
+import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.GlobalField.*;
 
 /**
@@ -16,12 +19,12 @@ import static css.out.file.utils.GlobalField.*;
 public class FCB {
 
     /**
-     * 目录名(/分割)+ (:) +文件名(不包含:)
+     * !目录名(/分割)+ (:) +文件名(不包含:)
      * <p>从/(根目录)唯一查找到该文件</p>
      * <p>e.g.</p>
-     * <p>/home/114514 小本本.txt</p>
-     * <p>/home/114514 上课文件夹</p>
-     * <p>/home 114514</p>
+     * <p>/home/114514:     小本本.txt</p>
+     * <p>/home/114514:     上课文件夹</p>
+     * <p>/home:            114514</p>
      */
     public String pathName; //TODO 通过工具类来获取路径
 
@@ -38,9 +41,9 @@ public class FCB {
 
     /**
      * 文件目录标识
-     * <p> -> FILE_SIGNAL:0 / DIR_SIGNAL:1</p>
+     * <p> -> FILE / DIR</p>
      */
-    public Integer typeFlag;
+    public FileDirTYPE typeFlag;
 
     /**
      * 文件长度(目录为空)
@@ -56,23 +59,23 @@ public class FCB {
      * @param startBlock 起始盘块号
      * @param typeFlag   文件or目录标识
      */
-    public FCB(String pathName, int startBlock, int typeFlag) {
-        if (typeFlag == DIR_SIGNAL) { //目录
+    public FCB(String pathName, int startBlock, FileDirTYPE typeFlag) {
+        if (typeFlag == DIR) { //目录
 
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = EMPTY_DIR_TYPE;
-            this.typeFlag = DIR_SIGNAL;
+            this.extendName = EMPTY_DIR_EXTEND;
+            this.typeFlag = DIR;
             this.fileLength = FCB_BYTE_LENGTH + DEFAULT_DIR_LENGTH;
 
-        } else if (typeFlag == FILE_SIGNAL) { //文件
+        } else if (typeFlag == FILE) { //文件
 
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = EMPTY_FILE_TYPE;
-            this.typeFlag = FILE_SIGNAL;
+            this.extendName = EMPTY_FILE_EXTEND;
+            this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + DEFAULT_FILE_LENGTH;
 
         } else { //出错
@@ -150,7 +153,7 @@ public class FCB {
         switch (key) {
             case "pathName" -> pathName = new String(valueBytes);
             case "extendName" -> extendName = new String(valueBytes);
-            case "typeFlag" -> typeFlag = Integer.parseInt(new String(valueBytes));
+            case "typeFlag" -> typeFlag = FileDirTYPE.valueOf(new String(valueBytes));
             case "startBlock" -> startBlock = Integer.parseInt(new String(valueBytes));
             case "fileLength" -> fileLength = Integer.parseInt(new String(valueBytes));
             default -> {

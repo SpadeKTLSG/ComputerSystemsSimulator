@@ -45,7 +45,7 @@ public class GlobalField {
     /**
      * FAT2 位置 = 1号盘块
      */
-    public static final int FAT2_DIR = 1;
+    public static final int FAT2_DIR = FAT1_DIR + 1;
 
     /**
      * FAT 大小  = BLOCK_SIZE
@@ -53,14 +53,19 @@ public class GlobalField {
     public static final int FAT_SIZE = BLOCK_SIZE;
 
     /**
-     * 根目录位置 = 2号盘块
-     */
-    public static final int ROOT_DIR = 2;
-
-    /**
      * FAT分配表中的Null指针 = 514
      */
     public static final int Null_Pointer = 514;
+
+    /**
+     * 根目录下所有目录挂载位置 = 2号盘块
+     */
+    public static final int ROOT_DIR_BLOCK = FAT2_DIR + 1;
+
+    /**
+     * 根目录本体挂载位置 = 不存在
+     */
+    public static final int ROOT_DIR_BLOCK_WHERE = Null_Pointer;
 
 
     //!目录DIR
@@ -88,13 +93,12 @@ public class GlobalField {
 
 
     /**
-     * 目录标识 = 1
+     * 根目录鉴权标识 = root
      */
-    public static final int DIR_SIGNAL = 1;
-
+    public static final String ROOT_AUTH = "root";
 
     /**
-     * 根目录名
+     * 根目录下的子目录名
      * <p>|  home 用户子目录</p>
      * <p>|  app 应用程序目录</p>
      * <p>|  tmp 临时可变目录</p>
@@ -109,9 +113,9 @@ public class GlobalField {
     //文件夹没有类型
 
     /**
-     * 默认的文件夹类型为不存在
+     * 默认的文件夹扩展名不存在
      */
-    public static final String EMPTY_DIR_TYPE = "";
+    public static final String EMPTY_DIR_EXTEND = "";
 
     /**
      * 默认的文件夹名 = 新文件夹
@@ -123,12 +127,9 @@ public class GlobalField {
      */
     public static final int DEFAULT_DIR_LENGTH = 0;
 
+
     //!文件FILE
 
-    /**
-     * 文件标识 = 0
-     */
-    public static final int FILE_SIGNAL = 0;
 
     /**
      * 一次输入的最大字符数 = 255/一个字节容量
@@ -137,14 +138,14 @@ public class GlobalField {
     public static final int MAX_INPUT_ONCE = 255;
 
     /**
-     * 文件类型 = .txt, .exe...
+     * 文件扩展名 = .txt, .exe...
      */
-    public static final List<String> FILE_TYPE = List.of(".txt", ".docx");
+    public static final List<String> FILE_EXTEND = List.of(".txt", ".docx");
 
     /**
      * 默认的文件类型为"." 区别于文件夹代表空
      */
-    public static final String EMPTY_FILE_TYPE = ".";
+    public static final String EMPTY_FILE_EXTEND = ".";
 
     /**
      * 默认的文件名 = 新文件夹

@@ -75,7 +75,7 @@ public class HandleDISK {
 
                 //TODO 读取一个块的字节流序列
 //                Byte byteStream= (byte) fis.read(); //读取一个块的字节流序列
-                block = new block(block.getBlockByteBuilder(byteStream));
+//                block = new block(block.getBlockByteBuilder(byteStream));
             }
 
         } catch (Exception e) {

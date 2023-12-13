@@ -1,8 +1,8 @@
-package css.out.file;
+package css.out.file.api;
 
 import org.junit.Test;
 
-public class FileApiTest {
+public class ApiTest {
 
 
     //!使用API接口Test
@@ -10,5 +10,4 @@ public class FileApiTest {
     public void testFileSystemAPI() {
 
     }
-
 }

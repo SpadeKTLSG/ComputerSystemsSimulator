@@ -54,6 +54,8 @@ public class file {
         this.fcb = new FCB(GetDefaultPath(ROOT_PATH.tmp) + ':' + DEFAULT_FILE_NAME, GetFreeBlock(), FILE_SIGNAL);
         this.content = "";
         //TODO 标记磁盘块为已使用
+        //TODO 写入磁盘块
+        //TODO
     }
 
 //TODO FILE -> byte[]
