@@ -65,18 +65,18 @@ public class FCB {
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = EMPTY_DIR_EXTEND;
+            this.extendName = DIR_EXTEND;
             this.typeFlag = DIR;
-            this.fileLength = FCB_BYTE_LENGTH + DEFAULT_DIR_LENGTH;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
 
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = EMPTY_FILE_EXTEND;
+            this.extendName = FILE_EXTEND_DEFAULT;
             this.typeFlag = FILE;
-            this.fileLength = FCB_BYTE_LENGTH + DEFAULT_FILE_LENGTH;
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
         } else { //出错
             //TODO 提示用户异常信息
@@ -85,6 +85,30 @@ public class FCB {
 
     }
 
+    /**
+     * 根据是DIR还是FILE来构造FCB的toString方法
+     *
+     * @return FCB信息
+     */
+    @Override
+    public String toString() {
+        if (typeFlag == DIR) {
+            return "FCB{" +
+                    "pathName='" + pathName + '\'' +
+                    ", startBlock=" + startBlock +
+                    ", typeFlag=" + typeFlag +
+                    ", fileLength=" + fileLength +
+                    '}';
+        } else {
+            return "FCB{" +
+                    "pathName='" + pathName + '\'' +
+                    ", startBlock=" + startBlock +
+                    ", extendName='" + extendName + '\'' +
+                    ", typeFlag=" + typeFlag +
+                    ", fileLength=" + fileLength +
+                    '}';
+        }
+    }
 
     /**
      * FCB转换为Bytes
@@ -96,12 +120,12 @@ public class FCB {
         byte[] bytes = new byte[FCB_BYTE_LENGTH]; //初始byte数组
         int index = 0;
 
-        for (String key : FCB_BYTE_LENGTH_MAP.keySet()) { //遍历FCB_BYTE_LENGTH_MAP
+        for (String key : FCB_LENGTH.keySet()) { //遍历FCB_BYTE_LENGTH_MAP
             byte[] valueBytes = getBytesForType(key);
             if (valueBytes != null) {
-                System.arraycopy(valueBytes, 0, bytes, index, FCB_BYTE_LENGTH_MAP.get(key)); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
+                System.arraycopy(valueBytes, 0, bytes, index, FCB_LENGTH.get(key)); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
             }
-            index += FCB_BYTE_LENGTH_MAP.get(key);
+            index += FCB_LENGTH.get(key);
         }
 
         return bytes;
@@ -133,10 +157,10 @@ public class FCB {
     public FCB fromBytes(byte[] bytes) {
 
         int index = 0;
-        for (String key : FCB_BYTE_LENGTH_MAP.keySet()) {
-            byte[] valueBytes = new byte[FCB_BYTE_LENGTH_MAP.get(key)];
-            System.arraycopy(bytes, index, valueBytes, 0, FCB_BYTE_LENGTH_MAP.get(key));
-            index += FCB_BYTE_LENGTH_MAP.get(key);
+        for (String key : FCB_LENGTH.keySet()) {
+            byte[] valueBytes = new byte[FCB_LENGTH.get(key)];
+            System.arraycopy(bytes, index, valueBytes, 0, FCB_LENGTH.get(key));
+            index += FCB_LENGTH.get(key);
             setBytesForType(key, valueBytes);
         }
 

@@ -5,7 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
-import static css.out.file.utils.GlobalField.DEFAULT_DIR_NAME;
+import static css.out.file.utils.GlobalField.DIR_NAME_DEFAULT;
 import static css.out.file.utils.HandleBlock.GetFreeBlock;
 import static css.out.file.utils.HandlePath.getROOT_DIRPath;
 
@@ -18,11 +18,28 @@ public class dir {
      */
     public FCB fcb;
 
+
     /**
      * 文件内容
-     * <p>锁定为""</p>
+     * <p>锁定为""维持通用性</p>
      */
     private final String content = "";
+
+    /**
+     * 默认取消打印空文件夹内容
+     *
+     * @return 文件夹信息
+     */
+    @Override
+    public String toString() {
+        return "dir{" +
+                fcb +
+                '}';
+    }
+
+    public dir(FCB fcb) {
+        this.fcb = fcb;
+    }
 
     /**
      * 文件夹完全指定构造
@@ -41,7 +58,7 @@ public class dir {
      * <p>默认走/tmp目录</p>
      */
     public dir() {
-        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + DEFAULT_DIR_NAME, GetFreeBlock(), DIR);
+        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + DIR_NAME_DEFAULT, GetFreeBlock(), DIR);
         //TODO 标记磁盘块为已使用
     }
 

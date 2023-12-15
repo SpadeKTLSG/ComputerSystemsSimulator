@@ -13,7 +13,7 @@ public class GlobalField {
     /**
      * 默认磁盘名 = 西数8KB磁盘
      */
-    public static final String DISK_NAME = "西数8KB磁盘";
+    public static final String DISK_NAME = "西数8KB暖气片";
 
     /**
      * 模拟磁盘文件名 = disk.txt
@@ -73,7 +73,7 @@ public class GlobalField {
     /**
      * FCB占用的字节数 = 8B
      */
-    public static int FCB_BYTE_LENGTH = 8;
+    public static final int FCB_BYTE_LENGTH = 8;
 
     /**
      * 文件目录树结构的名称
@@ -88,7 +88,7 @@ public class GlobalField {
      * <p>类型标识 1</p>
      * <p>长度 1</p>
      */
-    public static Map<String, Integer> FCB_BYTE_LENGTH_MAP = Map.of(
+    public static Map<String, Integer> FCB_LENGTH = Map.of(
             "pathName", 3,
             "startBlock", 1,
             "extendName", 2,
@@ -103,22 +103,22 @@ public class GlobalField {
     public static final String ROOT_AUTH = "root";
 
 
-    //文件夹没有类型
+    //?文件夹没有类型
 
     /**
      * 默认的文件夹扩展名不存在
      */
-    public static final String EMPTY_DIR_EXTEND = "";
+    public static final String DIR_EXTEND = "";
 
     /**
      * 默认的文件夹名 = 新文件夹
      */
-    public static final String DEFAULT_DIR_NAME = "新文件夹";
+    public static final String DIR_NAME_DEFAULT = "新文件夹";
 
     /**
      * 默认/初始化的文件夹长度 = 0
      */
-    public static final int DEFAULT_DIR_LENGTH = 0;
+    public static final int DIR_LENGTH_DEFAULT = 0;
 
 
     //!文件FILE
@@ -128,27 +128,27 @@ public class GlobalField {
      * 一次输入的最大字符数 = 255/一个字节容量
      * <p>输入长度超过时自动分配空间</p>
      */
-    public static final int MAX_INPUT_ONCE = 255;
+    public static final int MAX_INPUT_INONCE = 255;
 
     /**
-     * 文件扩展名 = .txt, .exe...
+     * 文件扩展名S List = .txt,...
      */
-    public static final List<String> FILE_EXTEND = List.of(".txt", ".docx");
+    public static final List<String> FILE_EXTEND = List.of(".txt", ".docx", ".md", ".tmp", ".dll", ".java");
 
     /**
      * 默认的文件类型为"." 区别于文件夹代表空
      */
-    public static final String EMPTY_FILE_EXTEND = ".";
+    public static final String FILE_EXTEND_DEFAULT = ".";
 
     /**
      * 默认的文件名 = 新文件夹
      */
-    public static final String DEFAULT_FILE_NAME = "新文件";
+    public static final String FILE_NAME_DEFAULT = "新文件";
 
     /**
      * 默认/初始化的文件长度 = 0
      */
-    public static final int DEFAULT_FILE_LENGTH = 0;
+    public static final int FILE_LENGTH_DEFAULT = 0;
 
 
 }
