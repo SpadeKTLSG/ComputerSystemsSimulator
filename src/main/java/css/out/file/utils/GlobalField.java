@@ -21,9 +21,9 @@ public class GlobalField {
     public static final String DISK_FILE = "disk.txt";
 
     /**
-     * 模拟磁盘文件路径固定
+     * 与外界交互文件路径固定
      */
-    public static final String DISK_FILE_PATH = "common/file/disk.txt";
+    public static final String WORKSHOP_PATH = "common/file";
 
     /**
      * 磁盘大小 = 128
@@ -102,8 +102,6 @@ public class GlobalField {
      */
     public static final String ROOT_AUTH = "root";
 
-
-    public static final String[] ROOT_DIR_NAMES = {"home", "app", "tmp", "conf", "mnt", "bin", "lib", "boot"};
 
     //文件夹没有类型
 

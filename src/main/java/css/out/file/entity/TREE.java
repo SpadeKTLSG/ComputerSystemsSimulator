@@ -38,10 +38,12 @@ public class TREE {
      * @param root 根目录
      */
     public void mountROOT_DIR(node root) {
-        for (String i : ROOT_PATH) {
-            String path = getROOT_DIRPath(i);
-        }
+//        for (String i : ROOT_PATH) {
+//            String path = getROOT_DIRPath(i);
+//        }
 
 
     }
+
+    //挂载各个根目录下的预设目录到根目录上, 左子树为第一个目录, 右子树为其第二个目录, 以此类推
 }
