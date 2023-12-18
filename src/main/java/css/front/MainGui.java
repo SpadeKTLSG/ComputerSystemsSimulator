@@ -274,7 +274,6 @@ public class MainGui {
         contentPanel.setBackground(Color.white);
         contentPanel.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
 
-
         // 将内容面板添加到窗口
         window.add(contentPanel, BorderLayout.CENTER);
 
@@ -287,7 +286,6 @@ public class MainGui {
         // 添加标签
         JLabel windowLabel = new JLabel(label, SwingConstants.CENTER);
         window.add(windowLabel, BorderLayout.NORTH);
-
 
         // 创建窗口内容面板
         JPanel legendPanel = new JPanel();
@@ -321,8 +319,6 @@ public class MainGui {
         devicetext.setFocusable(false);
         devicetext.setBackground(Color.white);
         window.add(devicetext,FlowLayout.CENTER);
-
-        // 将内容面板添加到窗口
 
         return window;
     }
