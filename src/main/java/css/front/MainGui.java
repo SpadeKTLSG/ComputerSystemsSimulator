@@ -7,6 +7,8 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.Random;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.TitledBorder;
@@ -17,6 +19,7 @@ public class MainGui {
 
     private JPanel ramPanel;
     private Color[] ram;
+    private JLabel timeLabel;
 
     private JPanel diskPanel;
     private Color[] disk;
@@ -31,12 +34,13 @@ public class MainGui {
         Mframe.setBackground(Color.white);
 
         JPanel p1=new JPanel();
-        p1.setSize(600,300);
+        p1.setSize(600,310);
         p1.setBackground(Color.white);
-        p1.setLocation(10,60);
+        p1.setLocation(10,50);
 
         // 使用流式布局，左对齐，水平和垂直间隔均为20
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
+        p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
 
         JPanel ready=createWindow("就绪队列");
         JPanel execute=createWindow("执行指令");
@@ -46,13 +50,13 @@ public class MainGui {
         out_text.setEditable(false);
         out_text.setFocusable(false);
         out_text.setPreferredSize(new Dimension(230, 30));
-        out_text.setBackground(Color.lightGray);
+        out_text.setBackground(Color.white);
         JLabel time_slice=new JLabel("时间片");
         JTextField Ttime_slice = new JTextField();
         Ttime_slice.setEditable(false);
         Ttime_slice.setFocusable(false);
         Ttime_slice.setPreferredSize(new Dimension(170, 30));
-        Ttime_slice.setBackground(Color.lightGray);
+        Ttime_slice.setBackground(Color.white);
 
         p1.add(ready);
         p1.add(blocking);
@@ -64,6 +68,18 @@ public class MainGui {
         p1.add(Ttime_slice);
 
         Mframe.add(p1);
+
+        //显示时间
+        JPanel timepanel=new JPanel();
+        timepanel.setSize(610,40);
+        timepanel.setBackground(Color.white);
+        timepanel.setLocation(640,10);
+        timeLabel = new JLabel();
+        timeLabel.setFont(new Font("Arial", Font.PLAIN, 24));
+        updateTime();  // 初始化时间
+        timepanel.add(timeLabel);
+        Mframe.add(timepanel);
+
 
 
         JPanel p2=new JPanel();
@@ -128,14 +144,7 @@ public class MainGui {
 
         updateRam(); // 初始更新硬盘视图
 
-        // 设置定时器，每隔一段时间更新硬盘视图
-        Timer timer = new Timer(1000, e -> {
-            initializeram(ram); // 随机改变硬盘颜色
-            updateRam(); // 更新硬盘视图
-            initializeram(disk); // 随机改变硬盘颜色
-            updateDisk(); // 更新硬盘视图
-        });
-        timer.start();
+
         p3.add(ramPanel);
         Mframe.add(p3);
 
@@ -143,7 +152,33 @@ public class MainGui {
         p4.setSize(200,310);
         p4.setBackground(Color.white);
         p4.setLocation(310,370);
+        p4.setLayout(new FlowLayout(FlowLayout.LEADING));
         p4.setBorder(new TitledBorder(new EtchedBorder(), "外围设备"));
+
+        JLabel A1=new JLabel("A1:");
+        JPanel deviceA1= device("");
+        p4.add(A1);
+        p4.add(deviceA1);
+
+        JLabel A2=new JLabel("A2:");
+        JPanel deviceA2= device("");
+        p4.add(A2);
+        p4.add(deviceA2);
+
+        JLabel B1=new JLabel("B1:");
+        JPanel deviceB1= device("");
+        p4.add(B1);
+        p4.add(deviceB1);
+
+        JLabel B2=new JLabel("B2:");
+        JPanel deviceB2= device("");
+        p4.add(B2);
+        p4.add(deviceB2);
+
+        JLabel C=new JLabel("C  :");
+        JPanel deviceC= device("");
+        p4.add(C);
+        p4.add(deviceC);
         Mframe.add(p4);
 
 
@@ -184,15 +219,16 @@ public class MainGui {
         Mframe.add(p6);
 
 
+        // 设置定时器，每隔一段时间更新视图
+        Timer timer = new Timer(1000, e -> {
+            initializeram(ram); // 随机改变硬盘颜色
+            updateRam(); // 更新硬盘视图
+            initializeram(disk); // 随机改变硬盘颜色
+            updateDisk(); // 更新硬盘视图
+            updateTime();
+        });
+        timer.start();
 
-
-    }
-    private static JPanel createP(){
-        JPanel panel=new JPanel();
-        panel.setPreferredSize(new Dimension(170, 220));
-        panel.setBackground(Color.white);
-
-        return panel;
     }
 
     //需求：根据实参标颜色的方式表示磁盘使用情况，
@@ -217,19 +253,26 @@ public class MainGui {
             }
         }
     }
+    private void updateTime() {
+        SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String formattedDate = dateFormat.format(new Date());
+        timeLabel.setText(  formattedDate);
+    }
     private static JPanel createWindow(String label) {
         JPanel window = new JPanel(new BorderLayout());
+        window.setBackground(Color.white);
 
         // 添加标签
         JLabel windowLabel = new JLabel(label, SwingConstants.CENTER);
         windowLabel.setBorder(BorderFactory.createEmptyBorder(5, 0, 5, 0));
-        windowLabel.setBackground(Color.lightGray);
+        windowLabel.setBackground(Color.white);
         window.add(windowLabel, BorderLayout.NORTH);
 
         // 创建窗口内容面板
         JPanel contentPanel = new JPanel();
         contentPanel.setPreferredSize(new Dimension(170, 210));
-        contentPanel.setBackground(Color.lightGray);
+        contentPanel.setBackground(Color.white);
+        contentPanel.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
 
         // 将内容面板添加到窗口
         window.add(contentPanel, BorderLayout.CENTER);
@@ -244,7 +287,6 @@ public class MainGui {
         JLabel windowLabel = new JLabel(label, SwingConstants.CENTER);
         window.add(windowLabel, BorderLayout.NORTH);
 
-
         // 创建窗口内容面板
         JPanel legendPanel = new JPanel();
         legendPanel.setPreferredSize(new Dimension(30, 30));
@@ -255,6 +297,31 @@ public class MainGui {
         window.add(legendPanel, BorderLayout.CENTER);
         return window;
     }
+
+    private static JPanel device(String s) {
+        JPanel window = new JPanel(new FlowLayout());
+        window.setBackground(Color.white);
+
+        // 创建窗口内容面板
+        JPanel devicepanel = new JPanel();
+        devicepanel.setPreferredSize(new Dimension(40, 40));
+        devicepanel.setBackground(Color.LIGHT_GRAY);
+        devicepanel.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
+        System.out.println("已运行");
+        window.add(devicepanel, FlowLayout.LEFT);
+
+        //创建显示框
+        JTextField devicetext=new JTextField(s);
+        devicetext.setPreferredSize(new Dimension(100, 40));
+        devicetext.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
+        System.out.println("已运行");
+        devicetext.setEditable(false);
+        devicetext.setFocusable(false);
+        devicetext.setBackground(Color.white);
+        window.add(devicetext,FlowLayout.CENTER);
+
+        return window;
+    }
     private void updateRam() {
         ramPanel.removeAll();
         GridLayout gl = new GridLayout(8,8,5,5);
@@ -263,10 +330,10 @@ public class MainGui {
 
 
         // 根据硬盘颜色数组创建并添加盒子
-        for (int i = 0; i < ram.length; i++) {
+        for (Color color : ram) {
             JPanel box = new JPanel();
             box.setPreferredSize(new Dimension(30, 30));
-            box.setBackground(ram[i]);
+            box.setBackground(color);
             box.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
             ramPanel.add(box);
         }
@@ -294,8 +361,6 @@ public class MainGui {
         diskPanel.revalidate(); // 重新验证布局
         diskPanel.repaint(); // 重绘界面
     }
-
-    
 
     // 显示窗口
     public void showGUI() {
