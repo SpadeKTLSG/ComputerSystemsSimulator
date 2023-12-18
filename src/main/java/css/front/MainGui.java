@@ -362,8 +362,6 @@ public class MainGui {
         diskPanel.repaint(); // 重绘界面
     }
 
-    
-
     // 显示窗口
     public void showGUI() {
         Mframe.setVisible(true);
