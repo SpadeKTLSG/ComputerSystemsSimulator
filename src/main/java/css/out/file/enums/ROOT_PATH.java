@@ -1,5 +1,7 @@
 package css.out.file.enums;
 
+import lombok.Getter;
+
 /**
  * 根目录下的子目录名
  * <p>|  home 用户子目录</p>
@@ -11,8 +13,10 @@ package css.out.file.enums;
  * <p>|  lib 系统库文件以及系统资料目录</p>
  * <p>|  boot 系统内核程序目录</p>
  */
+@Getter
 public enum ROOT_PATH {
 
+    //TODO 截断
     //home 用户子目录
     //app 应用程序目录
     //tmp 临时可变目录
@@ -21,6 +25,7 @@ public enum ROOT_PATH {
     //bin 可执行命令目录
     //lib 系统库文件以及系统资料目录
     //boot 系统内核程序目录
-    home, app, tmp, conf, mnt, bin, lib, boot;
+    home("home", "用户子目录"),
+
 
 }

@@ -3,8 +3,6 @@ package css.out.file.entity;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import java.util.Arrays;
-
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.GlobalField.*;
@@ -40,21 +38,7 @@ public class FileDirTest {
         dir dir2 = new dir();
 //        System.out.println(dir2);
         //测试文件控制块的字节数组转换方法
-
-        // 调用getBytesForType方法，将每个属性转换为固定长度的字节对象，并打印出来
-        byte[] pathNameBytes = f.getBytesForType("pathName");
-        System.out.println("pathNameBytes: " + Arrays.toString(pathNameBytes));
-        byte[] startBlockBytes = f.getBytesForType("startBlock");
-        System.out.println("startBlockBytes: " + Arrays.toString(startBlockBytes));
-        byte[] extendNameBytes = f.getBytesForType("extendName");
-        System.out.println("extendNameBytes: " + Arrays.toString(extendNameBytes));
-        byte[] typeFlagBytes = f.getBytesForType("typeFlag");
-        System.out.println("typeFlagBytes: " + Arrays.toString(typeFlagBytes));
-        byte[] fileLengthBytes = f.getBytesForType("fileLength");
-        System.out.println("fileLengthBytes: " + Arrays.toString(fileLengthBytes));
-
-// 调用unzip方法，将每个字节对象还原为原始的属性值，并打印出来
-
+        file1.fcb.toBytes();
 
     }
 

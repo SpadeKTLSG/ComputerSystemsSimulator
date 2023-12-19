@@ -1,12 +1,9 @@
 package css.out.file.entity;
 
 import css.out.file.enums.FileDirTYPE;
-import css.out.file.utils.GzipUtil;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
-
-import java.io.IOException;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
@@ -116,65 +113,7 @@ public class FCB {
 
 
     /**
-     * 将一个String对象压缩并转换为固定长度的字节数组
-     *
-     * @param s   要转换的String对象
-     * @param len 指定的长度
-     * @return 转换后的字节数组
-     */
-    private byte[] toFixedLengthBytes(String s, int len) {
-        try {
-            // 调用Gziputil的zip方法，对字符串进行压缩，返回压缩后的字节数组
-            byte[] compressed = GzipUtil.zip(s);
-            // 如果compressed的长度小于len，就在右边填充空格
-            if (compressed.length < len) {
-                //通知: 有对象被填充
-                log.info("有对象被填充,{}", s);
-                byte[] padded = new byte[len];
-                System.arraycopy(compressed, 0, padded, 0, compressed.length);
-                for (int i = compressed.length; i < len; i++) {
-                    padded[i] = ' ';
-                }
-                return padded;
-            }
-            // 如果compressed的长度大于len，就截取左边的len个字节
-            else if (compressed.length > len) {
-                //报警: 有对象被截断
-                log.warn("有对象被截断,{}", s);
-                byte[] truncated = new byte[len];
-                System.arraycopy(compressed, 0, truncated, 0, len);
-                return truncated;
-            }
-            // 如果compressed的长度等于len，就直接返回
-            else {
-                return compressed;
-            }
-        } catch (IOException e) {
-            // 如果发生异常，抛出异常
-            throw new RuntimeException(e);
-        }
-    }
-
-    /**
-     * 将一个压缩后的字节数组解压并还原为原始的String对象
-     *
-     * @param bytes 要解压的字节数组
-     * @return 还原后的String对象
-     */
-    public String unzip(byte[] bytes) {
-        try {
-            // 调用Gziputil的unzip方法，对压缩后的字节数组进行解压缩，返回还原后的字符串
-            return GzipUtil.unzip(bytes);
-        } catch (IOException e) {
-            // 如果发生异常，抛出异常
-            throw new RuntimeException(e);
-        }
-    }
-
-    //my
-
-    /**
-     * !FCB转换为Bytes
+     * FCB转换为Bytes
      *
      * @return Bytes
      */
@@ -183,55 +122,55 @@ public class FCB {
         byte[] bytes = new byte[FCB_BYTE_LENGTH]; //初始byte数组 = 8B大小
         int index = 0;
 
-        for (String key : FCB_LENGTH.keySet()) { //遍历FCB_BYTE_LENGTH_MAP
-            System.out.println(key);
-            byte[] valueBytes = getBytesForType(key);
-            if (valueBytes != null) {
-                System.arraycopy(valueBytes, 0, bytes, index, FCB_LENGTH.get(key)); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-            }
-            //这里bug, index没有加上对应的值而是每次都是+1
-            System.out.println(FCB_LENGTH.get(key));
+        //将FCB的每个字段转换为固定长度的Bytes
+        String key = this.pathName;
+        int length = FCB_LENGTH.get("pathName");
+        byte[] valueBytes = toFixedLengthBytes(key, length); //将对应的值转换为固定长度的Bytes
+        System.arraycopy(valueBytes, 0, bytes, index, length); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
+        //这里bug, index没有加上对应的值而是每次都是+1
+        System.out.println(length);
 
-            index += FCB_LENGTH.get(key);
-        }
+        index += length;
 
+        //
+        key = this.extendName;
+        //下面还是length这样的属性
         return bytes;
     }
 
-    /**
-     * 从FCB中获取对应的Bytes
-     *
-     * @param key FCB中的key
-     * @return 对应的Bytes
-     */
-/*    private byte[] getBytesForType(String key) {
-        return switch (key) {
-            case "pathName" -> pathName.getBytes();
-            case "extendName" -> extendName.getBytes();
-            case "typeFlag" -> typeFlag.toString().getBytes();
-            case "startBlock" -> startBlock.toString().getBytes();
-            case "fileLength" -> fileLength.toString().getBytes();
-            default -> null;
-        };
-    }*/
-
 
     /**
-     * 从FCB中获取对应的Bytes
+     * 将一个String对象转换为固定长度的字节数组
+     * <p>删除了压缩逻辑</p>
      *
-     * @param key FCB中的key
-     * @return 对应的Bytes
+     * @param s   要转换的String对象
+     * @param len 指定的数组长度
+     * @return 转换后的字节数组
      */
-    public byte[] getBytesForType(String key) {
-        return switch (key) {
-            case "pathName" -> toFixedLengthBytes(pathName, 3);
-            case "extendName" -> toFixedLengthBytes(extendName, 2);
-            case "typeFlag" -> toFixedLengthBytes(typeFlag.toString(), 1);
-            case "startBlock" -> toFixedLengthBytes(startBlock.toString(), 1);
-            case "fileLength" -> toFixedLengthBytes(fileLength.toString(), 1);
-            default -> null;
-        };
+    private byte[] toFixedLengthBytes(String s, int len) {
+        byte[] compressed = s.getBytes();
+
+        if (compressed.length < len) { // 如果长度小于len，就在右边填充空格
+            log.info("{}有对象被填充", s);
+            byte[] padded = new byte[len];
+            System.arraycopy(compressed, 0, padded, 0, compressed.length);
+            for (int i = compressed.length; i < len; i++) {
+                padded[i] = ' ';
+            }
+            return padded;
+        } else if (compressed.length > len) { // 如果compressed的长度大于len，就截取左边的len个字节
+            //报警: 有对象被截断
+            log.warn("{}对象被截断", s);
+            byte[] truncated = new byte[len];
+            System.arraycopy(compressed, 0, truncated, 0, len);
+            return truncated;
+        }
+        // 如果compressed的长度等于len，就直接返回
+        else {
+            return compressed;
+        }
     }
+
 
     /**
      * Bytes转换为FCB
