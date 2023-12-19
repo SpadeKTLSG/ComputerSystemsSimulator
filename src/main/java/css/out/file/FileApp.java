@@ -3,8 +3,7 @@ package css.out.file;
 import css.out.file.system.DiskSyS;
 import css.out.file.system.FileSyS;
 
-import static css.out.file.system.SinFactory.initialDiskSyS;
-import static css.out.file.system.SinFactory.initialFileSys;
+import static css.out.file.system.SinFactory.*;
 
 /**
  * 文件系统Application
@@ -28,6 +27,7 @@ public class FileApp {
     public FileApp() {
         diskSyS = initialDiskSyS();
         fileSyS = initialFileSys();
+        fileSyS.pathManager = initialPathManager();
     }
 
     void initialize() {

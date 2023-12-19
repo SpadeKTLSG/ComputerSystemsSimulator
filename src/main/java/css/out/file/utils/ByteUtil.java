@@ -26,7 +26,7 @@ public abstract class ByteUtil {
      * 自制0-127的Integer转单元素Byte[]
      *
      * @param num 0-127的数字
-     * @return Byte数组(只有一个元素)
+     * @return byte数组(只有一个元素)
      */
     public static byte[] Int2Byte(Integer num) {//这种数字只能适用于0-127的数字, 需要加上判断
         if (num < 0 || num > 127) {
@@ -40,10 +40,15 @@ public abstract class ByteUtil {
     /**
      * 自制单元素Byte[]转0-127的Integer
      *
-     * @param Bytes Byte数组(只有一个元素)
+     * @param bytes byte数组(只有一个元素)
      * @return 0-127的数字
      */
-    public static Integer Byte2Int(byte[] Bytes) {
-        return Integer.parseInt(Arrays.toString(Bytes).replace("[", "").replace("]", ""));
+    public static Integer Byte2Int(byte[] bytes) {
+        if (bytes.length != 1) {
+            log.warn("byte数组{}长度不为1, 截断为最大值", bytes);
+            //只能返回最大值
+            return 127;
+        }
+        return Integer.parseInt(Arrays.toString(bytes).replace("[", "").replace("]", ""));
     }
 }

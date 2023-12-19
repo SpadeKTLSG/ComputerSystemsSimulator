@@ -1,7 +1,13 @@
 package css.out.file.handle;
 
+import css.out.file.entity.FCB;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
+
+import java.util.List;
+import java.util.Map;
+
+import static css.out.file.FileApp.fileSyS;
 
 
 /**
@@ -21,4 +27,42 @@ public class HandlePath {
 
         return '/' + String.valueOf(path);
     }
+
+    /**
+     * FCB的PathName绑定路径管理器
+     * <p>这样硬盘只需要存储对应的键即可</p>
+     *
+     * @param fcb FCB
+     * @return 绑定的键
+     */
+    public static Integer bindPathManager(FCB fcb) {
+
+        //在PathManager找一个空白位置插入索引项
+        List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
+                .filter(entry -> entry.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .toList();
+
+        log.info("当前path中的空白位置: {}", keys.size());
+        Integer A = keys.get(0);
+        fileSyS.pathManager.put(A, fcb.getPathName());
+
+        return A;
+    }
+
+    public static Integer bindExtendManager(FCB fcb) {
+
+        //在PathManager找一个空白位置插入索引项
+        List<Integer> keys = fileSyS.extendManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
+                .filter(entry -> entry.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .toList();
+
+        log.info("当前extend中的空白位置: {}", keys.size());
+        Integer A = keys.get(0);
+        fileSyS.extendManager.put(A, fcb.getExtendName());
+
+        return A;
+    }
+
 }

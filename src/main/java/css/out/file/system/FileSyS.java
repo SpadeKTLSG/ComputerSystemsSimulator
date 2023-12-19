@@ -3,6 +3,8 @@ package css.out.file.system;
 import css.out.file.entity.TREE;
 import lombok.Data;
 
+import java.util.Map;
+
 /**
  * 单例实现文件系统
  */
@@ -14,10 +16,18 @@ public class FileSyS {
      */
     public TREE tree;
 
+    /**
+     * 路径管理器
+     */
+    public Map<Integer, String> pathManager;
 
-    public Integer id;
+    /**
+     * 扩展名管理器
+     */
+    public Map<Integer, String> extendManager;
 
     public FileSyS() {
+
 
         //TODO 根节点特殊处理, 创建8个初始文件夹
     }

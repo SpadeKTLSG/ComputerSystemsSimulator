@@ -8,6 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handle.HandlePath.bindExtendManager;
+import static css.out.file.handle.HandlePath.bindPathManager;
+import static css.out.file.utils.ByteUtil.Int2Byte;
 import static css.out.file.utils.GlobalField.*;
 
 /**
@@ -22,6 +25,7 @@ public class FCB {
     /**
      * !目录名(/分割)+ (:) +文件名(不包含:)
      * <p>从/(根目录)唯一查找到该文件</p>
+     * <p>需要被加载到PathManager中</p>
      * <p>e.g.</p>
      * <p>/home/114514:     小本本.txt</p>
      * <p>/home/114514:     上课文件夹</p>
@@ -37,12 +41,15 @@ public class FCB {
 
     /**
      * 扩展名(目录为空)
+     *
+     * <p>需要被加载到扩展名映射表中</p>
      */
     public String extendName; //TODO 通过工具类来获取
 
     /**
      * 文件目录标识
      * <p> -> FILE / DIR</p>
+     * <p>需要被加载到标识映射表中</p>
      */
     public FileDirTYPE typeFlag;
 
@@ -122,14 +129,14 @@ public class FCB {
         byte[] bytes = new byte[FCB_BYTE_LENGTH];
         int index = 0;
 
-        for (FCB_FIELD field : FCB_FIELD.values()) {//遍历FCB的所有字段名
+        for (FCB_FIELD field : FCB_FIELD.values()) {//遍历FCB的所有字段名,找到直接转String的
 
             int length = FCB_LENGTH.get(field.getName());
 
-            String value = switch (field) {
-                case PATH_NAME -> this.pathName;
-                case START_BLOCK -> this.startBlock.toString();
-                case EXTEND_NAME -> this.extendName;
+            byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
+                case PATH_NAME -> Int2Byte(bindPathManager(this));
+                case START_BLOCK -> Int2Byte(this.startBlock);
+                case EXTEND_NAME -> Int2Byte(bindExtendManager(this));
                 case TYPE_FLAG -> this.typeFlag.toString();
                 case FILE_LENGTH -> this.fileLength.toString();
             };
@@ -140,39 +147,35 @@ public class FCB {
             index += length;
         }
 
-        // 返回bytes数组
         return bytes;
     }
 
     /**
-     * 将一个String对象转换为固定长度的字节数组
+     * 将一个指定的字节数组对象转换为固定对应长度的字节数组
      * <p>删除了压缩逻辑</p>
      *
-     * @param s   要转换的String对象
+     * @param bytes     指定的字节数组
      * @param len 指定的数组长度
      * @return 转换后的字节数组
      */
-    private byte[] toFixedLengthBytes(String s, int len) {
-        byte[] compressed = s.getBytes();
+    private byte[] toFixedLengthBytes(byte[] bytes, int len) {
 
-        if (compressed.length < len) { // 如果长度小于len，就在右边填充空格
-            log.info("{}有对象被填充", s);
+        if (bytes.length < len) { // 如果长度小于len，就在右边填充空格
             byte[] padded = new byte[len];
-            System.arraycopy(compressed, 0, padded, 0, compressed.length);
-            for (int i = compressed.length; i < len; i++) {
+            System.arraycopy(bytes, 0, padded, 0, bytes.length);
+            for (int i = bytes.length; i < len; i++) {
                 padded[i] = ' ';
             }
             return padded;
-        } else if (compressed.length > len) { // 如果compressed的长度大于len，就截取左边的len个字节
-            //报警: 有对象被截断
-            log.warn("{}对象被截断", s);
+        } else if (bytes.length > len) { // 如果compressed的长度大于len，就截取左边的len个字节
+            log.warn("有对象被截断");
             byte[] truncated = new byte[len];
-            System.arraycopy(compressed, 0, truncated, 0, len);
+            System.arraycopy(bytes, 0, truncated, 0, len);
             return truncated;
         }
         // 如果compressed的长度等于len，就直接返回
         else {
-            return compressed;
+            return bytes;
         }
     }
 
