@@ -21,12 +21,12 @@ public class dir {
 
     /**
      * 文件内容
-     * <p>锁定为""维持通用性</p>
+     * <p>锁定为"" - 维持通用性</p>
      */
     private final String content = "";
 
     /**
-     * 默认取消打印空文件夹内容
+     * 默认取消打印空内容
      *
      * @return 文件夹信息
      */

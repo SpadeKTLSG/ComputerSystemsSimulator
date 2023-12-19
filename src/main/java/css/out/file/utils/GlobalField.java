@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * 全局变量&信息定义
  */
-public class GlobalField {
+public abstract class GlobalField {
 
     //!磁盘DISK
 
