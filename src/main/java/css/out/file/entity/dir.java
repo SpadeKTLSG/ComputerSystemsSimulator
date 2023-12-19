@@ -5,6 +5,7 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
+import static css.out.file.utils.ByteUtil.byteMerger;
 import static css.out.file.utils.GlobalField.DIR_NAME_DEFAULT;
 import static css.out.file.utils.HandleBlock.GetFreeBlock;
 import static css.out.file.utils.HandlePath.getROOT_DIRPath;
@@ -62,5 +63,12 @@ public class dir {
         //TODO 标记磁盘块为已使用
     }
 
-    //TODO FILE -> byte[]
+    /**
+     * dir转换为Bytes, 直接FCB转Bytes + 内容转Bytes(空)
+     *
+     * @return Bytes
+     */
+    public byte[] toBytes() {
+        return byteMerger(fcb.toBytes(), content.getBytes());
+    }
 }

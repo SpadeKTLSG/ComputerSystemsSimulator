@@ -3,8 +3,8 @@ package css.out.file;
 import css.out.file.system.DiskSyS;
 import css.out.file.system.FileSyS;
 
-import static css.out.file.utils.SinFactory.initialDiskSyS;
-import static css.out.file.utils.SinFactory.initialFileSys;
+import static css.out.file.system.SinFactory.initialDiskSyS;
+import static css.out.file.system.SinFactory.initialFileSys;
 
 /**
  * 文件系统Application

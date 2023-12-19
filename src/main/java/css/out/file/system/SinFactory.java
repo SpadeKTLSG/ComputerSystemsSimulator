@@ -1,7 +1,4 @@
-package css.out.file.utils;
-
-import css.out.file.system.DiskSyS;
-import css.out.file.system.FileSyS;
+package css.out.file.system;
 
 /**
  * 单例模式工厂
