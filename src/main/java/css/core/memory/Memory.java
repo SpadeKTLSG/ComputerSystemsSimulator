@@ -83,6 +83,12 @@ public class Memory {
         memoryManager.deallocateMemory(allocatedAddress1);
         System.out.println("释放内存:");
         memoryManager.printMemoryStatus();
+
+
+
+
+
+
     }
 }
 
