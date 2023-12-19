@@ -10,6 +10,11 @@ import java.nio.charset.StandardCharsets;
 import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
+/**
+ * Gzip压缩工具类
+ *
+ * @author SK
+ */
 public class GzipUtil {
 
     /**

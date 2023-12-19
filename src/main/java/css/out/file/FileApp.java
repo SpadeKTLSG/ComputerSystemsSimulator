@@ -8,6 +8,7 @@ import static css.out.file.system.SinFactory.initialFileSys;
 
 /**
  * 文件系统Application
+ * @author SpadeK
  */
 public class FileApp {
 

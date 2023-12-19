@@ -16,16 +16,22 @@ import lombok.Getter;
 @Getter
 public enum ROOT_PATH {
 
-    //TODO 截断
-    //home 用户子目录
-    //app 应用程序目录
-    //tmp 临时可变目录
-    //conf 配置文件目录
-    //mnt 设备挂载目录
-    //bin 可执行命令目录
-    //lib 系统库文件以及系统资料目录
-    //boot 系统内核程序目录
     home("home", "用户子目录"),
+    app("app", "应用程序目录"),
+    tmp("tmp", "临时可变目录"),
+    conf("conf", "配置文件目录"),
+    mnt("mnt", "设备挂载目录"),
+    bin("bin", "可执行命令目录"),
+    lib("lib", "系统库文件以及系统资料目录"),
+    boot("boot", "系统内核程序目录");
+
+    public final String name;
+    public final String desc;
+
+    ROOT_PATH(String name, String desc) {
+        this.name = name;
+        this.desc = desc;
+    }
 
 
 }

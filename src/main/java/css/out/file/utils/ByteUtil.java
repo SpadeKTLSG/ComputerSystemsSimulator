@@ -2,7 +2,8 @@ package css.out.file.utils;
 
 public abstract class ByteUtil {
     /**
-     * byte数组合并
+     * 自制byte数组合并
+     * @author SK
      *
      * @param byte_1 byte数组1
      * @param byte_2 byte数组2

@@ -1,9 +1,6 @@
 package css.out.file.entity;
 
-import css.out.file.enums.ROOT_PATH;
-
 import static css.out.file.utils.GlobalField.*;
-import static css.out.file.utils.HandlePath.getROOT_DIRPath;
 
 /**
  * 二叉树树形文件结构, 用于存储文件系统结构

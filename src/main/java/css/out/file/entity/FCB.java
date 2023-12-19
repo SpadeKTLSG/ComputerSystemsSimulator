@@ -1,5 +1,6 @@
 package css.out.file.entity;
 
+import css.out.file.enums.FCB_FIELD;
 import css.out.file.enums.FileDirTYPE;
 import lombok.AllArgsConstructor;
 import lombok.Data;
@@ -67,7 +68,7 @@ public class FCB {
             this.startBlock = startBlock;
             //autofill
             this.extendName = DIR_EXTEND;
-            this.typeFlag = DIR;
+            this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
@@ -118,26 +119,30 @@ public class FCB {
      * @return Bytes
      */
     public byte[] toBytes() {
-
-        byte[] bytes = new byte[FCB_BYTE_LENGTH]; //初始byte数组 = 8B大小
+        byte[] bytes = new byte[FCB_BYTE_LENGTH];
         int index = 0;
 
-        //将FCB的每个字段转换为固定长度的Bytes
-        String key = this.pathName;
-        int length = FCB_LENGTH.get("pathName");
-        byte[] valueBytes = toFixedLengthBytes(key, length); //将对应的值转换为固定长度的Bytes
-        System.arraycopy(valueBytes, 0, bytes, index, length); //arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-        //这里bug, index没有加上对应的值而是每次都是+1
-        System.out.println(length);
+        for (FCB_FIELD field : FCB_FIELD.values()) {//遍历FCB的所有字段名
 
-        index += length;
+            int length = FCB_LENGTH.get(field.getName());
 
-        //
-        key = this.extendName;
-        //下面还是length这样的属性
+            String value = switch (field) {
+                case PATH_NAME -> this.pathName;
+                case START_BLOCK -> this.startBlock.toString();
+                case EXTEND_NAME -> this.extendName;
+                case TYPE_FLAG -> this.typeFlag.toString();
+                case FILE_LENGTH -> this.fileLength.toString();
+            };
+
+            byte[] valueBytes = toFixedLengthBytes(value, length);
+            System.arraycopy(valueBytes, 0, bytes, index, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
+            // 更新index的值，加上复制的长度
+            index += length;
+        }
+
+        // 返回bytes数组
         return bytes;
     }
-
 
     /**
      * 将一个String对象转换为固定长度的字节数组
