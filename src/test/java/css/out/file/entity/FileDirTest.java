@@ -4,6 +4,8 @@ import css.out.file.FileApp;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.GlobalField.*;
@@ -24,8 +26,11 @@ public class FileDirTest {
         file file1 = new file(new FCB("/home", 114, FILE_EXTEND.get(0), FILE, FILE_LENGTH_DEFAULT + FCB_BYTE_LENGTH + 1), "114514");
         System.out.println(file1);
         dir dir1 = new dir(new FCB("/home", ROOT_DIR_BLOCK, DIR_EXTEND, DIR, DIR_LENGTH_DEFAULT + FCB_BYTE_LENGTH));
-
-        f.toBytes();
+        System.out.println(FileApp.fileSyS.extendManager);
+        
+        System.out.println(Arrays.toString(f.toBytes()));
+        System.out.println(Arrays.toString(file1.toBytes()));
+        System.out.println(Arrays.toString(dir1.toBytes()));
     }
 
 

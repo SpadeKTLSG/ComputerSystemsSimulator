@@ -133,7 +133,7 @@ public abstract class GlobalField {
     /**
      * 文件扩展名S List = .txt,...
      */
-    public static final List<String> FILE_EXTEND = List.of(".txt", ".docx", ".md", ".tmp", ".dll", ".java");
+    public static final List<String> FILE_EXTEND = List.of(".", ".txt", ".docx", ".md", ".tmp", ".dll", ".java");
 
     /**
      * 默认的文件类型为"." 区别于文件夹代表空

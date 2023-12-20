@@ -8,8 +8,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handle.HandlePath.bindExtendManager;
-import static css.out.file.handle.HandlePath.bindPathManager;
+import static css.out.file.handle.HandlePath.*;
 import static css.out.file.utils.ByteUtil.Int2Byte;
 import static css.out.file.utils.GlobalField.*;
 
@@ -121,7 +120,7 @@ public class FCB {
 
 
     /**
-     * FCB转换为Bytes
+     * ?FCB转换为Bytes
      *
      * @return Bytes
      */
@@ -129,16 +128,16 @@ public class FCB {
         byte[] bytes = new byte[FCB_BYTE_LENGTH];
         int index = 0;
 
-        for (FCB_FIELD field : FCB_FIELD.values()) {//遍历FCB的所有字段名,找到直接转String的
+        for (FCB_FIELD field : FCB_FIELD.values()) {
 
             int length = FCB_LENGTH.get(field.getName());
 
             byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
                 case PATH_NAME -> Int2Byte(bindPathManager(this));
                 case START_BLOCK -> Int2Byte(this.startBlock);
-                case EXTEND_NAME -> Int2Byte(bindExtendManager(this));
-                case TYPE_FLAG -> this.typeFlag.toString();
-                case FILE_LENGTH -> this.fileLength.toString();
+                case EXTEND_NAME -> Int2Byte(selectExtendManager(this));
+                case TYPE_FLAG -> Int2Byte(FileorDir2Int(this));
+                case FILE_LENGTH -> Int2Byte(this.fileLength);
             };
 
             byte[] valueBytes = toFixedLengthBytes(value, length);
@@ -151,7 +150,7 @@ public class FCB {
     }
 
     /**
-     * 将一个指定的字节数组对象转换为固定对应长度的字节数组
+     * ?将一个指定的字节数组对象转换为固定对应长度的字节数组
      * <p>删除了压缩逻辑</p>
      *
      * @param bytes     指定的字节数组
@@ -188,14 +187,6 @@ public class FCB {
      */
     public FCB fromBytes(byte[] bytes) {
 
-        int index = 0;
-        for (String key : FCB_LENGTH.keySet()) {
-            byte[] valueBytes = new byte[FCB_LENGTH.get(key)];
-            System.arraycopy(bytes, index, valueBytes, 0, FCB_LENGTH.get(key));
-            index += FCB_LENGTH.get(key);
-            setBytesForType(key, valueBytes);
-        }
-
         return this;
     }
 
@@ -206,15 +197,7 @@ public class FCB {
      * @param valueBytes 对应的Bytes
      */
     private void setBytesForType(String key, byte[] valueBytes) {
-        switch (key) {
-            case "pathName" -> pathName = new String(valueBytes);
-            case "extendName" -> extendName = new String(valueBytes);
-            case "typeFlag" -> typeFlag = FileDirTYPE.valueOf(new String(valueBytes));
-            case "startBlock" -> startBlock = Integer.parseInt(new String(valueBytes));
-            case "fileLength" -> fileLength = Integer.parseInt(new String(valueBytes));
-            default -> {
-            }
-        }
+
     }
 
 

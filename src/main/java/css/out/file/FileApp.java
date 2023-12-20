@@ -28,6 +28,7 @@ public class FileApp {
         diskSyS = initialDiskSyS();
         fileSyS = initialFileSys();
         fileSyS.pathManager = initialPathManager();
+        fileSyS.extendManager = initialExtendManager();
     }
 
     void initialize() {
