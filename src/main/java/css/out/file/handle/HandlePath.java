@@ -16,7 +16,7 @@ import static css.out.file.enums.FileDirTYPE.FILE;
  * 获得路径之后用空格分隔文件与目录, 组成pathName
  */
 @Slf4j
-public class HandlePath {
+public abstract class HandlePath {
 
     /**
      * 获得根路径下的默认路径
@@ -52,6 +52,10 @@ public class HandlePath {
         return A;
     }
 
+    public static String fromPathManager(Integer key) {
+        return fileSyS.pathManager.get(key);
+    }
+
     /**
      * FCB的ExtendName绑定扩展名管理器
      * <p>这样硬盘只需要存储对应的键即可</p>
@@ -82,12 +86,17 @@ public class HandlePath {
      */
     public static Integer selectExtendManager(FCB fcb) {
         //在extendManager找对应的键, 找不到报错
-        List<Integer> keys = fileSyS.extendManager.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(fcb.getExtendName()))
-                .map(Map.Entry::getKey)
-                .toList();
+        try {
+            List<Integer> keys = fileSyS.extendManager.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(fcb.getExtendName()))
+                    .map(Map.Entry::getKey)
+                    .toList();
 
-        return keys.get(0);
+            return keys.get(0);
+        } catch (Exception e) {
+            log.error("扩展名管理器中找不到对应的扩展名{}?!", fcb.getExtendName());
+            throw new RuntimeException(e);
+        }
     }
 
     /**

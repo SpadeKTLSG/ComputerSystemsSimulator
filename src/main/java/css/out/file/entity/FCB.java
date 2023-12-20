@@ -9,6 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handle.HandlePath.*;
+import static css.out.file.utils.ByteUtil.Byte2Int;
 import static css.out.file.utils.ByteUtil.Int2Byte;
 import static css.out.file.utils.GlobalField.*;
 
@@ -73,7 +74,7 @@ public class FCB {
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = DIR_EXTEND;
+            this.extendName = DIR_EXTEND.get(0);
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
@@ -82,7 +83,7 @@ public class FCB {
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
-            this.extendName = FILE_EXTEND_DEFAULT;
+            this.extendName = FILE_EXTEND.get(0);
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
@@ -92,6 +93,41 @@ public class FCB {
         }
 
     }
+
+    /**
+     * 指定FCB类型快速构建无挂载的对象(禁止)
+     *
+     * @param typeFlag 文件or目录标识
+     */
+    public FCB(FileDirTYPE typeFlag) {
+        log.debug("正在构建一个空白文件/文件夹类型FCB");
+        if (typeFlag == DIR) { //目录
+
+            //autofill
+            this.extendName = DIR_EXTEND.get(0);
+            this.typeFlag = FILE;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
+
+        } else if (typeFlag == FILE) { //文件
+
+            //autofill
+            this.extendName = FILE_EXTEND.get(0);
+            this.typeFlag = FILE;
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
+
+        } else { //出错
+            //TODO 提示用户异常信息
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
+        }
+    }
+
+    /**
+     * 空白FCB构造(禁止)
+     */
+    public FCB() {
+        log.debug("正在构建一个空白FCB");
+    }
+
 
     /**
      * 根据是DIR还是FILE来构造FCB的toString方法
@@ -153,8 +189,8 @@ public class FCB {
      * ?将一个指定的字节数组对象转换为固定对应长度的字节数组
      * <p>删除了压缩逻辑</p>
      *
-     * @param bytes     指定的字节数组
-     * @param len 指定的数组长度
+     * @param bytes 指定的字节数组
+     * @param len   指定的数组长度
      * @return 转换后的字节数组
      */
     private byte[] toFixedLengthBytes(byte[] bytes, int len) {
@@ -180,23 +216,43 @@ public class FCB {
 
 
     /**
-     * Bytes转换为FCB
-     *
-     * @param bytes Bytes
-     * @return FCB
+     * ?Bytes转换为FCB
+     * <p>通过new FCB.调用</p>
      */
     public FCB fromBytes(byte[] bytes) {
+
+        int index = 0;
+        for (FCB_FIELD field : FCB_FIELD.values()) {//按照相同的逻辑, 从bytes中截取对应的字节, 然后转换为对应的类型对象
+
+            int length = FCB_LENGTH.get(field.getName());
+
+            byte[] valueBytes = new byte[length];
+            System.arraycopy(bytes, index, valueBytes, 0, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
+
+
+            switch (field) {
+                case PATH_NAME -> this.pathName = fromPathManager(fromFixedLengthBytes(valueBytes, length));
+//                case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes);
+//                case EXTEND_NAME -> this.extendName = fromFixedLengthBytes(valueBytes);
+//                case TYPE_FLAG -> this.typeFlag = fromFixedLengthBytes(valueBytes);
+//                case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes);
+            }
+            index += length;
+        }
 
         return this;
     }
 
     /**
-     * 从Bytes中设置对应的值
-     *
-     * @param key        FCB中的key
-     * @param valueBytes 对应的Bytes
+     * ?将一个固定对应长度的字节数组转换为指定的数组对象
+     * <p>有一连串的字节数组的, 将其全部合为一个数字</p>
      */
-    private void setBytesForType(String key, byte[] valueBytes) {
+    private Integer fromFixedLengthBytes(byte[] bytes, int len) {
+        if (len != bytes.length) {
+            log.warn("非法的字节数组长度, 对象{}", bytes);
+        }
+
+        return Byte2Int(bytes);
 
     }
 

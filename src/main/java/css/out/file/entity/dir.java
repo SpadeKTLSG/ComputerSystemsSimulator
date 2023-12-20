@@ -5,10 +5,10 @@ import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
-import static css.out.file.utils.ByteUtil.byteMerger;
-import static css.out.file.utils.GlobalField.DIR_NAME_DEFAULT;
 import static css.out.file.handle.HandleBlock.GetFreeBlock;
 import static css.out.file.handle.HandlePath.getROOT_DIRPath;
+import static css.out.file.utils.ByteUtil.byteMerger;
+import static css.out.file.utils.GlobalField.DIR_NAME_DEFAULT;
 
 @Slf4j
 @Data
@@ -71,4 +71,9 @@ public class dir {
     public byte[] toBytes() {
         return byteMerger(fcb.toBytes(), content.getBytes());
     }
+
+    public void fromBytes(byte[] bytes) {
+        this.fcb = this.fcb.fromBytes(bytes);
+    }
+
 }

@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.ByteUtil.byteMerger;
+import static css.out.file.utils.GlobalField.FCB_BYTE_LENGTH;
 import static css.out.file.utils.GlobalField.FILE_NAME_DEFAULT;
 import static css.out.file.handle.HandleBlock.GetFreeBlock;
 import static css.out.file.handle.HandlePath.getROOT_DIRPath;
@@ -72,6 +73,7 @@ public class file {
      * <p>默认走/tmp目录</p>
      */
     public file() {
+        log.warn("无内容文件临时生成");
         this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, GetFreeBlock(), FILE);
         this.content = "";
         //TODO 标记磁盘块为已使用
@@ -88,6 +90,12 @@ public class file {
         return byteMerger(fcb.toBytes(), content.getBytes());
     }
 
-
+    public void fromBytes(byte[] bytes) {
+        //将bytes划分为FCB和内容
+        byte[] byte_content = new byte[bytes.length - FCB_BYTE_LENGTH];
+        System.arraycopy(bytes, FCB_BYTE_LENGTH, byte_content, 0, bytes.length - FCB_BYTE_LENGTH);
+        this.content = new String(byte_content);
+        this.fcb = this.fcb.fromBytes(bytes);
+    }
 }
 

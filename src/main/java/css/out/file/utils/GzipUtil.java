@@ -15,7 +15,7 @@ import java.util.zip.GZIPOutputStream;
  *
  * @author SK
  */
-public class GzipUtil {
+public abstract class GzipUtil {
 
     /**
      * 将一个String对象压缩并转换为字节数组

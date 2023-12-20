@@ -50,7 +50,7 @@ public class node {
      */
     public node(String auth) {
         if (auth.equals(ROOT_AUTH)) {
-            this.fcb = new FCB(":" + "/", ROOT_DIR_BLOCK_WHERE, DIR_EXTEND, DIR, DIR_LENGTH_DEFAULT);
+            this.fcb = new FCB(":" + "/", ROOT_DIR_BLOCK_WHERE, DIR_EXTEND.get(0), DIR, DIR_LENGTH_DEFAULT);
         } else {
             log.error("非法的根目录创建!");
         }

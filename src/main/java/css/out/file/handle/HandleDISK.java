@@ -13,7 +13,7 @@ import java.util.List;
  * 处理外置磁盘TXT相关工具类
  */
 @Slf4j
-public class HandleDISK {
+public abstract class HandleDISK {
 
     /**
      * 将磁盘对象DISK.BLOCKS全部内容写入目标TXT文件

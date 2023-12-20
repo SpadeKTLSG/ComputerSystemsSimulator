@@ -3,17 +3,16 @@ package css.out.file.utils;
 import lombok.extern.slf4j.Slf4j;
 
 import java.math.BigInteger;
-import java.util.Arrays;
 
 @Slf4j
 public abstract class ByteUtil {
     /**
      * 自制byte数组合并
-     * @author SK
      *
      * @param byte_1 byte数组1
      * @param byte_2 byte数组2
      * @return 合并后的byte数组
+     * @author SK
      */
     public static byte[] byteMerger(byte[] byte_1, byte[] byte_2) {
         byte[] byte_3 = new byte[byte_1.length + byte_2.length];
@@ -44,11 +43,19 @@ public abstract class ByteUtil {
      * @return 0-127的数字
      */
     public static Integer Byte2Int(byte[] bytes) {
-        if (bytes.length != 1) {
-            log.warn("byte数组{}长度不为1, 截断为最大值", bytes);
-            //只能返回最大值
-            return 127;
+        //刷洗操作: 从后往前查找bytes寻找空格代表数32, 然后把剩下的数字保存到新的byte数组中, 然后执行return逻辑
+        int sit = bytes.length; //如果找到一个空格, 就把sit往前移动(-1)
+
+        for (int i = bytes.length - 1; i >= 0; i--) {
+            if (bytes[i] == 32) {
+                sit--;
+            }
         }
-        return Integer.parseInt(Arrays.toString(bytes).replace("[", "").replace("]", ""));
+        //使用拷贝工具, 将0-sit的bytes拷贝到新的byte数组中
+        byte[] bytes1 = new byte[sit];
+        System.arraycopy(bytes, 0, bytes1, 0, sit);
+
+
+        return Integer.parseInt(new BigInteger(bytes1).toString(2), 2);
     }
 }

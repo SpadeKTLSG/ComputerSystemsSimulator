@@ -13,7 +13,7 @@ import static css.out.file.utils.GlobalField.FAT_SIZE;
  * 磁盘块相关工具类
  */
 @Slf4j
-public class HandleBlock {
+public abstract class HandleBlock {
 
 
     public static int GetFreeBlock() {
