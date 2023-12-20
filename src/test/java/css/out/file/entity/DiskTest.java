@@ -8,6 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 import static css.out.file.entity.GlobalField.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handle.HandleDISK.readAllDISK;
 import static css.out.file.handle.HandleFile.setFileContextLength;
 
 /**
@@ -24,7 +25,7 @@ public class DiskTest {
         FileApp app = new FileApp();
 
         file file1 = new file(new FCB("/home", 89, FILE_EXTEND.get(1), FILE, FILE_LENGTH_DEFAULT + FCB_BYTE_LENGTH + setFileContextLength("114514")), "114514");
-
+        System.out.println(file1);
         //转换操作
         byte[] byte_temp = file1.toBytes();
 
@@ -42,6 +43,7 @@ public class DiskTest {
         bw.newLine();
         // 写入一行的内容res
         bw.write(res);
+        bw.newLine();
         //再写
         bw.write(res);
         bw.flush();
@@ -56,16 +58,33 @@ public class DiskTest {
 
         // 读取一行的内容，并跳到下一行开始
         br.readLine();
+        br.readLine();
         // 读取一行的内容，返回一个字符串, 并跳到下一行开始
         String line = br.readLine();
         // 打印到控制台
         System.out.println(line);
         // 关闭BufferedReader对象
         br.close();
+
+
+        //将读取到的line转回对象
+        //1. 将line按照空格分割为Bytes[]
+        String[] str = line.split(" ");
+        //2. 将Bytes[]转换为byte[]
+        byte[] bytes = new byte[str.length];
+        for (int i = 0; i < str.length; i++) {
+            bytes[i] = Byte.parseByte(str[i]);
+        }
+        //3. 将byte[]转换为file对象
+
+        file temp_file = new file();
+        temp_file.fromBytes(bytes);
+        System.out.println(temp_file);
     }
 
     @Test
     public void Disk_function() throws IOException {
-
+        FileApp app = new FileApp();
+        System.out.println(readAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
     }
 }

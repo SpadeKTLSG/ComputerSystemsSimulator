@@ -7,7 +7,7 @@ import java.util.List;
 
 import static css.out.file.entity.GlobalField.*;
 import static css.out.file.handle.HandleBlock.*;
-import static css.out.file.handle.HandleDISK.writeDISK;
+import static css.out.file.handle.HandleDISK.writeAllDISK;
 
 /**
  * 磁盘
@@ -59,11 +59,15 @@ public class disk {
         Byte[] FAT2_Byte = getFATBytes(this.FAT1); //获得FAT2字节对象
         mountFAT(this.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
 
-        writeDISK(this.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        writeAllDISK(this.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
         log.debug("{}初始化完成!", this.name);
     }
 
-
+    //reload TODO
+    public void reload() {
+        //从传递的SB完全还原磁盘对象
+        //TODO
+    }
     // 定义磁盘的读取一行方法 FIXME
 //    public String readLine(FileInputStream fis) throws IOException {
 //        // 创建一个字节缓冲区

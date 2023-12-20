@@ -3,10 +3,7 @@ package css.out.file.handle;
 import css.out.file.entity.block;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.File;
-import java.io.FileInputStream;
-import java.io.FileNotFoundException;
-import java.io.FileOutputStream;
+import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
@@ -19,6 +16,12 @@ import static css.out.file.entity.GlobalField.WORKSHOP_PATH;
 @Slf4j
 public abstract class HandleDISK {
 
+    /**
+     * 将msg直接破坏性注入磁盘映射文件
+     * <p>这样我们就真的回不到过去了, 前辈</p>
+     *
+     * @param msg 要写入的字符串
+     */
     public static void writeStr2Disk(String msg) {
         String path = WORKSHOP_PATH + DISK_FILE; //路径为: common/file/disk.txt
         File diskFile = new File(path);
@@ -38,7 +41,7 @@ public abstract class HandleDISK {
      * @param BLOCKS 磁盘块阵列
      * @param path   目标TXT文件路径
      */
-    public static void writeDISK(List<block> BLOCKS, String path) {
+    public static void writeAllDISK(List<block> BLOCKS, String path) {
 
         File diskFile = new File(path);
         if (!diskFile.exists()) {
@@ -51,16 +54,20 @@ public abstract class HandleDISK {
         }
 
 
-        try (FileOutputStream fis = new FileOutputStream(diskFile)) {
+        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
+            //将BLOCKS中的每个磁盘块的内容一个一个写入
+            //TODO 抽取
+            for (block block : BLOCKS) {
 
-//            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
-//                System.out.println(block);
-//                //!要求DISK.BLOCKSList中的所有项一行一个块写入, 块中的64个字节全部写入目标TXT文件,空的字节用0填充
-//                //FIXME
-//                //写入一个块的字节流序列
-//                fis.write(block.bytes);
-//                fis.flush(); //刷新缓冲区
-//            }
+                Byte[] byte_temp = block.bytes;
+                StringBuilder sb = new StringBuilder();
+                for (byte b : byte_temp) {
+                    sb.append(b).append(" ");
+                }
+                bw.write(sb.toString());
+                bw.newLine();
+            }
+
         } catch (Exception e) {
             log.error("写入磁盘映射文件错误日志: {}", e.getMessage());
         }
@@ -70,37 +77,44 @@ public abstract class HandleDISK {
 
     /**
      * 从目标TXT文件中读取磁盘对象DISK.BLOCKS全部内容
+     * <p>存入一整个String大对象中</p>
      *
      * @param BLOCKS 磁盘块阵列
      * @param path   目标TXT文件路径
      */
-    public static void readDISK(List<block> BLOCKS, String path) {
+    public static String readAllDISK(List<block> BLOCKS, String path) {
 
         File diskFile = new File(path);
+
+
         if (!diskFile.exists()) {
-            // 如果不存在抛出异常
             try {
                 throw new FileNotFoundException();
             } catch (FileNotFoundException e) {
                 log.error("创建磁盘映射文件失败, 错误日志: {}", e.getMessage());
             }
         }
+        StringBuilder sb = new StringBuilder();
 
-        try (FileInputStream fis = new FileInputStream(diskFile)) {
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
             log.info("读取磁盘映射文件 {} 中", path);
-            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
+            // 把每一行的内容存储到builder中
 
-                //!要求DISK.BLOCKSList中的所有项一行一个块读取, 块中的64个字节全部读到磁盘块中
 
-                //TODO 读取一个块的字节流序列
-//                Byte byteStream= (byte) fis.read(); //读取一个块的字节流序列
-//                block = new block(block.getBlockByteBuilder(byteStream));
+            String line = null;
+            while ((line = br.readLine()) != null) {
+                sb.append(line).append("\n");
             }
+
 
         } catch (Exception e) {
             log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
         }
 
+
         log.info("读取磁盘映射文件 {} 成功", path);
+        return sb.toString();
     }
+
+
 }
