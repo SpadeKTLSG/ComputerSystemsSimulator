@@ -56,9 +56,5 @@ public class TREE {
         log.debug("包含根目录的文件结构树初始化完毕");
     }
 
-//    public void String printTree() {
-//        //按照左孩子->右兄弟的结构输出打印的结果
-//
-//
-//    }
+
 }

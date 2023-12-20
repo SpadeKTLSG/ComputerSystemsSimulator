@@ -1,10 +1,12 @@
 package css.out.file.handle;
 
 import css.out.file.entity.FCB;
+import css.out.file.entity.node;
 import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
@@ -138,5 +140,24 @@ public abstract class HandlePath {
     public static FileDirTYPE Int2FileorDir(Integer num) {
 
         return num.equals(0) ? FILE : DIR;
+    }
+
+    /**
+     * 文件系统树形结构的层次遍历
+     *
+     * @param root 文件系统树形结构根节点
+     */
+    public static void printTree(node root) {
+        LinkedList<node> queue = new LinkedList<>();
+        queue.offer(root);
+        while (!queue.isEmpty()) {
+            node node = queue.poll();
+            System.out.print(node.fcb.pathName + "\n");
+
+            if (node.right != null) queue.offer(node.right); // 如果结点有兄弟结点，将其入队
+            if (node.left != null) queue.offer(node.left); // 如果结点有孩子结点，将其入队
+
+        }
+
     }
 }
