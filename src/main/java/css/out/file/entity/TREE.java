@@ -1,11 +1,15 @@
 package css.out.file.entity;
 
-import static css.out.file.utils.GlobalField.*;
+import css.out.file.enums.ROOT_PATH;
+import lombok.extern.slf4j.Slf4j;
+
+import static css.out.file.entity.GlobalField.ROOT_DIR_BLOCK;
 
 /**
  * 二叉树树形文件结构, 用于存储文件系统结构
  * <p>TREE特指文件系统树形结构</p>
  */
+@Slf4j
 public class TREE {
 
     //使用树的二叉树表示法, 根节点为/根目录, 其只有一个孩子节点, 为根目录下的第一个文件夹
@@ -21,26 +25,40 @@ public class TREE {
     public String name;
 
     /**
-     * 初始化文件系统树形结构
+     * 初始化文件系统树形结构(单例)
      */
     public TREE() {
-        this.name = FILE_TREE_NAME;
-        this.root = new node(ROOT_AUTH); //挂载根节点
 
     }
 
     /**
      * 挂载根目录到树上, 需要对应根目录的FCB
-     *
-     * @param root 根目录
      */
-    public void mountROOT_DIR(node root) {
-//        for (String i : ROOT_PATH) {
-//            String path = getROOT_DIRPath(i);
-//        }
-
-
+    public void mountROOT_DIR() {
+        //遍历枚举类, 挂载根目录下的8个文件夹到根目录上, 通过树的操作实现
+        boolean isFirst = true;
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+            if (isFirst) {
+                isFirst = false;
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                root.left = new node(tempfile.fcb); //挂载到根节点的左子树上
+            } else {
+                //获得一个根目录下的文件夹, 将其作为root的孩子节点的兄弟节点;count+1;
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                //递归查找根节点的左子树的最后一个右孩子节点, 将其右孩子节点设置为tempfile
+                node tempnode = root.left;
+                while (tempnode.right != null) {
+                    tempnode = tempnode.right;
+                }
+                tempnode.right = new node(tempfile.fcb);
+            }
+        }
+        log.debug("包含根目录的文件结构树初始化完毕");
     }
 
-    //挂载各个根目录下的预设目录到根目录上, 左子树为第一个目录, 右子树为其第二个目录, 以此类推
+//    public void String printTree() {
+//        //按照左孩子->右兄弟的结构输出打印的结果
+//
+//
+//    }
 }

@@ -7,7 +7,7 @@ import org.junit.Test;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handle.HandleFile.setFileContextLength;
-import static css.out.file.utils.GlobalField.*;
+import static css.out.file.entity.GlobalField.*;
 
 /**
  * 文件&文件夹测试
@@ -15,9 +15,6 @@ import static css.out.file.utils.GlobalField.*;
 @Slf4j
 public class FileDirTest {
 
-    /**
-     * 测试FCB构建
-     */
     @Test
     public void FileDirFCB_Build() {
         FileApp app = new FileApp();
@@ -41,21 +38,4 @@ public class FileDirTest {
     }
 
 
-    /**
-     *
-     */
-    @Test
-    public void test() {
-        //创建一个字节的变量
-        byte b = 0x01;
-        //创建一个字节大小的byte[]
-        byte[] bytes = new byte[1];
-
-//        System.out.println(FCB_LENGTH.keySet());
-//        System.out.println(FCB_LENGTH.get("pathName"));
-//        System.out.println(FCB_LENGTH.get("startBlock"));
-//        System.out.println(FCB_LENGTH.get("typeFlag"));
-//        System.out.println(FCB_LENGTH.get("fileLength"));
-
-    }
 }

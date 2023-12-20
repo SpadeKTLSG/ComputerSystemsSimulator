@@ -3,7 +3,7 @@ package css.out.file.enums;
 import lombok.Getter;
 
 /**
- * 根目录下的子目录名
+ * 根目录/下的子目录名
  * <p>|  home 用户子目录</p>
  * <p>|  app 应用程序目录</p>
  * <p>|  tmp 临时可变目录</p>

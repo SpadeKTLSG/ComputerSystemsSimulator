@@ -54,6 +54,12 @@ public abstract class HandlePath {
         return A;
     }
 
+    /**
+     * 路径管理器中找FCB的PathName
+     *
+     * @param key 路径管理器中的键
+     * @return FCB的PathName
+     */
     public static String fromPathManager(Integer key) {
         return fileSyS.pathManager.get(key);
     }

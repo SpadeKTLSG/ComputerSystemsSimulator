@@ -1,4 +1,4 @@
-package css.out.file.utils;
+package css.out.file.entity;
 
 import java.util.List;
 import java.util.Map;

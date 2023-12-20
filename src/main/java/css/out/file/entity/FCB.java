@@ -12,7 +12,7 @@ import static css.out.file.handle.HandleFile.fromFixedLengthBytes;
 import static css.out.file.handle.HandleFile.toFixedLengthBytes;
 import static css.out.file.handle.HandlePath.*;
 import static css.out.file.utils.ByteUtil.Int2Byte;
-import static css.out.file.utils.GlobalField.*;
+import static css.out.file.entity.GlobalField.*;
 
 /**
  * FCB 文件控制块
@@ -186,7 +186,7 @@ public class FCB {
         return bytes;
     }
 
-    
+
     /**
      * Bytes转换为FCB
      * <p>通过new FCB.调用</p>

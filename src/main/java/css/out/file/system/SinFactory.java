@@ -1,12 +1,13 @@
 package css.out.file.system;
 
+import css.out.file.entity.TREE;
+import css.out.file.entity.node;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
 
-import static css.out.file.utils.GlobalField.DIR_EXTEND;
-import static css.out.file.utils.GlobalField.FILE_EXTEND;
+import static css.out.file.entity.GlobalField.*;
 
 /**
  * 单例模式工厂
@@ -27,7 +28,7 @@ public class SinFactory {
     /**
      * 路径管理器: 唯一
      */
-    private static final Map<Integer, String> PATH_MANAGER = new HashMap<>();
+    private static final Map<Integer, String> pathManager = new HashMap<>();
 
     /**
      * 扩展名管理器: 唯一
@@ -56,16 +57,27 @@ public class SinFactory {
     }
 
     /**
+     * 获取文件系统树形结构
+     */
+    public static TREE initialTree() {
+        TREE tree = new TREE();
+        tree.name = FILE_TREE_NAME;
+        tree.root = new node(ROOT_AUTH); //挂载根节点
+        tree.mountROOT_DIR(); //挂载根目录下的8个文件夹
+        return tree;
+    }
+
+    /**
      * 获取路径管理器
      */
     public static Map<Integer, String> initialPathManager() {
         //初始化路径管理器:初始化为0-999的Integer与空String键值对
         //初始化树形结构:根节点为/
         for (int i = 0; i < 1000; i++) {
-            PATH_MANAGER.put(i, "");
+            pathManager.put(i, "");
         }
-        PATH_MANAGER.put(0, "/"); //初始化根节点到路径映射中
-        return PATH_MANAGER;
+        pathManager.put(0, "/"); //初始化根节点到路径映射中
+        return pathManager;
     }
 
     /**
@@ -101,6 +113,6 @@ public class SinFactory {
             log.warn("extendManager被撑爆咯!");
             throw new RuntimeException(e);
         }
-        
+
     }
 }

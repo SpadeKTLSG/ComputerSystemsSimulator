@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
-import static css.out.file.utils.GlobalField.DISK_SIZE;
-import static css.out.file.utils.GlobalField.FAT_SIZE;
+import static css.out.file.entity.GlobalField.DISK_SIZE;
+import static css.out.file.entity.GlobalField.FAT_SIZE;
 
 /**
  * 磁盘块相关工具类

@@ -6,8 +6,8 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.ByteUtil.byteMerger;
-import static css.out.file.utils.GlobalField.FCB_BYTE_LENGTH;
-import static css.out.file.utils.GlobalField.FILE_NAME_DEFAULT;
+import static css.out.file.entity.GlobalField.FCB_BYTE_LENGTH;
+import static css.out.file.entity.GlobalField.FILE_NAME_DEFAULT;
 import static css.out.file.handle.HandleBlock.GetFreeBlock;
 import static css.out.file.handle.HandlePath.getROOT_DIRPath;
 

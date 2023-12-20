@@ -26,6 +26,9 @@ public class FileSyS {
      */
     public Map<Integer, String> extendManager;
 
+    /**
+     * 初始化文件系统
+     */
     public FileSyS() {
 
 

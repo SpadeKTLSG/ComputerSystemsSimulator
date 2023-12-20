@@ -22,11 +22,12 @@ public class FileApp {
     public static FileSyS fileSyS;
 
     /**
-     * 初始化两个static系统
+     * 初始化系统成员 + 读取磁盘内容
      */
     public FileApp() {
         diskSyS = initialDiskSyS();
         fileSyS = initialFileSys();
+        fileSyS.tree = initialTree();
         fileSyS.pathManager = initialPathManager();
         fileSyS.extendManager = initialExtendManager();
     }
@@ -40,6 +41,10 @@ public class FileApp {
     }
 
     void start() {
+        //TODO
+    }
+
+    void reboot() {
         //TODO
     }
 

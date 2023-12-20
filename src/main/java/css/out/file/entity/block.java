@@ -1,6 +1,6 @@
 package css.out.file.entity;
 
-import static css.out.file.utils.GlobalField.BLOCK_SIZE;
+import static css.out.file.entity.GlobalField.BLOCK_SIZE;
 
 /**
  * 字节构成的单个磁盘块
