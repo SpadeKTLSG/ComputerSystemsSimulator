@@ -8,8 +8,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handle.HandleFile.fromFixedLengthBytes;
+import static css.out.file.handle.HandleFile.toFixedLengthBytes;
 import static css.out.file.handle.HandlePath.*;
-import static css.out.file.utils.ByteUtil.Byte2Int;
 import static css.out.file.utils.ByteUtil.Int2Byte;
 import static css.out.file.utils.GlobalField.*;
 
@@ -156,7 +157,7 @@ public class FCB {
 
 
     /**
-     * ?FCB转换为Bytes
+     * FCB转换为Bytes
      *
      * @return Bytes
      */
@@ -185,38 +186,9 @@ public class FCB {
         return bytes;
     }
 
+    
     /**
-     * ?将一个指定的字节数组对象转换为固定对应长度的字节数组
-     * <p>删除了压缩逻辑</p>
-     *
-     * @param bytes 指定的字节数组
-     * @param len   指定的数组长度
-     * @return 转换后的字节数组
-     */
-    private byte[] toFixedLengthBytes(byte[] bytes, int len) {
-
-        if (bytes.length < len) { // 如果长度小于len，就在右边填充空格
-            byte[] padded = new byte[len];
-            System.arraycopy(bytes, 0, padded, 0, bytes.length);
-            for (int i = bytes.length; i < len; i++) {
-                padded[i] = ' ';
-            }
-            return padded;
-        } else if (bytes.length > len) { // 如果compressed的长度大于len，就截取左边的len个字节
-            log.warn("有对象被截断");
-            byte[] truncated = new byte[len];
-            System.arraycopy(bytes, 0, truncated, 0, len);
-            return truncated;
-        }
-        // 如果compressed的长度等于len，就直接返回
-        else {
-            return bytes;
-        }
-    }
-
-
-    /**
-     * ?Bytes转换为FCB
+     * Bytes转换为FCB
      * <p>通过new FCB.调用</p>
      */
     public FCB fromBytes(byte[] bytes) {
@@ -232,29 +204,16 @@ public class FCB {
 
             switch (field) {
                 case PATH_NAME -> this.pathName = fromPathManager(fromFixedLengthBytes(valueBytes, length));
-//                case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes);
-//                case EXTEND_NAME -> this.extendName = fromFixedLengthBytes(valueBytes);
-//                case TYPE_FLAG -> this.typeFlag = fromFixedLengthBytes(valueBytes);
-//                case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes);
+                case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes, length);
+                case EXTEND_NAME -> this.extendName = fromExtendManager(fromFixedLengthBytes(valueBytes, length));
+                case TYPE_FLAG -> this.typeFlag = Int2FileorDir(fromFixedLengthBytes(valueBytes, length));
+                case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes, length);
             }
             index += length;
         }
-
         return this;
     }
 
-    /**
-     * ?将一个固定对应长度的字节数组转换为指定的数组对象
-     * <p>有一连串的字节数组的, 将其全部合为一个数字</p>
-     */
-    private Integer fromFixedLengthBytes(byte[] bytes, int len) {
-        if (len != bytes.length) {
-            log.warn("非法的字节数组长度, 对象{}", bytes);
-        }
-
-        return Byte2Int(bytes);
-
-    }
 
 
 }

@@ -90,6 +90,11 @@ public class file {
         return byteMerger(fcb.toBytes(), content.getBytes());
     }
 
+    /**
+     * Bytes转换为file
+     *
+     * @param bytes Bytes
+     */
     public void fromBytes(byte[] bytes) {
         //将bytes划分为FCB和内容
         byte[] byte_content = new byte[bytes.length - FCB_BYTE_LENGTH];

@@ -1,6 +1,7 @@
 package css.out.file.handle;
 
 import css.out.file.entity.FCB;
+import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
@@ -8,6 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static css.out.file.FileApp.fileSyS;
+import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 
 
@@ -45,7 +47,7 @@ public abstract class HandlePath {
                 .map(Map.Entry::getKey)
                 .toList();
 
-        log.info("当前path中的空白位置: {}", keys.size());
+        log.debug("当前路径映射器中的空白位置: {}", keys.size());
         Integer A = keys.get(0);
         fileSyS.pathManager.put(A, fcb.getPathName());
 
@@ -100,6 +102,17 @@ public abstract class HandlePath {
     }
 
     /**
+     * 根据键从扩展名管理器中扩展名(值)
+     *
+     * @param key 键
+     * @return 扩展名
+     */
+    public static String fromExtendManager(Integer key) {
+        return fileSyS.extendManager.get(key);
+    }
+
+
+    /**
      * FCB的TypeFlag标识转Int
      *
      * @param fcb FCB
@@ -110,4 +123,14 @@ public abstract class HandlePath {
         return fcb.getTypeFlag().equals(FILE) ? 0 : 1;
     }
 
+    /**
+     * Int转FCB的TypeFlag标识
+     *
+     * @param num 0: 文件, 1: 文件夹
+     * @return FCB的TypeFlag标识
+     */
+    public static FileDirTYPE Int2FileorDir(Integer num) {
+
+        return num.equals(0) ? FILE : DIR;
+    }
 }
