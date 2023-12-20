@@ -17,22 +17,27 @@ public class block {
      */
     public block() {
         this.bytes = new Byte[BLOCK_SIZE];
-        //将每一项都初始化为0 FIXME
+        //将每一个字节项都初始化为0
         for (int i = 0; i < BLOCK_SIZE; i++) {
             this.bytes[i] = Byte.valueOf("0");
         }
     }
 
+    /**
+     * 从字节数组直接构造磁盘块
+     *
+     * @param blockBytes 字节数组
+     */
     public block(Byte[] blockBytes) {
         this.bytes = blockBytes;
     }
 
     public Byte getBlockByteStream() {
-        //将这个磁盘块的字节数组转换为字节对象, 字节对象之间用空格隔开
+        //将这个磁盘块的字节数组转换为一个字节对象
         Byte byteStream = null;
 
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            byteStream = Byte.valueOf(this.bytes[i].toString() + " ");
+            byteStream = Byte.valueOf(this.bytes[i].toString());
         }
 
         return byteStream;

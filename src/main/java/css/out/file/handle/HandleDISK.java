@@ -58,7 +58,8 @@ public abstract class HandleDISK {
                 System.out.println(block);
                 //!要求DISK.BLOCKSList中的所有项一行一个块写入, 块中的64个字节全部写入目标TXT文件,空的字节用0填充
                 //FIXME
-                fis.write(block.getBlockByteStream()); //写入一个块的字节流序列
+                //写入一个块的字节流序列
+                fis.write(block.bytes);
                 fis.flush(); //刷新缓冲区
             }
         } catch (Exception e) {

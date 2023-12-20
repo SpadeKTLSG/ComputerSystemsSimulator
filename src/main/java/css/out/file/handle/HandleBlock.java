@@ -5,9 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Objects;
 
-import static css.out.file.entity.GlobalField.DISK_SIZE;
-import static css.out.file.entity.GlobalField.FAT_SIZE;
+import static css.out.file.entity.GlobalField.*;
 
 /**
  * 磁盘块相关工具类
@@ -62,8 +62,8 @@ public abstract class HandleBlock {
     public static List<Integer> getDefaultFAT1() {
 
         List<Integer> FAT = new ArrayList<>(FAT_SIZE);
-        for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为0
-            FAT.add(0);
+        for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为指向空值
+            FAT.add(Null_Pointer);
         }
 
         FAT.set(0, 1); //0号块指向1号块FAT1
@@ -81,7 +81,7 @@ public abstract class HandleBlock {
 
         List<Integer> FAT = new ArrayList<>(FAT_SIZE);
         for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为0
-            FAT.add(0);
+            FAT.add(Null_Pointer);
         }
 
         return FAT;
@@ -98,6 +98,10 @@ public abstract class HandleBlock {
 
         Byte[] FATByte = new Byte[FAT_SIZE];
         for (int i = 0; i < FAT_SIZE; i++) {
+            if (Objects.equals(fat.get(i), Null_Pointer)) { //这一项是空的
+                FATByte[i] = 0;
+                continue;
+            }
             FATByte[i] = fat.get(i).byteValue(); //将FAT列表中每一项的值转换为字节
         }
 

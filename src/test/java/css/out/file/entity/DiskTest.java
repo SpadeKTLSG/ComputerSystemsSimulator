@@ -17,7 +17,7 @@ public class DiskTest {
     @Test
     public void Disk_Build() {
         FileApp app = new FileApp();
-
+        System.out.println(FileApp.diskSyS);
         writeStr2Disk("hhhh");
 
     }
