@@ -52,21 +52,20 @@ public abstract class HandleDISK {
 
 
         try (FileOutputStream fis = new FileOutputStream(diskFile)) {
-            log.info("写入磁盘映射文件 {} 中", path);
 
-            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
-                System.out.println(block);
-                //!要求DISK.BLOCKSList中的所有项一行一个块写入, 块中的64个字节全部写入目标TXT文件,空的字节用0填充
-                //FIXME
-                //写入一个块的字节流序列
-                fis.write(block.bytes);
-                fis.flush(); //刷新缓冲区
-            }
+//            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
+//                System.out.println(block);
+//                //!要求DISK.BLOCKSList中的所有项一行一个块写入, 块中的64个字节全部写入目标TXT文件,空的字节用0填充
+//                //FIXME
+//                //写入一个块的字节流序列
+//                fis.write(block.bytes);
+//                fis.flush(); //刷新缓冲区
+//            }
         } catch (Exception e) {
             log.error("写入磁盘映射文件错误日志: {}", e.getMessage());
         }
 
-        log.info("写入磁盘映射文件 {} 成功", path);
+        log.debug("写入磁盘映射文件 {} 成功", path);
     }
 
     /**

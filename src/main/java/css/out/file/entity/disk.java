@@ -60,7 +60,7 @@ public class disk {
         mountFAT(this.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
 
         writeDISK(this.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
-        log.info("{}初始化完成!", this.name);
+        log.debug("{}初始化完成!", this.name);
     }
 
 
