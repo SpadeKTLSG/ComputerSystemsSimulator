@@ -7,13 +7,30 @@ import java.io.File;
 import java.io.FileInputStream;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
+import java.nio.charset.StandardCharsets;
 import java.util.List;
+
+import static css.out.file.entity.GlobalField.DISK_FILE;
+import static css.out.file.entity.GlobalField.WORKSHOP_PATH;
 
 /**
  * 处理外置磁盘TXT相关工具类
  */
 @Slf4j
 public abstract class HandleDISK {
+
+    public static void writeStr2Disk(String msg) {
+        String path = WORKSHOP_PATH + DISK_FILE; //路径为: common/file/disk.txt
+        File diskFile = new File(path);
+
+        //将msg转换为Bytes[]后写入
+        try (FileOutputStream fos = new FileOutputStream(diskFile)) {
+            fos.write(msg.getBytes(StandardCharsets.UTF_8));
+            fos.flush();
+        } catch (Exception e) {
+            log.error("写入磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
+        }
+    }
 
     /**
      * 将磁盘对象DISK.BLOCKS全部内容写入目标TXT文件
@@ -36,14 +53,16 @@ public abstract class HandleDISK {
 
         try (FileOutputStream fis = new FileOutputStream(diskFile)) {
             log.info("写入磁盘映射文件 {} 中", path);
-            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
 
+            for (block block : BLOCKS) { //block是磁盘块阵列中的每一个磁盘块, 由字节组成
+                System.out.println(block);
                 //!要求DISK.BLOCKSList中的所有项一行一个块写入, 块中的64个字节全部写入目标TXT文件,空的字节用0填充
+                //FIXME
                 fis.write(block.getBlockByteStream()); //写入一个块的字节流序列
                 fis.flush(); //刷新缓冲区
             }
         } catch (Exception e) {
-            log.error("写入磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
+            log.error("写入磁盘映射文件错误日志: {}", e.getMessage());
         }
 
         log.info("写入磁盘映射文件 {} 成功", path);

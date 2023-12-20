@@ -61,4 +61,18 @@
     </dependencies>
 
 
+    <build>
+        <resources>
+            <!--    引入resource中的所有txt文件-->
+            <resource>
+                <directory>src/main/resources</directory>
+                <includes>
+                    <include>**/*.txt</include>
+                </includes>
+                <filtering>true</filtering>
+            </resource>
+        </resources>
+    </build>
+
+
 </project>

@@ -11,19 +11,19 @@ public abstract class GlobalField {
     //!磁盘DISK
 
     /**
-     * 默认磁盘名 = 西数8KB磁盘
+     * 默认磁盘名 = 西数
      */
-    public static final String DISK_NAME = "西数8KB暖气片";
+    public static final String DISK_NAME = "西数8KB岩浆暖气片";
 
     /**
      * 模拟磁盘文件名 = disk.txt
      */
-    public static final String DISK_FILE = "disk.txt";
+    public static final String DISK_FILE = "\\disk.txt";
 
     /**
      * 与外界交互文件路径固定
      */
-    public static final String WORKSHOP_PATH = "common/file";
+    public static final String WORKSHOP_PATH = "src\\main\\resources\\common\\file";
 
     /**
      * 磁盘大小 = 128

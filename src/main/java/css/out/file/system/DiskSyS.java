@@ -15,6 +15,7 @@ public class DiskSyS {
     public disk disk;
 
     public DiskSyS() {
+        this.disk = new disk();
 
     }
 

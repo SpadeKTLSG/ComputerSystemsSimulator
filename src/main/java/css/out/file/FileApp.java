@@ -2,6 +2,7 @@ package css.out.file;
 
 import css.out.file.system.DiskSyS;
 import css.out.file.system.FileSyS;
+import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.system.SinFactory.*;
 
@@ -9,6 +10,7 @@ import static css.out.file.system.SinFactory.*;
  * 文件系统Application
  * @author SpadeK
  */
+@Slf4j
 public class FileApp {
 
     /**
@@ -26,10 +28,13 @@ public class FileApp {
      */
     public FileApp() {
         diskSyS = initialDiskSyS();
+
+        log.debug("磁盘系统成员初始化完成");
         fileSyS = initialFileSys();
         fileSyS.tree = initialTree();
         fileSyS.pathManager = initialPathManager();
         fileSyS.extendManager = initialExtendManager();
+        log.debug("文件系统成员初始化完成");
     }
 
     void initialize() {

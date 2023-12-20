@@ -54,18 +54,16 @@ public class file {
     public file(String pathName, int startBlock, String content) {
         this.fcb = new FCB(pathName, startBlock, FILE);
         this.content = content;
-        //TODO 标记磁盘块为已使用
     }
 
     /**
-     * 由内容文件临时生成
+     * 有内容文件临时生成
      *
      * @param content 文件内容
      */
     public file(String content) {
         this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, GetFreeBlock(), FILE);
         this.content = content;
-        //TODO 生成其对应的文件大小
     }
 
     /**

@@ -53,7 +53,7 @@ public class TREE {
                 tempnode.right = new node(tempfile.fcb);
             }
         }
-        log.debug("包含根目录的文件结构树初始化完毕");
+//        log.debug("包含根目录的文件结构树初始化完毕");
     }
 
 

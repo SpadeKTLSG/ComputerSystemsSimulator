@@ -6,6 +6,7 @@ import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handle.HandleFile.fromFixedLengthBytes;
@@ -32,7 +33,7 @@ public class FCB {
      * <p>/home/114514:     上课文件夹</p>
      * <p>/home:            114514</p>
      */
-    public String pathName; //TODO 通过工具类来获取路径
+    public String pathName;
 
     /**
      * 起始盘块号
@@ -45,7 +46,7 @@ public class FCB {
      *
      * <p>需要被加载到扩展名映射表中</p>
      */
-    public String extendName; //TODO 通过工具类来获取
+    public String extendName;
 
     /**
      * 文件目录标识
@@ -89,7 +90,7 @@ public class FCB {
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
         } else { //出错
-            //TODO 提示用户异常信息
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
             log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
         }
 
@@ -117,7 +118,7 @@ public class FCB {
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
         } else { //出错
-            //TODO 提示用户异常信息
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
             log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
         }
     }
