@@ -131,7 +131,7 @@ public abstract class HandleDISK {
 
     /**
      * 完全重新格式化磁盘
-     * <p>重新格式化磁盘, 会清空磁盘中的所有数据,禁止</p>
+     * <p>重新格式化磁盘, 会清空磁盘中的所有数据</p>
      */
     public static void totalReloadDisk() {
         FileApp.diskSyS.disk.name = DISK_NAME;
