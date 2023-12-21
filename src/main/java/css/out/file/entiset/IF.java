@@ -1,4 +1,4 @@
-package css.out.file.entity;
+package css.out.file.entiset;
 
 import java.util.List;
 
@@ -11,5 +11,5 @@ public abstract class IF {
      * 用户新增扩展名序列
      * <p>预定义了两个ppt项, 后续增添时需要判断重复</p>
      */
-    public static List<String> AddedEXTEND = List.of(".ppt", "pptx", "xls", "xlsx", "pdf", "jpg");
+    public static List<String> AddedEXTEND = List.of(".ppt", "pptx");
 }

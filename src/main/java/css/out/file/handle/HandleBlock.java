@@ -4,11 +4,13 @@ import css.out.file.FileApp;
 import css.out.file.entity.block;
 import lombok.extern.slf4j.Slf4j;
 
+import java.io.*;
+import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static css.out.file.entity.GF.*;
+import static css.out.file.entiset.GF.*;
 
 /**
  * II级 磁盘块工具类
@@ -19,8 +21,12 @@ public abstract class HandleBlock {
 
     public static int GetFreeBlock() {
         //TODO: 根据FAT从磁盘块中找到空闲的磁盘块位置
+        //在全局的FAT中查找第一个值为514的位置, 同时将FAT最晚的一个块指向这个位置, 这个位置同样指向空(514)
+        //返回这个位置的块号
 
-        return 114; //FIXME
+//        diskSyS.disk
+
+        return 114;
     }
 
     public static void SetBlockUsed(int blockNum) {
@@ -155,24 +161,39 @@ public abstract class HandleBlock {
         FileApp.diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
     }
 
-    // 定义磁盘的读取一行方法 FIXME
-//    public String readLine(FileInputStream fis) throws IOException {
-//        // 创建一个字节缓冲区
-//        ByteArrayOutputStream baos = new ByteArrayOutputStream();
-//        // 定义一个字节变量
-//        int b;
-//        // 循环读取一个字节，直到遇到换行符或文件结束
-//        while ((b = fis.read()) != -1 && b != '\n') {
-//            // 将字节写入缓冲区
-//            baos.write(b);
-//        }
-//        // 将缓冲区的内容转换为字符串
-//        String line = baos.toString();
-//        // 关闭缓冲区
-//        baos.close();
-//        // 返回字符串
-//        return line;
-//    }
+    /**
+     * 磁盘的读取一行(一个block)
+     *
+     * @param path 磁盘TXT映射文件路径
+     * @param pos  行号(位置)
+     * @return String化的内容对象(还是byte)
+     */
+    public String read1Block(String path, Integer pos) throws IOException {
+
+        File diskFile = new File(path);
+        String res = "";
+        if (!diskFile.exists()) {
+            try {
+                throw new FileNotFoundException();
+            } catch (FileNotFoundException e) {
+                log.error("创建磁盘映射文件失败, 错误日志: {}", e.getMessage());
+            }
+        }
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
+            //跳过前面的pos-1行, 读取pos行的内容到s
+            for (int i = 0; i < pos - 1; i++) {
+                br.readLine();
+            }
+            res = br.readLine();
+
+        } catch (Exception e) {
+            log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
+        }
+
+        return res;
+    }
+
 
     // 定义磁盘的分配空闲块方法 FIXME
 //    public int allocBlock() {

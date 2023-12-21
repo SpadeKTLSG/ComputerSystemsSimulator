@@ -1,4 +1,4 @@
-package css.out.file.entity;
+package css.out.file.entiset;
 
 import java.util.List;
 import java.util.Map;
@@ -108,8 +108,9 @@ public abstract class GF {
 
     /**
      * 默认的文件夹扩展名不存在
+     * <p>但是为了能够识别, 用空格代替</p>
      */
-    public static final List<String> DIR_EXTEND = List.of("", " ", "  ");
+    public static final List<String> DIR_EXTEND = List.of(" ", "  ");
 
     /**
      * 默认的文件夹名 = 新文件夹

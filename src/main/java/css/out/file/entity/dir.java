@@ -8,7 +8,7 @@ import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.handle.HandleBlock.GetFreeBlock;
 import static css.out.file.handle.HandlePath.getROOT_DIRPath;
 import static css.out.file.utils.ByteUtil.byteMerger;
-import static css.out.file.entity.GF.DIR_NAME_DEFAULT;
+import static css.out.file.entiset.GF.DIR_NAME_DEFAULT;
 
 @Slf4j
 @Data

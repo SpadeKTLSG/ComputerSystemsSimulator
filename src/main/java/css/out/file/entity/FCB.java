@@ -13,7 +13,7 @@ import static css.out.file.handle.HandleFile.fromFixedLengthBytes;
 import static css.out.file.handle.HandleFile.toFixedLengthBytes;
 import static css.out.file.handle.HandlePath.*;
 import static css.out.file.utils.ByteUtil.Int2Byte;
-import static css.out.file.entity.GF.*;
+import static css.out.file.entiset.GF.*;
 
 /**
  * FCB 文件控制块

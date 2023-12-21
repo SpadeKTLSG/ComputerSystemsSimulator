@@ -14,16 +14,19 @@ public class FileSyS {
 
     /**
      * 文件系统树形结构
+     * <p>没有存在磁盘</p>
      */
     public TREE tree;
 
     /**
      * 路径管理器
+     * <p>没有存在磁盘</p>
      */
     public Map<Integer, String> pathManager;
 
     /**
      * 扩展名管理器
+     * <p>没有存在磁盘</p>
      */
     public Map<Integer, String> extendManager;
 

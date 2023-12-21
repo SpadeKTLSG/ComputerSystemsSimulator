@@ -14,7 +14,8 @@ import java.util.List;
 import java.util.Map;
 
 import static css.out.file.FileApp.fileSyS;
-import static css.out.file.entity.GF.*;
+import static css.out.file.entiset.GF.*;
+import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 
@@ -256,8 +257,30 @@ public abstract class HandlePath {
 
     /**
      * 正常从磁盘完全加载文件系统
-     * <p>需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建</p>
-     * <p></p>
      */
     public static void normalRebootFile() {
+        //需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建
+        //因为设置了一个块里只能有一个文件(整个/部分), 因此需要按照FAT的顺序遍历磁盘, 读取每个文件对象(file/dir)的字节流, 转换为对象, 挂载到树上
+
+        //TODO 最后来
+
+        //加载扩展名管理器, 同步用户添加的扩展名
+        for (String s : AddedEXTEND) { //在扩展名管理器中找一个空位填入
+
+            List<Integer> keys = fileSyS.extendManager.entrySet().stream()
+                    .filter(entry -> entry.getValue().isEmpty())
+                    .map(Map.Entry::getKey)
+                    .toList();
+            fileSyS.extendManager.put(keys.get(0), s);
+        }
+
+        //挂载根目录到文件路径管理器上, 需要对应根目录的FCB
+        //利用根目录的枚举遍历
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+            //文件路径, 不是树!
+            bindPathManager(new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK).fcb);
+        }
+
+
+    }
 }
