@@ -1,6 +1,5 @@
 package css.out.file.handle;
 
-import css.out.file.FileApp;
 import css.out.file.entity.block;
 import lombok.extern.slf4j.Slf4j;
 
@@ -10,6 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
+import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
 
 /**
@@ -19,22 +19,34 @@ import static css.out.file.entiset.GF.*;
 public abstract class HandleBlock {
 
 
-    public static int GetFreeBlock() {
+    public static int getFreeBlock() {
         //TODO: 根据FAT从磁盘块中找到空闲的磁盘块位置
         //在全局的FAT中查找第一个值为514的位置, 同时将FAT最晚的一个块指向这个位置, 这个位置同样指向空(514)
         //返回这个位置的块号
 
-//        diskSyS.disk
+        //对象: diskSyS.disk.FAT1 + FAT2, 从开始盘块:全局变量FAT1开始指针查找, 将对应位置的值作为下一个访问的位置, 直到读取到514代表空; 而后写入新的对象
+        //如果FAT1遍历完了, 仍然没有找到空闲块, 则去FAT2查找, 仍然没有找到就报错
+        int pos = FAT1_DIR; //从FAT1开始
+        for (int i = 0; i < FAT_SIZE; i++) {
+            if (diskSyS.disk.FAT1.get(pos) == Null_Pointer) {
+                diskSyS.disk.FAT1.set(pos, Null_Pointer);
+                diskSyS.disk.FAT2.set(pos, Null_Pointer);
+                return pos;
+            }
+            pos = diskSyS.disk.FAT1.get(pos);
+        }
 
         return 114;
     }
 
-    public static void SetBlockUsed(int blockNum) {
-        //FIXME
-    }
 
-
-    public static void SetBlockFree(int blockNum) {
+    /**
+     * 释放盘块空间: 设置为空
+     *
+     * @param blockNum
+     */
+    public static void setBlockFree(int blockNum) {
+        //TODO 测试能否直接覆盖输入
         //FIXME
     }
 
@@ -158,7 +170,7 @@ public abstract class HandleBlock {
      * @param blockNum 块号
      */
     public static void setSingleBLOCKS(byte[] bytes, int blockNum) {
-        FileApp.diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
+        diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
     }
 
     /**
