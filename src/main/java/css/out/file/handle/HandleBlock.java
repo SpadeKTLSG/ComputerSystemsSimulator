@@ -8,10 +8,10 @@ import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static css.out.file.entity.GlobalField.*;
+import static css.out.file.entity.GF.*;
 
 /**
- * 磁盘块相关工具类
+ * II级 磁盘块工具类
  */
 @Slf4j
 public abstract class HandleBlock {

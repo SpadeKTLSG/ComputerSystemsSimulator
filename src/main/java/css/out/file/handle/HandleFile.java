@@ -5,6 +5,9 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.utils.ByteUtil.Byte2Int;
 
+/**
+ * II级 文件/文件夹工具类
+ */
 @Slf4j
 public abstract class HandleFile {
 

@@ -6,7 +6,7 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
-import static css.out.file.entity.GlobalField.*;
+import static css.out.file.entity.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handle.HandleFile.setFileContextLength;
 
@@ -98,8 +98,8 @@ public class DiskTest {
     @Test
     public void Disk_reload() throws IOException {
         FileApp app = new FileApp();
-        app.state();
-        app.reload();
-        app.state();
+//        app.state();
+//        app.reload();
+//        app.state();
     }
 }

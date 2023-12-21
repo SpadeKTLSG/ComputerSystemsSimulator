@@ -3,6 +3,7 @@ package css.out.file.system;
 import css.out.file.entity.TREE;
 import lombok.Data;
 
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -27,12 +28,12 @@ public class FileSyS {
     public Map<Integer, String> extendManager;
 
     /**
-     * 初始化文件系统
+     * 单例实现
      */
     public FileSyS() {
-
-
-        //TODO 根节点特殊处理, 创建8个初始文件夹
+        this.tree = new TREE(); //赋值成员变量空间
+        this.extendManager = new HashMap<>(); //赋值成员变量空间
+        this.pathManager = new HashMap<>(); //赋值成员变量空间
     }
 
     @Override

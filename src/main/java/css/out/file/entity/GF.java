@@ -4,9 +4,10 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * 全局变量&信息定义
+ * GlobalField全局变量&信息定义
+ *
  */
-public abstract class GlobalField {
+public abstract class GF {
 
     //!磁盘DISK
 

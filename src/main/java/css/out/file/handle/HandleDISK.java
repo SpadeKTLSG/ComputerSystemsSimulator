@@ -9,12 +9,12 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
-import static css.out.file.entity.GlobalField.*;
+import static css.out.file.entity.GF.*;
 import static css.out.file.handle.HandleBlock.*;
 import static css.out.file.utils.ByteUtil.str2Byte;
 
 /**
- * 磁盘(TXT)管理工具类
+ * I级 磁盘(TXT)管理工具类
  */
 @Slf4j
 public abstract class HandleDISK {
@@ -119,9 +119,10 @@ public abstract class HandleDISK {
 
     /**
      * 开机执行, 不破坏TXT文件的情况下, 从TXT文件中读取磁盘对象DISK.BLOCKS的流式全部内容
+     *
      * <p>此时DiskSyS还没有生成</p>
      */
-    public static void startDiskNotTXT(disk disk) {
+    public static void initialDisk(disk disk) {
         disk.name = DISK_NAME;
         disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
         disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
@@ -154,7 +155,7 @@ public abstract class HandleDISK {
      */
     public static void normalRebootDisk() {
         reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
-
+        //通信...
     }
 
     /**

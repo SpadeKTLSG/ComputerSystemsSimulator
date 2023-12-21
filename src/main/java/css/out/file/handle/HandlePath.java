@@ -1,23 +1,26 @@
 package css.out.file.handle;
 
 import css.out.file.entity.FCB;
+import css.out.file.entity.TREE;
+import css.out.file.entity.dir;
 import css.out.file.entity.node;
 import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 
 import static css.out.file.FileApp.fileSyS;
+import static css.out.file.entity.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 
 
 /**
- * 路径序列相关工具类
- * 获得路径之后用空格分隔文件与目录, 组成pathName
+ * I级 路径序列工具类
  */
 @Slf4j
 public abstract class HandlePath {
@@ -68,6 +71,7 @@ public abstract class HandlePath {
 
     /**
      * FCB的ExtendName绑定扩展名管理器
+     * <p>新增操作, 一般没有实现</p>
      * <p>这样硬盘只需要存储对应的键即可</p>
      *
      * @param fcb FCB
@@ -81,7 +85,7 @@ public abstract class HandlePath {
                 .map(Map.Entry::getKey)
                 .toList();
 
-        log.info("当前extend中的空白位置: {}", keys.size());
+//        log.debug("当前extend中的空白位置: {}", keys.size());
         Integer A = keys.get(0);
         fileSyS.extendManager.put(A, fcb.getExtendName());
 
@@ -163,4 +167,97 @@ public abstract class HandlePath {
         }
         return sb.toString();
     }
+
+    /**
+     * 挂载根目录到树上, 需要对应根目录的FCB
+     */
+    public static void mountROOT_DIR2Tree(node root) {
+        //遍历枚举类, 挂载根目录下的8个文件夹到根目录上, 通过树的操作实现
+        boolean isFirst = true;
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+            if (isFirst) {
+                isFirst = false;
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                root.left = new node(tempfile.fcb); //挂载到根节点的左子树上
+            } else {
+                //获得一个根目录下的文件夹, 将其作为root的孩子节点的兄弟节点;count+1;
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                //递归查找根节点的左子树的最后一个右孩子节点, 将其右孩子节点设置为tempfile
+                node tempnode = root.left;
+                while (tempnode.right != null) {
+                    tempnode = tempnode.right;
+                }
+                tempnode.right = new node(tempfile.fcb);
+            }
+        }
+    }
+
+    /**
+     * 获取文件系统树形结构
+     */
+    public static TREE initialTree() {
+        TREE tree = new TREE();
+        tree.name = FILE_TREE_NAME;
+        tree.root = new node(ROOT_AUTH); //挂载根节点
+        mountROOT_DIR2Tree(tree.root); //挂载根目录下的8个文件夹
+        return tree;
+    }
+
+    /**
+     * 获取路径管理器
+     */
+    public static Map<Integer, String> initialPathManager() {
+        Map<Integer, String> pathManager = new HashMap<>();
+        //初始化路径管理器:初始化为0-999的Integer与空String键值对
+        //初始化树形结构:根节点为/
+        for (int i = 0; i < 1000; i++) {
+            pathManager.put(i, "");
+        }
+        pathManager.put(0, "/"); //初始化根节点到路径映射中
+
+        return pathManager;
+    }
+
+    /**
+     * 获取扩展名管理器
+     * <p>初始化扩展名管理器:初始化为0-100的Integer与空String键值对</p>
+     */
+    public static Map<Integer, String> initialExtendManager() {
+        Map<Integer, String> extendManager = new HashMap<>();
+
+        for (int i = 0; i < 100; i++) {
+            extendManager.put(i, "");
+        }
+
+        setExtendManager(extendManager);
+        return extendManager;
+    }
+
+    /**
+     * 设置扩展名管理器
+     * <p>按照文档和文件的扩展名进行设置</p>
+     */
+    public static void setExtendManager(Map<Integer, String> extendManager) {
+
+        try {
+            int i = 0;
+            for (; i < DIR_EXTEND.size(); i++) {
+                extendManager.put(i, DIR_EXTEND.get(i));
+            }
+            for (int k = 0; k < FILE_EXTEND.size(); k++) {
+                extendManager.put(i + k, FILE_EXTEND.get(k));
+            }
+        } catch (Exception e) {
+            log.warn("装不下了, extendManager被撑爆咯! {}", e.getMessage());
+        }
+
+    }
+
+
+    /**
+     * 正常从磁盘完全加载文件系统
+     * <p>需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建</p>
+     * <p></p>
+     */
+    public static void normalRebootFile() {
 }

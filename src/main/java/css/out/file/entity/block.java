@@ -2,7 +2,7 @@ package css.out.file.entity;
 
 import java.util.Arrays;
 
-import static css.out.file.entity.GlobalField.BLOCK_SIZE;
+import static css.out.file.entity.GF.BLOCK_SIZE;
 
 /**
  * 字节构成的单个磁盘块

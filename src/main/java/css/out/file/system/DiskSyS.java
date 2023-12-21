@@ -18,9 +18,11 @@ public class DiskSyS {
      */
     public disk disk;
 
+    /**
+     * 单例实现
+     */
     public DiskSyS() {
-        this.disk = new disk();
-//        reloadDiskSyS();
+        this.disk = new disk(); //赋值成员变量空间
     }
 
     public void reloadDiskSyS() {

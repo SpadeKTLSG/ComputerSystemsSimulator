@@ -5,6 +5,7 @@ import css.out.file.system.FileSyS;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.handle.HandleDISK.normalRebootDisk;
+import static css.out.file.handle.HandlePath.normalRebootFile;
 import static css.out.file.system.SinFactory.*;
 
 /**
@@ -28,20 +29,16 @@ public class FileApp {
      * 初始化系统成员 + 读取磁盘内容
      */
     public FileApp() {
-        log.debug("文件系统开机中...");
+        log.debug("磁盘系统开机中...");
         diskSyS = initialDiskSyS();
         log.debug("磁盘系统成员初始化完成");
         normalRebootDisk();
         log.debug("磁盘内容重读完成");
 
-
+        log.debug("文件系统开机中...");
         fileSyS = initialFileSys();
-        fileSyS.tree = initialTree();
-        fileSyS.pathManager = initialPathManager();
-        fileSyS.extendManager = initialExtendManager();
         log.debug("文件系统成员初始化完成");
-
-        //TODO
+        normalRebootFile();
         log.debug("文件系统成员重读完成");
 
     }
