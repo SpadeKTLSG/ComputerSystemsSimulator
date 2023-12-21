@@ -74,7 +74,8 @@ public abstract class HandleDISK {
             log.error("写入磁盘映射文件错误日志: {}", e.getMessage());
         }
 
-        log.debug("写入磁盘映射文件 {} 成功", path);
+//        log.debug("写入磁盘映射文件 {} 成功", path);
+        log.debug("写入磁盘映射文件成功");
     }
 
     /**
@@ -99,7 +100,7 @@ public abstract class HandleDISK {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
-            log.debug("读取磁盘映射文件 {} 中", path);
+//            log.debug("读取磁盘映射文件 {} 中", path);
 
 
             String line;

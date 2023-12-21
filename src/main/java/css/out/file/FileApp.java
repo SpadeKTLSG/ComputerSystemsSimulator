@@ -6,10 +6,12 @@ import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.handle.HandleDISK.normalRebootDisk;
 import static css.out.file.handle.HandlePath.normalRebootFile;
-import static css.out.file.system.SinFactory.*;
+import static css.out.file.system.SinFactory.initialDiskSyS;
+import static css.out.file.system.SinFactory.initialFileSys;
 
 /**
  * 文件系统Application
+ *
  * @author SpadeK
  */
 @Slf4j
@@ -29,36 +31,33 @@ public class FileApp {
      * 初始化系统成员 + 读取磁盘内容
      */
     public FileApp() {
-        log.debug("磁盘系统开机中...");
+//        log.debug("磁盘模块开机中...");
         diskSyS = initialDiskSyS();
-        log.debug("磁盘系统成员初始化完成");
+//        log.debug("磁盘模块成员初始化完成");
         normalRebootDisk();
-        log.debug("磁盘内容重读完成");
+        log.debug("磁盘模块重读完成");
 
-        log.debug("文件系统开机中...");
+//        log.debug("文件模块开机中...");
         fileSyS = initialFileSys();
-        log.debug("文件系统成员初始化完成");
+//        log.debug("文件模块成员初始化完成");
         normalRebootFile();
-        log.debug("文件系统成员重读完成");
+        log.debug("文件模块重读完成");
 
     }
 
-    public void initialize() {
-        //TODO
-    }
 
-    public void clean() {
-        //TODO
-    }
-
-    public void start() {
-        //TODO
-    }
-
+    /**
+     * 重启文件系统
+     */
     public void reboot() {
-        //TODO
+        log.debug("文件系统重启中");
+        new FileApp();
     }
 
+    /**
+     * 刷新
+     * <p>重新从磁盘加载资源</p>
+     */
     public void reload() {
         log.debug("刷新中...正在重新从磁盘加载系统内容");
         diskSyS.reloadDiskSyS();
@@ -67,7 +66,7 @@ public class FileApp {
     }
 
     /**
-     * 系统状态
+     * 展示系统状态
      * //TODO 简化
      */
     public void state() {
