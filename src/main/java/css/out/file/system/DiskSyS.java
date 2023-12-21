@@ -1,5 +1,6 @@
 package css.out.file.system;
 
+import css.out.file.FileApp;
 import css.out.file.entity.disk;
 import lombok.Data;
 
@@ -19,4 +20,7 @@ public class DiskSyS {
 
     }
 
+    public void reloadDiskSyS() {
+        this.disk.reload();
+    }
 }

@@ -37,21 +37,25 @@ public class FileApp {
         log.debug("文件系统成员初始化完成");
     }
 
-    void initialize() {
+    public void initialize() {
         //TODO
     }
 
-    void clean() {
+    public void clean() {
         //TODO
     }
 
-    void start() {
+    public void start() {
         //TODO
     }
 
-    void reboot() {
+    public void reboot() {
         //TODO
     }
 
-
+    public void reload() { //重新加载系统磁盘内容
+        diskSyS.reloadDiskSyS();
+        //文档重构
+        //...TODO
+    }
 }

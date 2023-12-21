@@ -87,4 +87,11 @@ public class DiskTest {
         FileApp app = new FileApp();
         System.out.println(readAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
     }
+
+
+    @Test
+    public void Disk_reload() throws IOException {
+        FileApp app = new FileApp();
+        app.reload();
+    }
 }

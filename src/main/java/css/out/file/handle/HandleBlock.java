@@ -108,6 +108,19 @@ public abstract class HandleBlock {
         return FATByte;
     }
 
+    public static List<Integer> fromFATBytes(Byte[] bytes){
+        List<Integer> FAT = new ArrayList<>(FAT_SIZE);
+        for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为0
+            FAT.add(Null_Pointer);
+        }
+
+        for (int i = 0; i < FAT_SIZE; i++) {
+            FAT.set(i, bytes[i].intValue());
+        }
+
+        return FAT;
+    }
+
 
     /**
      * 获取默认格式化的BLOCKS
@@ -124,4 +137,15 @@ public abstract class HandleBlock {
         return BLOCKS;
     }
 
+    /**
+     * 将BLOCKS中的某个磁盘块的内容设置为bytes
+     * @param BLOCKS
+     * @param bytes
+     * @param blockNum
+     */
+    public static void setBLOCKS(List<block> BLOCKS, Byte[] bytes, int blockNum) {
+        BLOCKS.set(blockNum, new block(bytes));
+    }
+
+    public static void  fromBLOCKSBytes()
 }

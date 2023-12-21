@@ -56,7 +56,6 @@ public abstract class HandleDISK {
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
             //将BLOCKS中的每个磁盘块的内容一个一个写入
-            //TODO 抽取
             for (block block : BLOCKS) {
 
                 Byte[] byte_temp = block.bytes;
@@ -76,11 +75,12 @@ public abstract class HandleDISK {
     }
 
     /**
-     * 从目标TXT文件中读取磁盘对象DISK.BLOCKS全部内容
+     * 从目标TXT文件中读取磁盘对象DISK.BLOCKS的流式全部内容
      * <p>存入一整个String大对象中</p>
      *
      * @param BLOCKS 磁盘块阵列
      * @param path   目标TXT文件路径
+     * @return 一整个String大对象
      */
     public static String readAllDISK(List<block> BLOCKS, String path) {
 
@@ -98,10 +98,9 @@ public abstract class HandleDISK {
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
             log.info("读取磁盘映射文件 {} 中", path);
-            // 把每一行的内容存储到builder中
 
 
-            String line = null;
+            String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");
             }

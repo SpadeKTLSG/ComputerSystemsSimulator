@@ -3,6 +3,7 @@ package css.out.file.entity;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Arrays;
 import java.util.List;
 
 import static css.out.file.entity.GlobalField.*;
@@ -64,10 +65,20 @@ public class disk {
     }
 
     //reload TODO
-    public void reload() {
-        //从传递的SB完全还原磁盘对象
-        //TODO
+    public void reload(String great_str) {
+        //1.从传递的大SB完全还原磁盘对象, 按照换行符号分割每次抽取一行对象操作
+        String[] str = great_str.split("\n");
+        System.out.println(Arrays.toString(str));
+
+
+        //2.读取系统关于FAT的位置设置, 确认到达位置后将对应的String转换为Bytes, 再转换为List<Integer>对象
+        //3.调用fromFATBytes() 完成重构FAT
+        //4.调用fromBLOCKSBytes() 完成重构BLOCKS
+        //5.重新挂载上述3个对象, 并写入磁盘(保险)
+
     }
+
+
     // 定义磁盘的读取一行方法 FIXME
 //    public String readLine(FileInputStream fis) throws IOException {
 //        // 创建一个字节缓冲区
