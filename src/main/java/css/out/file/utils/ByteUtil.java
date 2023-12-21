@@ -58,4 +58,20 @@ public abstract class ByteUtil {
 
         return Integer.parseInt(new BigInteger(bytes1).toString(2), 2);
     }
+
+    /**
+     * 空格分隔的Str对象转byte[]
+     *
+     * @param str
+     * @return
+     */
+    public static byte[] str2Byte(String str) {
+        String[] str_temp = str.split(" "); //将str按照空格分割为String[]
+        byte[] bytes_temp = new byte[str_temp.length];//创建一个byte[]
+
+        for (int i = 0; i < str_temp.length; i++) {
+            bytes_temp[i] = Byte.parseByte(str_temp[i]);
+        }
+        return bytes_temp;
+    }
 }

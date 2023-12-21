@@ -14,8 +14,8 @@ public class FileSySTest {
     public void initialSySTest() {
         FileApp app = new FileApp();
         System.out.println("文件系统树形结构初始化效果");
-        printTree(FileApp.fileSyS.tree.root);
-        showGreatTree(FileApp.fileSyS.tree.root);
+        System.out.println(printTree(FileApp.fileSyS.tree.root));
+        System.out.println(showGreatTree(FileApp.fileSyS.tree.root)); //不太好使, 算了
 
     }
 }

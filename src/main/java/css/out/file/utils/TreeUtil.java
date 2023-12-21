@@ -61,7 +61,7 @@ public abstract class TreeUtil {
      *
      * @param root 根节点
      */
-    public static void showGreatTree(node root) {
+    public static String showGreatTree(node root) {
         log.debug("美观展示文件系统树形结构: ");
         if (root == null) log.warn("纳尼? 情报是假的?");
         int treeDepth = getTreeDepth(root);
@@ -80,7 +80,7 @@ public abstract class TreeUtil {
 
         // 从根节点开始，递归处理整个树
         writeArray(root, 0, arrayWidth / 2, res, treeDepth);
-
+        StringBuilder all = new StringBuilder();
         for (String[] line : res) {// 此时，已经将所有需要显示的元素储存到了二维数组中，将其拼接并打印即可
             StringBuilder sb = new StringBuilder();
             for (int i = 0; i < line.length; i++) {
@@ -90,7 +90,8 @@ public abstract class TreeUtil {
                 }
             }
 
-            System.out.println(sb);
+            all.append(sb.toString()).append("\n");
         }
+        return all.toString();
     }
 }

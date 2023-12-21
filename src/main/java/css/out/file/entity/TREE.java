@@ -4,6 +4,7 @@ import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.entity.GlobalField.ROOT_DIR_BLOCK;
+import static css.out.file.utils.TreeUtil.showGreatTree;
 
 /**
  * 二叉树树形文件结构, 用于存储文件系统结构
@@ -56,5 +57,10 @@ public class TREE {
 //        log.debug("包含根目录的文件结构树初始化完毕");
     }
 
-
+    @Override
+    public String toString() {
+        //直接调用方法把树形结构打印出来
+        //printTree(root);
+        return showGreatTree(root);
+    }
 }

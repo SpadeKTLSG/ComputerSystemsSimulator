@@ -35,5 +35,12 @@ public class FileSyS {
         //TODO 根节点特殊处理, 创建8个初始文件夹
     }
 
-
+    @Override
+    public String toString() {
+        return "FileSyS{" +
+                "tree=" + tree +
+                "\npathManager=" + pathManager +
+                "\nextendManager=" + extendManager +
+                "}\n";
+    }
 }

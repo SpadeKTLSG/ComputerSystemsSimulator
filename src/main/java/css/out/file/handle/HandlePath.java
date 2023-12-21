@@ -147,17 +147,20 @@ public abstract class HandlePath {
      *
      * @param root 文件系统树形结构根节点
      */
-    public static void printTree(node root) {
+    public static String printTree(node root) {
         LinkedList<node> queue = new LinkedList<>();
+        //使用Stringbuffer存储输出结果
+        StringBuilder sb = new StringBuilder();
+
         queue.offer(root);
         while (!queue.isEmpty()) {
             node node = queue.poll();
-            System.out.print(node.fcb.pathName + "\n");
+            sb.append(node.fcb.pathName).append(" ");
 
             if (node.right != null) queue.offer(node.right); // 如果结点有兄弟结点，将其入队
             if (node.left != null) queue.offer(node.left); // 如果结点有孩子结点，将其入队
 
         }
-
+        return sb.toString();
     }
 }

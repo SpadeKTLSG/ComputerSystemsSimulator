@@ -1,5 +1,7 @@
 package css.out.file.entity;
 
+import java.util.Arrays;
+
 import static css.out.file.entity.GlobalField.BLOCK_SIZE;
 
 /**
@@ -10,13 +12,13 @@ public class block {
     /**
      * 一个磁盘块的字节数组
      */
-    public Byte[] bytes;
+    public byte[] bytes;
 
     /**
      * 新磁盘块构造
      */
     public block() {
-        this.bytes = new Byte[BLOCK_SIZE];
+        this.bytes = new byte[BLOCK_SIZE];
         //将每一个字节项都初始化为0
         for (int i = 0; i < BLOCK_SIZE; i++) {
             this.bytes[i] = Byte.valueOf("0");
@@ -28,31 +30,14 @@ public class block {
      *
      * @param blockBytes 字节数组
      */
-    public block(Byte[] blockBytes) {
+    public block(byte[] blockBytes) {
         this.bytes = blockBytes;
     }
 
-    public Byte getBlockByteStream() {
-        //将这个磁盘块的字节数组转换为一个字节对象
-        Byte byteStream = null;
-
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-            byteStream = Byte.valueOf(this.bytes[i].toString());
-        }
-
-        return byteStream;
-    }
-
-    //将字节对象转换为字节数组bytes
-    public Byte[] getBlockByteBuilder(Byte byteStream) {
-
-        Byte[] bytes = new Byte[BLOCK_SIZE];
-
-        String[] byteStreamArray = byteStream.toString().split(" ");
-        for (int i = 0; i < BLOCK_SIZE; i++) {
-            bytes[i] = Byte.valueOf(byteStreamArray[i]);
-        }
-
-        return bytes;
+    @Override
+    public String toString() {
+        return "\nblock{" +
+                "bytes=" + Arrays.toString(bytes) +
+                "}";
     }
 }
