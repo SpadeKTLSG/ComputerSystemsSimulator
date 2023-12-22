@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.handleB.HandleBlock.setSingleBlock;
+import static css.out.file.handleB.HandleBlock.setBytes21Block;
 import static css.out.file.utils.ByteUtil.str2Byte;
 
 /**
@@ -25,21 +25,27 @@ public abstract class HandleDISK {
     /**
      * 原生String msg直接破坏性直接狠狠注入磁盘映射文件的对应行
      * <p>这样我们就真的回不到过去了, 前辈!</p>
-     * <p>狠狠滴调教啊混蛋</p>
+     * <p>需要上级调用控制写入不越界</p>
      *
      * @param msg  要写入的字符串
      * @param path 目标TXT文件路径
      * @param pos  位置
      */
-    public static void writeStr2DiskTXT(String msg, String path, Integer pos) {
-        StringBuilder sb = new StringBuilder();
+    public static void write1Str2TXT(String msg, String path, Integer pos) {
+        StringBuilder sb = new StringBuilder();            //全部读取保存到StringBuffer
         Integer pos_temp = 0;
-        //先把全部的读取保存, 然后修改对应行为自己的String msg, 再写入
+
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
-            //全部读取保存到StringBuffer
+
             String line;
             while ((line = br.readLine()) != null) {
                 if (pos_temp.equals(pos)) {
+                    //FIXME
+                    // 在这里要把msg处理长度: 默认是不会超过一行的最大长度, 因为上级调用会进行判断;
+                    //这里先完成补长度操作: 补位到BLOCK_SIZE
+                    if (msg.length() < BLOCK_SIZE) {
+                        msg = msg + " ".repeat(BLOCK_SIZE - msg.length());
+                    }
                     sb.append(msg).append("\n");
                 } else {
                     sb.append(line).append("\n");
@@ -144,8 +150,7 @@ public abstract class HandleDISK {
                 continue;
             }
 
-            byte[] bytes_temp = str2Byte(str[i]);
-            setSingleBlock(bytes_temp, i);
+            setBytes21Block(str2Byte(str[i]), i); //或者是setBytes21Block
         }
 
 //        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性

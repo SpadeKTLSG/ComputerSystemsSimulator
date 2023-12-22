@@ -14,8 +14,9 @@ import static css.out.file.handleB.HandleDISK.*;
 @Slf4j
 public abstract class HandleDS {
 
+    //! 1.磁盘系统加载操作
     /**
-     * !正常模式
+     * ?正常模式
      * <p>从磁盘映射文件完全加载磁盘系统</p>
      */
     public static void normalRebootDisk() {
@@ -25,7 +26,7 @@ public abstract class HandleDS {
 
 
     /**
-     * !覆盖模式
+     * ?覆盖模式
      * <p>直接用当前JAVA磁盘对象覆盖磁盘映射文件</p>
      */
     public static void coverRebootDisk() {
@@ -40,10 +41,10 @@ public abstract class HandleDS {
 
 
     /**
-     * !完全重新格式化磁盘
+     * ?格式化模式
      * <p>重新格式化磁盘, 会清空磁盘中的所有数据</p>
      */
-    public static void totalReloadDisk() {
+    public static void cleanRebootDisk() {
         //获取新磁盘对象
         diskSyS.disk = initialDisk();
         mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
@@ -54,5 +55,6 @@ public abstract class HandleDS {
         log.debug("{}格式化完成!", diskSyS.disk.name);
     }
 
+    //! 2.磁盘管理操作
 
 }

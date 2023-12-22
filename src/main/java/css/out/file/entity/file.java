@@ -8,7 +8,7 @@ import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.ByteUtil.byteMerger;
 import static css.out.file.entiset.GF.FCB_BYTE_LENGTH;
 import static css.out.file.entiset.GF.FILE_NAME_DEFAULT;
-import static css.out.file.handleB.HandleBlock.getFreeBlock;
+import static css.out.file.handleB.HandleBlock.get1FreeBlock;
 import static css.out.file.handleB.HandlePath.getROOT_DIRPath;
 
 @Slf4j
@@ -62,7 +62,7 @@ public class file {
      * @param content 文件内容
      */
     public file(String content) {
-        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, getFreeBlock(), FILE);
+        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, get1FreeBlock(), FILE);
         this.content = content;
     }
 
@@ -72,7 +72,7 @@ public class file {
      */
     public file() {
         log.warn("无内容文件临时生成");
-        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, getFreeBlock(), FILE);
+        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + FILE_NAME_DEFAULT, get1FreeBlock(), FILE);
         this.content = "";
         //TODO 标记磁盘块为已使用
         //TODO 写入磁盘块

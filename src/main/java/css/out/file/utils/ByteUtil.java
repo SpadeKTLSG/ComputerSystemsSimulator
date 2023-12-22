@@ -62,8 +62,8 @@ public abstract class ByteUtil {
     /**
      * 空格分隔的Str对象转byte[]
      *
-     * @param str
-     * @return
+     * @param str 空格分隔的Str对象
+     * @return byte数组
      */
     public static byte[] str2Byte(String str) {
         String[] str_temp = str.split(" "); //将str按照空格分割为String[]
@@ -73,5 +73,19 @@ public abstract class ByteUtil {
             bytes_temp[i] = Byte.parseByte(str_temp[i]);
         }
         return bytes_temp;
+    }
+
+    /**
+     * byte[]转空格分隔的Str对象
+     *
+     * @param bytes byte数组
+     * @return 空格分隔的Str对象
+     */
+    public static String byte2Str(byte[] bytes) {
+        StringBuilder stringBuilder = new StringBuilder();
+        for (byte aByte : bytes) {
+            stringBuilder.append(aByte).append(" ");
+        }
+        return stringBuilder.toString();
     }
 }

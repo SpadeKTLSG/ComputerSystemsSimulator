@@ -109,7 +109,7 @@ public class FileApp {
      * !格式化模式
      */
     public void kickDiskRoboot() {
-        totalReloadDisk();
+        cleanRebootDisk();
         fileSyS = initialFileSys();//FIXME
         normalRebootFile();
     }
