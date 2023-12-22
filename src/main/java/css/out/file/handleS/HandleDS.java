@@ -3,9 +3,9 @@ package css.out.file.handleS;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.FileApp.diskSyS;
-import static css.out.file.entiset.GF.*;
+import static css.out.file.entiset.GF.DISK_FILE;
+import static css.out.file.entiset.GF.WORKSHOP_PATH;
 import static css.out.file.entity.disk.initialDisk;
-import static css.out.file.handleB.HandleBlock.*;
 import static css.out.file.handleB.HandleDISK.*;
 
 /**
@@ -30,8 +30,8 @@ public abstract class HandleDS {
      */
     public static void coverRebootDisk() {
         //手动把当前的FAT覆盖磁盘
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
         writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
         reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
@@ -46,8 +46,8 @@ public abstract class HandleDS {
     public static void totalReloadDisk() {
         //获取新磁盘对象
         diskSyS.disk = initialDisk();
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
         writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
         reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));

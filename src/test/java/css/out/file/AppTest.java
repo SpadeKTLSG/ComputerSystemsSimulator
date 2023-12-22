@@ -36,4 +36,10 @@ public class AppTest {
     public void FileSySTest() {
 
     }
+
+    @Test
+    public void TempTest() {
+        FileApp app = new FileApp(ROOT_AUTH, 3);//摧毁
+        app.state();
+    }
 }

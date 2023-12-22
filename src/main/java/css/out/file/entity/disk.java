@@ -7,6 +7,8 @@ import java.util.List;
 
 import static css.out.file.entiset.GF.DISK_NAME;
 import static css.out.file.handleB.HandleBlock.*;
+import static css.out.file.handleB.HandleDISK.getVoidFAT1;
+import static css.out.file.handleB.HandleDISK.getVoidFAT2;
 
 /**
  * 磁盘
@@ -70,8 +72,8 @@ public class disk {
         disk disk = new disk();
         disk.name = DISK_NAME;
         disk.BLOCKS = getDefaultBLOCKS(); //获得初始磁盘空间(全0)
-        disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-        disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
+        disk.FAT1 = getVoidFAT1(); //获得FAT1对象
+        disk.FAT2 = getVoidFAT2(); //获得FAT2对象
         return disk;
     }
 
