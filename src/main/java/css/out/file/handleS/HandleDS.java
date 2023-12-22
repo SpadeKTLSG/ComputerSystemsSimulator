@@ -8,9 +8,7 @@ import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.entiset.GF.DISK_SIZE;
 import static css.out.file.entity.disk.initialDisk;
-import static css.out.file.handleB.HandleBlock.setStr21Block;
 import static css.out.file.handleB.HandleDISK.*;
 import static css.out.file.handleB.HandleTXT.readAllTXT2Str;
 import static css.out.file.handleB.HandleTXT.writeAllDISK2TXT;
@@ -40,8 +38,8 @@ public abstract class HandleDS {
      */
     public static void coverRebootDisk() {
         //手动把当前的FAT覆盖磁盘
-        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
         writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
         putStr2Disk(readAllTXT2Str(WORKSHOP_PATH + DISK_FILE));
@@ -56,8 +54,8 @@ public abstract class HandleDS {
     public static void cleanRebootDisk() {
         //获取新磁盘对象
         diskSyS.disk = initialDisk();
-        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-        mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
         writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
         putStr2Disk(readAllTXT2Str(WORKSHOP_PATH + DISK_FILE));
@@ -73,7 +71,7 @@ public abstract class HandleDS {
      *
      * @return 默认BLOCKS
      */
-    public static List<block> getVoidBLOCKS() {
+    public static List<block> initialBLOCKS() {
 
         List<block> BLOCKS = new ArrayList<>(DISK_SIZE);
         for (int i = 0; i < DISK_SIZE; i++) {
@@ -98,14 +96,14 @@ public abstract class HandleDS {
             if (i == FAT1_DIR) {
                 byte[] bytes_temp = str2Byte(str[i]);
                 diskSyS.disk.FAT1 = Bytes2FAT(bytes_temp);
-                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 1);
+                mountFAT2BLOCKS(diskSyS.disk.BLOCKS, bytes_temp, 1);
                 continue;
             }
 
             if (i == FAT2_DIR) {
                 byte[] bytes_temp = str2Byte(str[i]);
                 diskSyS.disk.FAT2 = Bytes2FAT(bytes_temp);
-                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 2);
+                mountFAT2BLOCKS(diskSyS.disk.BLOCKS, bytes_temp, 2);
                 continue;
             }
 

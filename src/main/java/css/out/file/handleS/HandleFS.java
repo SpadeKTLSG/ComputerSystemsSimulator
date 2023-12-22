@@ -4,11 +4,12 @@ import css.out.file.entity.TREE;
 import css.out.file.entity.node;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.FileApp.fileSyS;
+import java.util.HashMap;
+import java.util.Map;
+
 import static css.out.file.entiset.GF.FILE_TREE_NAME;
 import static css.out.file.entiset.GF.ROOT_AUTH;
-import static css.out.file.handleB.HandlePATH.setDefaultTR;
-import static css.out.file.handleB.HandlePATH.setDefaultEM;
+import static css.out.file.handleB.HandlePATH.*;
 
 /**
  * 0级 文件系统管理工具类
@@ -16,10 +17,11 @@ import static css.out.file.handleB.HandlePATH.setDefaultEM;
 @Slf4j
 public abstract class HandleFS {
 
-    //! 0. 文件系统
+    //! 0. 文件系统/
 
     /**
-     * 正常从磁盘完全加载文件系统
+     * ?正常模式
+     * <p>正常从磁盘完全刷新文件系统</p>
      */
     public static void normalRebootFile() {
         //需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建
@@ -27,25 +29,47 @@ public abstract class HandleFS {
 
         //TODO 最后来
 
-
+        setDefaultPM();
         setDefaultEM();
 
 
         log.debug("文件模块重读完成");
     }
 
+    /**
+     * ?覆盖模式
+     * <p>直接用当前JAVA磁盘对象覆盖文件系统对象</p>
+     *
+     * @comment 这个行动完全没有意义可言
+     */
+    public static void coverRebootFile() {
 
+
+        log.debug("文件模块覆盖完成");
+    }
+
+    /**
+     * ?格式化模式
+     * <p>重新格式化文件系统, 清空所有内容</p>
+     *
+     * @comment 你最好不要玩火...
+     */
+    public static void cleanRebootFile() {
+
+
+        log.debug("文件模块格式化完成");
+    }
     //! 1. 文件系统树形结构TR/
 
 
     /**
      * 获取初始TR
      */
-    public static TREE initialTree() {
+    public static TREE initialTR() {
         TREE tree = new TREE();
         tree.name = FILE_TREE_NAME;
         tree.root = new node(ROOT_AUTH); //挂载根节点
-        setDefaultTR(tree.root); //挂载根目录下的8个文件夹
+        setDefaultTR(tree.root);
         return tree;
     }
 
@@ -56,9 +80,11 @@ public abstract class HandleFS {
     /**
      * 获取初始PM
      */
-    public static void initialPM() {
-        for (int i = 0; i < 1000; i++) fileSyS.pathManager.put(i, "");
-        fileSyS.pathManager.put(0, "/"); //根节点
+    public static Map<Integer, String> initialPM() {
+        Map<Integer, String> pm = new HashMap<>();
+        for (int i = 0; i < 1000; i++) pm.put(i, "");
+        pm.put(0, "/"); //根节点
+        return pm;
     }
 
 
@@ -69,8 +95,10 @@ public abstract class HandleFS {
      * 获取扩展名管理器
      * <p>初始化为0-100的Integer与空String键值对</p>
      */
-    public static void initialEM() {
-        for (int i = 0; i < 100; i++) fileSyS.extendManager.put(i, "");
+    public static Map<Integer, String> initialEM() {
+        Map<Integer, String> em = new HashMap<>();
+        for (int i = 0; i < 100; i++) em.put(i, "");
+        return em;
     }
 
 

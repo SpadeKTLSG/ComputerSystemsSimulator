@@ -8,7 +8,7 @@ import java.nio.charset.StandardCharsets;
 
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handleB.HandleFile.setFileContextLength;
+import static css.out.file.handleB.HandleFile.*;
 
 /**
  * 文件&文件夹测试
@@ -26,7 +26,7 @@ public class DiskTest {
         file file1 = new file(new FCB("/home", 89, FILE_EXTEND.get(1), FILE, FILE_LENGTH_DEFAULT + FCB_BYTE_LENGTH + setFileContextLength("114514")), "114514");
         System.out.println(file1);
         //转换操作
-        byte[] byte_temp = file1.toBytes();
+        byte[] byte_temp = file2Bytes(file1);
 
         //!用StringBuffer收集byte_temp中的每个元素,最后打印SB
         StringBuilder sb = new StringBuilder();
@@ -76,8 +76,7 @@ public class DiskTest {
         }
         //3. 将byte[]转换为file对象
 
-        file temp_file = new file();
-        temp_file.fromBytes(bytes);
+        file temp_file = bytes2File(bytes);
         System.out.println(temp_file);
     }
 

@@ -13,6 +13,8 @@ import static css.out.file.FileApp.fileSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.handleB.HandleFile.str2Path;
+import static css.out.file.handleS.HandleFS.initialEM;
+import static css.out.file.handleS.HandleFS.initialPM;
 
 
 /**
@@ -83,6 +85,7 @@ public abstract class HandlePATH {
      * <p>挂载根目录</p>
      */
     public static void setDefaultPM() {
+        fileSyS.pathManager = initialPM();
         for (ROOT_PATH root_path : ROOT_PATH.values())
             bindPM(str2Path(String.valueOf(root_path)));
     }
@@ -116,7 +119,7 @@ public abstract class HandlePATH {
      * @param pathName FCB的PathName
      * @comment 这样硬盘只需要存储对应的键即可
      */
-    public static void bindPM(String pathName) {
+    public static Integer bindPM(String pathName) {
 
         List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
                 .filter(entry -> entry.getValue().isEmpty())
@@ -125,7 +128,7 @@ public abstract class HandlePATH {
 
         //log.debug("当前路径映射器中的空白位置: {}", keys.size());
         fileSyS.pathManager.put(keys.get(0), pathName);
-
+        return keys.get(0);
     }
 
 
@@ -148,7 +151,7 @@ public abstract class HandlePATH {
      * <p>按照文档和文件的扩展名进行设置</p>
      */
     public static void setDefaultEM() {
-
+        fileSyS.extendManager = initialEM();
         try {//系统自带的直接指定提高效率
             int i = 0;
             for (; i < DIR_EXTEND.size(); i++) {
@@ -194,7 +197,7 @@ public abstract class HandlePATH {
      *
      * @param extendName 扩展名
      */
-    public static void bindEM(String extendName) {
+    public static Integer bindEM(String extendName) {
 
         List<Integer> keys = fileSyS.extendManager.entrySet().stream()
                 .filter(entry -> entry.getValue().isEmpty())
@@ -203,7 +206,7 @@ public abstract class HandlePATH {
 
         // log.debug("当前extend中的空白位置: {}", keys.size());
         fileSyS.extendManager.put(keys.get(0), extendName);
-
+        return keys.get(0);
     }
 
 

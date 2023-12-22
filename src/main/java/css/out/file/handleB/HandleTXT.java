@@ -17,7 +17,7 @@ import static css.out.file.entiset.GF.*;
 @Slf4j
 public class HandleTXT {
 
-    //! 1.单行操作
+    //! 1.单行TXT操作
 
     /**
      * Str msg直接狠狠注入TXT对应行
@@ -102,7 +102,7 @@ public class HandleTXT {
     }
 
 
-    //! 2.整体操作
+    //! 2.整体TXT操作
 
     /**
      * 将BLOCKS全部内容写入目标TXT文件

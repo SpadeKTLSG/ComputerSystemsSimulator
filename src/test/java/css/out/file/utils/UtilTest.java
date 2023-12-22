@@ -3,7 +3,8 @@ package css.out.file.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import static css.out.file.handleB.HandleDISK.write1Str2TXT;
+import static css.out.file.handleB.HandleTXT.write1Str2TXT;
+
 
 @Slf4j
 public class UtilTest {

@@ -9,7 +9,6 @@ public class AppTest {
     @Test
     public void AppGreatTest() {
         FileApp app = new FileApp(); //开机
-//        setBytes21Block("Hello World!".getBytes(), 3); //写入磁盘
         app.state();
     }
 

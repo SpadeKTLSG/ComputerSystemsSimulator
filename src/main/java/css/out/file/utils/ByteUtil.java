@@ -106,7 +106,7 @@ public abstract class ByteUtil {
      * @param len   指定的数组长度
      * @return 转换后的字节数组
      */
-    public static byte[] toFixedLengthBytes(byte[] bytes, int len) {
+    public static byte[] toFixLenBytes(byte[] bytes, int len) {
 
         if (bytes.length < len) { // 如果长度小于len，就在右边填充空格
             byte[] padded = new byte[len];

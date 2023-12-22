@@ -4,6 +4,7 @@ import lombok.extern.slf4j.Slf4j;
 
 
 import static css.out.file.entity.disk.initialDisk;
+import static css.out.file.handleS.HandleFS.*;
 
 /**
  * 单例模式工厂
@@ -41,9 +42,9 @@ public abstract class SF {
      * 获取文件系统
      */
     public static FileSyS initialFileSys() {
-        FILE_SYS.tree = initialTree();
-        FILE_SYS.pathManager = initialPathManager();
-        FILE_SYS.extendManager = initialExtendManager();
+        FILE_SYS.tree = initialTR();
+        FILE_SYS.pathManager = initialPM();
+        FILE_SYS.extendManager = initialEM();
         return FILE_SYS;
     }
 

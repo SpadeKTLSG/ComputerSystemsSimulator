@@ -9,6 +9,7 @@ import java.util.Arrays;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handleB.HandleFile.file2Bytes;
 import static css.out.file.handleB.HandleFile.setFileContextLength;
 
 /**
@@ -32,7 +33,7 @@ public class FileDirTest {
 //        System.out.println(dir1);
 
         //转换操作
-        byte[] byte_temp = file1.toBytes();
+        byte[] byte_temp = file2Bytes(file1);
         //foreach 打印 byte_temp中的每个元素
 //        for (byte b : byte_temp) {
 //            System.out.print(b + " ");
@@ -48,9 +49,6 @@ public class FileDirTest {
         System.out.println(res);
         System.out.println();
         System.out.println(Arrays.toString(byte_temp));
-        dir temp_dir = new dir();
-        temp_dir.fromBytes(byte_temp);
-//        System.out.println(temp_dir);
 
     }
 

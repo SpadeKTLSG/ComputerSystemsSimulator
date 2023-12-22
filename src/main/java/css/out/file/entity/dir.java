@@ -4,11 +4,10 @@ import css.out.file.enums.ROOT_PATH;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.enums.FileDirTYPE.DIR;
-import static css.out.file.handleB.HandleBlock.get1FreeBlock;
-import static css.out.file.handleB.HandlePATH.getROOT_DIRPath;
-import static css.out.file.utils.ByteUtil.byteMerger;
 import static css.out.file.entiset.GF.DIR_NAME_DEFAULT;
+import static css.out.file.enums.FileDirTYPE.DIR;
+import static css.out.file.handleB.HandleDISK.get1FreeBlock;
+import static css.out.file.handleB.HandleFile.str2Path;
 
 @Slf4j
 @Data
@@ -24,7 +23,7 @@ public class dir {
      * 文件内容
      * <p>锁定为"" - 维持通用性</p>
      */
-    private final String content = "";
+    public final String content = "";
 
     /**
      * 默认取消打印空内容
@@ -59,21 +58,10 @@ public class dir {
      * <p>默认走/tmp目录</p>
      */
     public dir() {
-        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + DIR_NAME_DEFAULT, get1FreeBlock(), DIR);
+        this.fcb = new FCB(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + DIR_NAME_DEFAULT, get1FreeBlock(), DIR);
         //TODO 标记磁盘块为已使用
     }
 
-    /**
-     * dir转换为Bytes, 直接FCB转Bytes + 内容转Bytes(空)
-     *
-     * @return Bytes
-     */
-    public byte[] toBytes() {
-        return byteMerger(fcb.toBytes(), content.getBytes());
-    }
 
-    public void fromBytes(byte[] bytes) {
-        this.fcb = this.fcb.fromBytes(bytes);
-    }
 
 }

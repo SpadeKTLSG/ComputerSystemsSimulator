@@ -1,19 +1,14 @@
 package css.out.file.entity;
 
-import css.out.file.enums.FCB_FIELD;
 import css.out.file.enums.FileDirTYPE;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.api.CommonApiList.alertUser;
+import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handleB.HandleFile.fromFixedLengthBytes;
-import static css.out.file.handleB.HandleFile.toFixedLengthBytes;
-import static css.out.file.handleB.HandlePATH.*;
-import static css.out.file.utils.ByteUtil.Int2Byte;
-import static css.out.file.entiset.GF.*;
 
 /**
  * FCB 文件控制块
@@ -124,10 +119,10 @@ public class FCB {
     }
 
     /**
-     * 空白FCB构造(禁止)
+     * 空白FCB构造(中间操作)
      */
     public FCB() {
-        log.debug("正在构建一个空白FCB");
+//        log.debug("正在构建一个空白FCB");
     }
 
 
@@ -156,64 +151,6 @@ public class FCB {
         }
     }
 
-
-    /**
-     * FCB转换为Bytes
-     *
-     * @return Bytes
-     */
-    public byte[] toBytes() {
-        byte[] bytes = new byte[FCB_BYTE_LENGTH];
-        int index = 0;
-
-        for (FCB_FIELD field : FCB_FIELD.values()) {
-
-            int length = FCB_LENGTH.get(field.getName());
-
-            byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
-                case PATH_NAME -> Int2Byte(bindPM(this));
-                case START_BLOCK -> Int2Byte(this.startBlock);
-                case EXTEND_NAME -> Int2Byte(findKeyiEM(this));
-                case TYPE_FLAG -> Int2Byte(FileorDir2Int(this));
-                case FILE_LENGTH -> Int2Byte(this.fileLength);
-            };
-
-            byte[] valueBytes = toFixedLengthBytes(value, length);
-            System.arraycopy(valueBytes, 0, bytes, index, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-            // 更新index的值，加上复制的长度
-            index += length;
-        }
-
-        return bytes;
-    }
-
-
-    /**
-     * Bytes转换为FCB
-     * <p>通过new FCB.调用</p>
-     */
-    public FCB fromBytes(byte[] bytes) {
-
-        int index = 0;
-        for (FCB_FIELD field : FCB_FIELD.values()) {//按照相同的逻辑, 从bytes中截取对应的字节, 然后转换为对应的类型对象
-
-            int length = FCB_LENGTH.get(field.getName());
-
-            byte[] valueBytes = new byte[length];
-            System.arraycopy(bytes, index, valueBytes, 0, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-
-
-            switch (field) {
-                case PATH_NAME -> this.pathName = selectPM(fromFixedLengthBytes(valueBytes, length));
-                case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes, length);
-                case EXTEND_NAME -> this.extendName = selectEM(fromFixedLengthBytes(valueBytes, length));
-                case TYPE_FLAG -> this.typeFlag = Int2FileorDir(fromFixedLengthBytes(valueBytes, length));
-                case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes, length);
-            }
-            index += length;
-        }
-        return this;
-    }
 
 
 
