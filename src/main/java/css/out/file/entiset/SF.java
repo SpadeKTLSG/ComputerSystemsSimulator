@@ -9,7 +9,7 @@ import static css.out.file.handleB.HandlePath.*;
  * 单例模式工厂
  */
 @Slf4j
-public class SF {
+public abstract class SF {
 
     /**
      * DiskSyS磁盘系统: 唯一

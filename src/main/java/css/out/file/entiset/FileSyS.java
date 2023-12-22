@@ -2,6 +2,7 @@ package css.out.file.entiset;
 
 import css.out.file.entity.TREE;
 import lombok.Data;
+import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -9,6 +10,7 @@ import java.util.Map;
 /**
  * 单例实现文件系统
  */
+@Slf4j
 @Data
 public class FileSyS {
 

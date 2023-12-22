@@ -5,11 +5,11 @@ import css.out.file.entiset.FileSyS;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.entiset.GF.ROOT_AUTH;
+import static css.out.file.entiset.SF.initialDiskSyS;
+import static css.out.file.entiset.SF.initialFileSys;
 import static css.out.file.handleB.HandleDISK.coverRebootDisk;
 import static css.out.file.handleB.HandleDISK.normalRebootDisk;
 import static css.out.file.handleB.HandlePath.normalRebootFile;
-import static css.out.file.entiset.SF.initialDiskSyS;
-import static css.out.file.entiset.SF.initialFileSys;
 
 /**
  * 文件系统Application
@@ -38,7 +38,6 @@ public class FileApp {
 //        log.debug("磁盘模块成员初始化完成");
         normalRebootDisk();
         log.debug("磁盘模块重读完成");
-
 //        log.debug("文件模块开机中...");
         fileSyS = initialFileSys();
 //        log.debug("文件模块成员初始化完成");
