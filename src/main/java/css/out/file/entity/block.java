@@ -21,7 +21,7 @@ public class block {
         this.bytes = new byte[BLOCK_SIZE];
         //将每一个字节项都初始化为0
         for (int i = 0; i < BLOCK_SIZE; i++) {
-            this.bytes[i] = Byte.valueOf("0");
+            this.bytes[i] = Byte.parseByte("0");
         }
     }
 

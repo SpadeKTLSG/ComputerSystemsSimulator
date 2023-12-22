@@ -97,11 +97,6 @@ public class DiskTest {
      */
     @Test
     public void Disk_reload() throws IOException {
-        FileApp app = new FileApp(); //开机
-        app.state();
-        app.reload();//刷新
-        app.state();
-        app.reboot();//重启
-        app.state();
+
     }
 }

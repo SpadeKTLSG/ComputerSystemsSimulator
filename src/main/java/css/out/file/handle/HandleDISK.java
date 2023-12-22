@@ -26,7 +26,7 @@ public abstract class HandleDISK {
      *
      * @param msg  要写入的字符串
      * @param path 目标TXT文件路径
-     * @param pos 位置
+     * @param pos  位置
      */
     public static void writeStr2Disk(String msg, String path, Integer pos) {
         StringBuilder sb = new StringBuilder();
@@ -127,9 +127,8 @@ public abstract class HandleDISK {
      */
     public static void initialDisk(disk disk) {
         disk.name = DISK_NAME;
-        disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
+        disk.BLOCKS = getDefaultBLOCKS(); //获得初始磁盘空间(全0)
         disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-
         disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
     }
 
@@ -142,12 +141,10 @@ public abstract class HandleDISK {
         FileApp.diskSyS.disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
 
         FileApp.diskSyS.disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-        byte[] FAT1_Byte = getFATBytes(FileApp.diskSyS.disk.FAT1); //获得FAT1字节对象
-        mountFAT(FileApp.diskSyS.disk.BLOCKS, FAT1_Byte, 1); //挂载FAT1字节对象
+        mountFAT(FileApp.diskSyS.disk.BLOCKS, getFATBytes(FileApp.diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
 
         FileApp.diskSyS.disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
-        byte[] FAT2_Byte = getFATBytes(FileApp.diskSyS.disk.FAT2); //获得FAT2字节对象
-        mountFAT(FileApp.diskSyS.disk.BLOCKS, FAT2_Byte, 2); //挂载FAT2字节对象
+        mountFAT(FileApp.diskSyS.disk.BLOCKS, getFATBytes(FileApp.diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
 
         writeAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
         log.debug("{}初始化完成!", FileApp.diskSyS.disk.name);
@@ -159,6 +156,14 @@ public abstract class HandleDISK {
     public static void normalRebootDisk() {
         reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
         //通信...
+    }
+
+    /**
+     * 覆盖模式直接用当前磁盘对象覆盖磁盘映射文件
+     */
+    public static void coverRebootDisk() {
+        writeAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
     }
 
     /**

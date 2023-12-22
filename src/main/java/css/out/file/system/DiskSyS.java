@@ -4,8 +4,6 @@ import css.out.file.entity.disk;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.handle.HandleDISK.normalRebootDisk;
-
 /**
  * 单例实现磁盘系统
  */
@@ -26,7 +24,7 @@ public class DiskSyS {
     }
 
     public void reloadDiskSyS() {
-        normalRebootDisk();
+
     }
 
     @Override

@@ -4,6 +4,8 @@ import css.out.file.system.DiskSyS;
 import css.out.file.system.FileSyS;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.entiset.GF.ROOT_AUTH;
+import static css.out.file.handle.HandleDISK.coverRebootDisk;
 import static css.out.file.handle.HandleDISK.normalRebootDisk;
 import static css.out.file.handle.HandlePath.normalRebootFile;
 import static css.out.file.system.SinFactory.initialDiskSyS;
@@ -45,6 +47,31 @@ public class FileApp {
 
     }
 
+    /**
+     * 重启磁盘系统
+     *
+     * @param auth 权限
+     * @param type 操作类型
+     */
+    public FileApp(String auth, Integer type) {
+        if (auth.equals(ROOT_AUTH)) { //root权限执行
+            log.debug("警告, 正在使用root权限执行系统操作");
+            if (type.equals(1)) {
+                log.debug("格式化磁盘");
+                kickDiskRoboot();
+            } else if (type.equals(2)) {
+                log.debug("正在执行重启文件系统操作");
+
+            } else if (type.equals(3)) {
+                log.debug("正在执行重启文件系统操作");
+
+            } else {
+                log.debug("宁的操作不在系统操作范围内");
+            }
+        } else {
+            log.debug("宁的权限不足. 对不起, 做不到");
+        }
+    }
 
     /**
      * 重启文件系统
@@ -60,7 +87,7 @@ public class FileApp {
      */
     public void reload() {
         log.debug("刷新中...正在重新从磁盘加载系统内容");
-        diskSyS.reloadDiskSyS();
+        normalRebootDisk();
         //文档重构
         //...TODO
     }
@@ -76,5 +103,17 @@ public class FileApp {
         System.out.println(diskSyS);
         //2. 文件系统
         System.out.println(fileSyS);
+    }
+
+    /**
+     * 重启并格式化磁盘
+     */
+    public void kickDiskRoboot() {
+        diskSyS = initialDiskSyS();
+        coverRebootDisk();
+        log.debug("磁盘模块格式化完成");
+        fileSyS = initialFileSys();
+        normalRebootFile();
+        log.debug("文件模块重读完成");
     }
 }
