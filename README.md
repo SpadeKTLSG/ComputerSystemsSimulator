@@ -11,7 +11,7 @@
 核心 Core
 
 - [进程管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/process)
-- [内存管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/memory)
+- [内存管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/memory)
 
 外围 Out
 
@@ -25,10 +25,12 @@
 ## 信息
 
 * ~~8 - 9 完成前端选型和前期技术搜集~~
-* 10 - 17 正式开发核心业务 7days
-* 18 - 24 基本完成所有业务 7days
-* 25 - 28 整体运行, 联合调试, 压力测试 3days
-* 29 - 31 ->>> 撰写论文 3+days
+* ~~10 - 23 正式开发完毕核心业务 7days~~
+* ~~DeadLine : 23 - 12:00am BITE THE DUST for SpadeK~~
+* 23 - 26 系统内部通信, API问题捉虫 + 外部文件通信 3days
+* 26 - 29 整体运行, 联合调试, 压力测试 3days
+* 29 -> 展示 1day
+* 29 ->>>1.2 撰写论文 3days
 
 ## 链接
 
