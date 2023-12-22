@@ -20,7 +20,6 @@ public class DiskSyS {
      * 单例实现
      */
     public DiskSyS() {
-        this.disk = new disk(); //赋值成员变量空间
     }
 
     @Override

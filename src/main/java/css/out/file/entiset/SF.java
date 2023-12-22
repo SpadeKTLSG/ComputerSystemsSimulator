@@ -2,7 +2,8 @@ package css.out.file.entiset;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.handleB.HandleDISK.initialDisk;
+
+import static css.out.file.entity.disk.initialDisk;
 import static css.out.file.handleB.HandlePath.*;
 
 /**
@@ -33,7 +34,7 @@ public abstract class SF {
      * 获取磁盘系统
      */
     public static DiskSyS initialDiskSyS() {
-        initialDisk(DISK_SYS.disk);
+        DISK_SYS.disk = initialDisk();
         return DISK_SYS;
     }
 
