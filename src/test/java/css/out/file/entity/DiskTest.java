@@ -87,7 +87,7 @@ public class DiskTest {
     @Test
     public void Disk_function1() throws IOException {
         FileApp app = new FileApp();
-        //System.out.println(readAllTXT(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
+        //System.out.println(readAllTXT2Str(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
 
     }
 

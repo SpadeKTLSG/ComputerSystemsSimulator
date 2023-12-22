@@ -1,8 +1,12 @@
 package css.out.file.handleB;
 
+import css.out.file.entity.FCB;
 import css.out.file.entity.file;
+import css.out.file.enums.FileDirTYPE;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.enums.FileDirTYPE.DIR;
+import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.ByteUtil.Byte2Int;
 
 /**
@@ -10,6 +14,35 @@ import static css.out.file.utils.ByteUtil.Byte2Int;
  */
 @Slf4j
 public abstract class HandleFile {
+
+    //! 1. 文件类型操作
+
+
+    /**
+     * FCB的TypeFlag标识转Int
+     *
+     * @param fcb FCB
+     * @return 0: 文件, 1: 文件夹
+     */
+    public static Integer FileorDir2Int(FCB fcb) {
+
+        return fcb.getTypeFlag().equals(FILE) ? 0 : 1;
+    }
+
+    /**
+     * Int转FCB的TypeFlag标识
+     *
+     * @param num 0: 文件, 1: 文件夹
+     * @return FCB的TypeFlag标识
+     */
+    public static FileDirTYPE Int2FileorDir(Integer num) {
+
+        return num.equals(0) ? FILE : DIR;
+    }
+
+
+    //!
+
 
     /**
      * 获得文件内容String类型的长度, 单位:字节

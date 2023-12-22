@@ -171,9 +171,9 @@ public class FCB {
             int length = FCB_LENGTH.get(field.getName());
 
             byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
-                case PATH_NAME -> Int2Byte(bindPathManager(this));
+                case PATH_NAME -> Int2Byte(bindPM(this));
                 case START_BLOCK -> Int2Byte(this.startBlock);
-                case EXTEND_NAME -> Int2Byte(selectExtendManager(this));
+                case EXTEND_NAME -> Int2Byte(selectEM(this));
                 case TYPE_FLAG -> Int2Byte(FileorDir2Int(this));
                 case FILE_LENGTH -> Int2Byte(this.fileLength);
             };
@@ -204,7 +204,7 @@ public class FCB {
 
 
             switch (field) {
-                case PATH_NAME -> this.pathName = fromPathManager(fromFixedLengthBytes(valueBytes, length));
+                case PATH_NAME -> this.pathName = fromPM(fromFixedLengthBytes(valueBytes, length));
                 case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes, length);
                 case EXTEND_NAME -> this.extendName = fromExtendManager(fromFixedLengthBytes(valueBytes, length));
                 case TYPE_FLAG -> this.typeFlag = Int2FileorDir(fromFixedLengthBytes(valueBytes, length));

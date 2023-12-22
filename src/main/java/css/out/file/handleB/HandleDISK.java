@@ -3,16 +3,11 @@ package css.out.file.handleB;
 import css.out.file.entity.block;
 import lombok.extern.slf4j.Slf4j;
 
-import java.io.*;
-import java.nio.charset.StandardCharsets;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Objects;
 
-import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.handleB.HandleBlock.setStr21Block;
-import static css.out.file.utils.ByteUtil.str2Byte;
 
 /**
  * I级 磁盘(TXT)管理工具类
@@ -20,114 +15,11 @@ import static css.out.file.utils.ByteUtil.str2Byte;
 @Slf4j
 public abstract class HandleDISK {
 
-    //! 1.磁盘相关
+    //! 1. 磁盘 - CRUD
 
 
-    /**
-     * 获取默认格式化的空BLOCKS
-     *
-     * @return 默认BLOCKS
-     */
-    public static List<block> getVoidBLOCKS() {
+    //! 2. FAT - CRUD
 
-        List<block> BLOCKS = new ArrayList<>(DISK_SIZE);
-        for (int i = 0; i < DISK_SIZE; i++) {
-            BLOCKS.add(new block());
-        }
-
-        return BLOCKS;
-    }
-
-    /**
-     * 将BLOCKS全部内容写入目标TXT文件
-     *
-     * @param BLOCKS 磁盘块阵列
-     * @param path   目标TXT文件路径
-     */
-    public static void writeAllDISK2TXT(List<block> BLOCKS, String path) {
-
-        try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
-
-            for (block block : BLOCKS) {//将BLOCKS中的每个磁盘块的内容一个一个写入
-
-                byte[] byte_temp = block.bytes;
-                StringBuilder sb = new StringBuilder();
-                for (byte b : byte_temp) {
-                    sb.append(b).append(" ");
-                }
-                bw.write(sb.toString());
-                bw.newLine();
-            }
-
-        } catch (Exception e) {
-            log.error("写入磁盘映射文件错误日志: {}", e.getMessage());
-        }
-
-//        log.debug("写入磁盘映射文件 {} 成功", path);
-        log.debug("写入磁盘映射文件成功");
-    }
-
-
-    /**
-     * 从目标TXT文件中读取磁盘对象DISK.BLOCKS的流式全部内容
-     * <p>存入一整个String大对象中</p>
-     *
-     * @param path 目标TXT文件路径
-     * @return 一整个String大对象
-     */
-    public static String readAllTXT(String path) {
-
-        StringBuilder sb = new StringBuilder();
-
-        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
-            String line;
-            while ((line = br.readLine()) != null) {
-                sb.append(line).append("\n");
-            }
-
-        } catch (Exception e) {
-            log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
-        }
-
-        log.debug("读取磁盘映射文件成功");
-        return sb.toString();
-    }
-
-
-    /**
-     * 利用String磁盘内容赋值磁盘Java对象
-     *
-     * @param great_str 磁盘映射文件长字符串
-     */
-    public static void putStr2Disk(String great_str) {
-
-        String[] str = great_str.split("\n");
-
-        for (int i = 0; i < DISK_SIZE; i++) {
-
-            if (i == FAT1_DIR) {
-                byte[] bytes_temp = str2Byte(str[i]);
-                diskSyS.disk.FAT1 = Bytes2FAT(bytes_temp);
-                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 1);
-                continue;
-            }
-
-            if (i == FAT2_DIR) {
-                byte[] bytes_temp = str2Byte(str[i]);
-                diskSyS.disk.FAT2 = Bytes2FAT(bytes_temp);
-                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 2);
-                continue;
-            }
-
-            setStr21Block(str[i], i); //或者是setBytes21Block
-        }
-
-//        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
-        log.debug("{}初始化完成!", diskSyS.disk.name);
-    }
-
-
-    //!2 FAT操作
 
     /**
      * 挂载FAT
@@ -152,6 +44,7 @@ public abstract class HandleDISK {
         }
     }
 
+
     /**
      * 获取空FAT1
      *
@@ -167,6 +60,7 @@ public abstract class HandleDISK {
         return FAT;
     }
 
+
     /**
      * 获取空FAT2(全空)
      *
@@ -181,6 +75,7 @@ public abstract class HandleDISK {
 
         return FAT;
     }
+
 
     /**
      * FAT(List) -> Bytes
@@ -202,6 +97,7 @@ public abstract class HandleDISK {
         return FATByte;
     }
 
+
     /**
      * Bytes -> FAT(List)
      *
@@ -222,6 +118,6 @@ public abstract class HandleDISK {
 
         return FAT;
     }
-    
+
 
 }
