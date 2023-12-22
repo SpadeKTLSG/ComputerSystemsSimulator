@@ -1,6 +1,5 @@
 package css.out.file.handle;
 
-import css.out.file.FileApp;
 import css.out.file.entity.block;
 import css.out.file.entity.disk;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +8,7 @@ import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
 
+import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handle.HandleBlock.*;
 import static css.out.file.utils.ByteUtil.str2Byte;
@@ -137,17 +137,17 @@ public abstract class HandleDISK {
      * <p>重新格式化磁盘, 会清空磁盘中的所有数据</p>
      */
     public static void totalReloadDisk() {
-        FileApp.diskSyS.disk.name = DISK_NAME;
-        FileApp.diskSyS.disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
+        diskSyS.disk.name = DISK_NAME;
+        diskSyS.disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
 
-        FileApp.diskSyS.disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-        mountFAT(FileApp.diskSyS.disk.BLOCKS, getFATBytes(FileApp.diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        diskSyS.disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
+        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
 
-        FileApp.diskSyS.disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
-        mountFAT(FileApp.diskSyS.disk.BLOCKS, getFATBytes(FileApp.diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+        diskSyS.disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
+        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
 
-        writeAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
-        log.debug("{}初始化完成!", FileApp.diskSyS.disk.name);
+        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        log.debug("{}初始化完成!", diskSyS.disk.name);
     }
 
     /**
@@ -162,7 +162,11 @@ public abstract class HandleDISK {
      * 覆盖模式直接用当前磁盘对象覆盖磁盘映射文件
      */
     public static void coverRebootDisk() {
-        writeAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        //需要手动把初始FAT覆盖磁盘, 因为默认是从磁盘读
+        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT1字节对象
+        //然后才能写入磁盘
+        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
         reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
     }
 
@@ -180,15 +184,15 @@ public abstract class HandleDISK {
 
             if (i == FAT1_DIR) {
                 byte[] bytes_temp = str2Byte(str[i]);
-                FileApp.diskSyS.disk.FAT1 = fromFATBytes(bytes_temp);
-                mountFAT(FileApp.diskSyS.disk.BLOCKS, bytes_temp, 1);
+                diskSyS.disk.FAT1 = fromFATBytes(bytes_temp);
+                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 1);
                 continue;
             }
 
             if (i == FAT2_DIR) {
                 byte[] bytes_temp = str2Byte(str[i]);
-                FileApp.diskSyS.disk.FAT2 = fromFATBytes(bytes_temp);
-                mountFAT(FileApp.diskSyS.disk.BLOCKS, bytes_temp, 2);
+                diskSyS.disk.FAT2 = fromFATBytes(bytes_temp);
+                mountFAT(diskSyS.disk.BLOCKS, bytes_temp, 2);
                 continue;
             }
 
@@ -196,8 +200,8 @@ public abstract class HandleDISK {
             setSingleBLOCKS(bytes_temp, i);
         }
 
-        writeAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
-        log.debug("{}初始化完成!", FileApp.diskSyS.disk.name);
+        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        log.debug("{}初始化完成!", diskSyS.disk.name);
     }
 
 

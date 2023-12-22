@@ -117,7 +117,7 @@ public abstract class HandleBlock {
 
         byte[] FATByte = new byte[FAT_SIZE];
         for (int i = 0; i < FAT_SIZE; i++) {
-            if (Objects.equals(fat.get(i), Null_Pointer)) { //这一项是空的
+            if (Objects.equals(fat.get(i), Null_Pointer)) { //如果这一项是空的, 就在磁盘上写0(空)
                 FATByte[i] = 0;
                 continue;
             }

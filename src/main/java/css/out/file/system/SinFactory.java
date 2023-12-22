@@ -1,9 +1,7 @@
 package css.out.file.system;
 
-import css.out.file.FileApp;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.handle.HandleBlock.mountFAT;
 import static css.out.file.handle.HandleDISK.initialDisk;
 import static css.out.file.handle.HandlePath.*;
 
@@ -36,7 +34,6 @@ public class SinFactory {
      */
     public static DiskSyS initialDiskSyS() {
         initialDisk(DISK_SYS.disk);
-
         return DISK_SYS;
     }
 
