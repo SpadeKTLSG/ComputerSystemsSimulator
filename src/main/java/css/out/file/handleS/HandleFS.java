@@ -2,14 +2,13 @@ package css.out.file.handleS;
 
 import css.out.file.entity.TREE;
 import css.out.file.entity.node;
-import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.FileApp.fileSyS;
 import static css.out.file.entiset.GF.FILE_TREE_NAME;
 import static css.out.file.entiset.GF.ROOT_AUTH;
-import static css.out.file.entiset.IF.AddedEXTEND;
-import static css.out.file.handleB.HandlePath.*;
+import static css.out.file.handleB.HandlePATH.setDefaultTR;
+import static css.out.file.handleB.HandlePATH.setDefaultEM;
 
 /**
  * 0级 文件系统管理工具类
@@ -28,21 +27,16 @@ public abstract class HandleFS {
 
         //TODO 最后来
 
-        //挂载根目录到文件路径管理器PM
-        for (ROOT_PATH root_path : ROOT_PATH.values()) {
-            bindPM(getROOT_DIRPath(root_path));
-        }
+
         setDefaultEM();
-        //加载扩展名管理器EM, 同步用户添加的扩展名
-        for (String s : AddedEXTEND) { //在扩展名管理器中找一个空位填入
-            bindEM(s);
-        }
 
 
         log.debug("文件模块重读完成");
     }
 
+
     //! 1. 文件系统树形结构TR/
+
 
     /**
      * 获取初始TR
@@ -51,12 +45,13 @@ public abstract class HandleFS {
         TREE tree = new TREE();
         tree.name = FILE_TREE_NAME;
         tree.root = new node(ROOT_AUTH); //挂载根节点
-        mountROOT_DIR2Tr(tree.root); //挂载根目录下的8个文件夹
+        setDefaultTR(tree.root); //挂载根目录下的8个文件夹
         return tree;
     }
 
 
     //! 2. 路径管理器PM/
+
 
     /**
      * 获取初始PM
@@ -67,18 +62,8 @@ public abstract class HandleFS {
     }
 
 
-    /**
-     * 路径管理器中找FCB的PathName
-     *
-     * @param key 路径管理器中的键
-     * @return FCB的PathName
-     */
-    public static String fromPM(Integer key) {
-        return fileSyS.pathManager.get(key);
-    }
-
-
     //! 3. 扩展名管理器EM/
+
 
     /**
      * 获取扩展名管理器

@@ -7,7 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import static css.out.file.entiset.GF.ROOT_AUTH;
 import static css.out.file.entiset.SF.initialDiskSyS;
 import static css.out.file.entiset.SF.initialFileSys;
-import static css.out.file.handleB.HandlePath.normalRebootFile;
+import static css.out.file.handleB.HandlePATH.normalRebootFile;
 import static css.out.file.handleS.HandleDS.*;
 
 /**

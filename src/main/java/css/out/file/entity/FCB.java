@@ -11,7 +11,7 @@ import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandleFile.fromFixedLengthBytes;
 import static css.out.file.handleB.HandleFile.toFixedLengthBytes;
-import static css.out.file.handleB.HandlePath.*;
+import static css.out.file.handleB.HandlePATH.*;
 import static css.out.file.utils.ByteUtil.Int2Byte;
 import static css.out.file.entiset.GF.*;
 
@@ -173,7 +173,7 @@ public class FCB {
             byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
                 case PATH_NAME -> Int2Byte(bindPM(this));
                 case START_BLOCK -> Int2Byte(this.startBlock);
-                case EXTEND_NAME -> Int2Byte(selectEM(this));
+                case EXTEND_NAME -> Int2Byte(findKeyiEM(this));
                 case TYPE_FLAG -> Int2Byte(FileorDir2Int(this));
                 case FILE_LENGTH -> Int2Byte(this.fileLength);
             };
@@ -204,9 +204,9 @@ public class FCB {
 
 
             switch (field) {
-                case PATH_NAME -> this.pathName = fromPM(fromFixedLengthBytes(valueBytes, length));
+                case PATH_NAME -> this.pathName = selectPM(fromFixedLengthBytes(valueBytes, length));
                 case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes, length);
-                case EXTEND_NAME -> this.extendName = fromExtendManager(fromFixedLengthBytes(valueBytes, length));
+                case EXTEND_NAME -> this.extendName = selectEM(fromFixedLengthBytes(valueBytes, length));
                 case TYPE_FLAG -> this.typeFlag = Int2FileorDir(fromFixedLengthBytes(valueBytes, length));
                 case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes, length);
             }

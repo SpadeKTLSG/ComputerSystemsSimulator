@@ -11,15 +11,46 @@ import java.util.Map;
 
 import static css.out.file.FileApp.fileSyS;
 import static css.out.file.entiset.GF.*;
+import static css.out.file.entiset.IF.AddedEXTEND;
+import static css.out.file.handleB.HandleFile.str2Path;
 
 
 /**
- * I级 路径序列工具类
+ * I级 路径序列工具类 - CRUD
  */
 @Slf4j
-public abstract class HandlePath {
+public abstract class HandlePATH {
 
-    //! 1. 文件系统树形结构TR - CRUD
+    //! 1. 文件系统树形结构TR
+
+
+    /**
+     * 初始化TR
+     * <p>挂载根目录到TR</p>
+     *
+     * @param root 根节点
+     */
+    public static void setDefaultTR(node root) {
+
+        boolean isFirst = true;
+
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+
+            if (isFirst) {
+                isFirst = false;
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                root.left = new node(tempfile.fcb); //挂载到根节点的左子树上
+
+            } else {
+                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                node tempnode = root.left;
+                while (tempnode.right != null) {
+                    tempnode = tempnode.right; //递归查找根节点的左子树的最后一个右孩子节点
+                }
+                tempnode.right = new node(tempfile.fcb);
+            }
+        }
+    }
 
 
     /**
@@ -27,7 +58,7 @@ public abstract class HandlePath {
      *
      * @param root 文件系统树形结构根节点
      */
-    public static String printTree(node root) {
+    public static String printTR(node root) {
         LinkedList<node> queue = new LinkedList<>();
         //使用Stringbuffer存储输出结果
         StringBuilder sb = new StringBuilder();
@@ -44,83 +75,81 @@ public abstract class HandlePath {
     }
 
 
+    //! 2. 路径管理器PM
+
+
     /**
-     * 挂载根目录到TR
-     *
-     * @param root 根节点
+     * 初始化PM
+     * <p>挂载根目录</p>
      */
-    public static void mountROOT_DIR2Tr(node root) {
-        //遍历枚举类, 挂载根目录下的8个文件夹到根目录上, 通过树的操作实现
-        boolean isFirst = true;
-        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+    public static void setDefaultPM() {
+        for (ROOT_PATH root_path : ROOT_PATH.values())
+            bindPM(str2Path(String.valueOf(root_path)));
+    }
 
-            if (isFirst) {
 
-                isFirst = false;
-                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
-                root.left = new node(tempfile.fcb); //挂载到根节点的左子树上
+    /**
+     * PM中找pathName的键
+     *
+     * @param pathName 扩展名
+     * @return 路径管理器中的键
+     */
+    public static Integer findKeyiPM(String pathName) {
+        try {
+            List<Integer> keys = fileSyS.pathManager.entrySet().stream()
+                    .filter(entry -> entry.getValue().equals(pathName))
+                    .map(Map.Entry::getKey)
+                    .toList();
 
-            } else {
-                //获得一个根目录下的文件夹, 将其作为root的孩子节点的兄弟节点;count+1;
-                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+            return keys.get(0);
 
-                //递归查找根节点的左子树的最后一个右孩子节点, 将其右孩子节点设置为tempfile
-                node tempnode = root.left;
-                while (tempnode.right != null) {
-                    tempnode = tempnode.right;
-                }
-                tempnode.right = new node(tempfile.fcb);
-            }
+        } catch (Exception e) {
+            log.error("路径管理器中找不到对应的路径{}?!", pathName);
+            throw new RuntimeException(e);
         }
     }
 
 
-    //! 2. 路径管理器PM - CRUD
-
-
     /**
-     * 获得根路径下的默认路径
-     *
-     * @param path 八大路径之一
-     * @return 对应路径的String序列
-     */
-    public static String getROOT_DIRPath(ROOT_PATH path) {
-        //这里只是简单实现了
-        return '/' + String.valueOf(path);
-    }
-
-
-    /**
-     * FCBPathName绑定PM
+     * PM新增PathName
      *
      * @param pathName FCB的PathName
      * @comment 这样硬盘只需要存储对应的键即可
      */
     public static void bindPM(String pathName) {
 
-        //在PathManager找一个空白位置插入索引项
         List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
                 .filter(entry -> entry.getValue().isEmpty())
                 .map(Map.Entry::getKey)
                 .toList();
 
         //log.debug("当前路径映射器中的空白位置: {}", keys.size());
-        Integer A = keys.get(0);
-        fileSyS.pathManager.put(A, pathName);
+        fileSyS.pathManager.put(keys.get(0), pathName);
 
     }
 
 
-    //! 3. 扩展名管理器EM - CRUD
+    /**
+     * PM定位PathName
+     *
+     * @param key 路径管理器中的键
+     * @return FCB的PathName
+     */
+    public static String selectPM(Integer key) {
+        return fileSyS.pathManager.get(key);
+    }
+
+
+    //! 3. 扩展名管理器EM
 
 
     /**
-     * 初始化扩展名管理器
+     * 初始化EM
      * <p>按照文档和文件的扩展名进行设置</p>
      */
     public static void setDefaultEM() {
 
-        try {
+        try {//系统自带的直接指定提高效率
             int i = 0;
             for (; i < DIR_EXTEND.size(); i++) {
                 fileSyS.extendManager.put(i, DIR_EXTEND.get(i));
@@ -128,7 +157,9 @@ public abstract class HandlePath {
             for (int k = 0; k < FILE_EXTEND.size(); k++) {
                 fileSyS.extendManager.put(i + k, FILE_EXTEND.get(k));
             }
-
+            for (String s : AddedEXTEND) {
+                bindEM(s); //同步用户添加的扩展名
+            }
         } catch (Exception e) {
             log.warn("装不下了, extendManager被撑爆咯! {}", e.getMessage());
         }
@@ -137,12 +168,12 @@ public abstract class HandlePath {
 
 
     /**
-     * 扩展名管理器中找FCB的ExtendName
+     * EM中找ExtendName的键
      *
      * @param extendName 扩展名
      * @return 扩展名管理器中的键
      */
-    public static Integer selectEM(String extendName) {
+    public static Integer findKeyiEM(String extendName) {
         try {
             List<Integer> keys = fileSyS.extendManager.entrySet().stream()
                     .filter(entry -> entry.getValue().equals(extendName))
@@ -159,8 +190,7 @@ public abstract class HandlePath {
 
 
     /**
-     * FCB的ExtendName直接Str绑定扩展名管理器
-     * <p>新增操作, 这里简化了没有实现</p>
+     * EM新增ExtendName
      *
      * @param extendName 扩展名
      */
@@ -178,12 +208,12 @@ public abstract class HandlePath {
 
 
     /**
-     * 根据键从扩展名管理器中扩展名(值)
+     * EM定位ExtendName
      *
      * @param key 键
      * @return 扩展名
      */
-    public static String fromExtendManager(Integer key) {
+    public static String selectEM(Integer key) {
         return fileSyS.extendManager.get(key);
     }
 
