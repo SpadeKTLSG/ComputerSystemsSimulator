@@ -18,28 +18,21 @@ import static css.out.file.handleS.HandleDS.*;
 @Slf4j
 public class FileApp {
 
-    /**
-     * 磁盘系统
-     */
     public static DiskSyS diskSyS;
 
-    /**
-     * 文件系统
-     */
     public static FileSyS fileSyS;
 
     /**
      * 初始化系统成员 + 读取磁盘内容
      */
     public FileApp() {
-//        log.debug("磁盘模块开机中...");
+        log.debug("磁盘模块开机中...");
         diskSyS = initialDiskSyS();
-//        log.debug("磁盘模块成员初始化完成");
+        log.debug("磁盘模块成员初始化完成");
         normalRebootDisk();
-        log.debug("磁盘模块重读完成");
-//        log.debug("文件模块开机中...");
+        log.debug("文件模块开机中...");
         fileSyS = initialFileSys();
-//        log.debug("文件模块成员初始化完成");
+        log.debug("文件模块成员初始化完成");
         normalRebootFile();
         log.debug("文件模块重读完成");
         log.info("文件系统开机完成 -by SpadeK-");
@@ -62,12 +55,8 @@ public class FileApp {
                 coverDiskRoboot();
             } else if (type.equals(3)) {
                 log.info("///摧毁系统, 世界毁灭吧///");
-
-                try {
-                    this.finalize();//手动回收掉this
-                } catch (Throwable e) {
-                    throw new RuntimeException(e);
-                }
+                fileSyS = null;
+                diskSyS = null;
 
             } else {
                 log.info("宁的操作不在系统操作范围内");

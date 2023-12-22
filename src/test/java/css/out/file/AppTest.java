@@ -9,12 +9,6 @@ public class AppTest {
     @Test
     public void AppGreatTest() {
         FileApp app = new FileApp(); //开机
-//        app.state();
-        app.reload();//刷新
-//        app.state();
-        app.reboot();//重启
-        app.state();
-
 
     }
 
@@ -39,7 +33,8 @@ public class AppTest {
 
     @Test
     public void TempTest() {
-        FileApp app = new FileApp(ROOT_AUTH, 3);//摧毁
+        FileApp app = new FileApp(); //开机
+        app = new FileApp(ROOT_AUTH, 3);//摧毁
         app.state();
     }
 }

@@ -20,7 +20,7 @@ public abstract class HandleDS {
      */
     public static void normalRebootDisk() {
         putStr2Disk(readAllTXT(WORKSHOP_PATH + DISK_FILE));
-        //通信...
+        log.debug("磁盘模块重读完成");
     }
 
 
