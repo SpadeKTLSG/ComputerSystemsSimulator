@@ -11,7 +11,7 @@ import java.util.Objects;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.handleB.HandleBlock.*;
+import static css.out.file.handleB.HandleBlock.setSingleBlock;
 import static css.out.file.utils.ByteUtil.str2Byte;
 
 /**
@@ -20,9 +20,10 @@ import static css.out.file.utils.ByteUtil.str2Byte;
 @Slf4j
 public abstract class HandleDISK {
 
+    //! 1.磁盘读取相关
 
     /**
-     * 原生String msg直接破坏性狠狠注入磁盘映射文件的对应行
+     * 原生String msg直接破坏性直接狠狠注入磁盘映射文件的对应行
      * <p>这样我们就真的回不到过去了, 前辈!</p>
      * <p>狠狠滴调教啊混蛋</p>
      *
@@ -30,7 +31,7 @@ public abstract class HandleDISK {
      * @param path 目标TXT文件路径
      * @param pos  位置
      */
-    public static void writeStr2Disk(String msg, String path, Integer pos) {
+    public static void writeStr2DiskTXT(String msg, String path, Integer pos) {
         StringBuilder sb = new StringBuilder();
         Integer pos_temp = 0;
         //先把全部的读取保存, 然后修改对应行为自己的String msg, 再写入
@@ -69,7 +70,7 @@ public abstract class HandleDISK {
      * @param BLOCKS 磁盘块阵列
      * @param path   目标TXT文件路径
      */
-    public static void writeAllDISK(List<block> BLOCKS, String path) {
+    public static void writeAllDISK2TXT(List<block> BLOCKS, String path) {
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
 
@@ -99,7 +100,7 @@ public abstract class HandleDISK {
      * @param path 目标TXT文件路径
      * @return 一整个String大对象
      */
-    public static String readAllDISK(String path) {
+    public static String readAllTXT(String path) {
 
         StringBuilder sb = new StringBuilder();
 
@@ -123,7 +124,7 @@ public abstract class HandleDISK {
      *
      * @param great_str 磁盘映射文件长字符串
      */
-    public static void reloadStr2Disk(String great_str) {
+    public static void putStr2Disk(String great_str) {
 
         String[] str = great_str.split("\n");
 
@@ -144,13 +145,14 @@ public abstract class HandleDISK {
             }
 
             byte[] bytes_temp = str2Byte(str[i]);
-            setSingleBLOCKS(bytes_temp, i);
+            setSingleBlock(bytes_temp, i);
         }
 
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
+//        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
         log.debug("{}初始化完成!", diskSyS.disk.name);
     }
 
+    //!2 FAT相关
 
     /**
      * 挂载FAT
@@ -245,4 +247,23 @@ public abstract class HandleDISK {
 
         return FAT;
     }
+
+    //!3 BLOCKS相关
+
+    /**
+     * 获取默认格式化的空BLOCKS
+     *
+     * @return 默认BLOCKS
+     */
+    public static List<block> getVoidBLOCKS() {
+
+        List<block> BLOCKS = new ArrayList<>(DISK_SIZE);
+        for (int i = 0; i < DISK_SIZE; i++) {
+            BLOCKS.add(new block());
+        }
+
+        return BLOCKS;
+    }
+
+
 }

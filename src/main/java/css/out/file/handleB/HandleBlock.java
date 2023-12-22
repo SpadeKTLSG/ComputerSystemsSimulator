@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
-import java.util.ArrayList;
-import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
@@ -16,6 +14,8 @@ import static css.out.file.entiset.GF.*;
  */
 @Slf4j
 public abstract class HandleBlock {
+
+    //! 1.磁盘块CRUD
 
     //TODO: 根据FAT从磁盘块中找到空闲的磁盘块位置
     public static int getFreeBlock() {
@@ -45,35 +45,18 @@ public abstract class HandleBlock {
      * @param blockNum
      */
     public static void setBlockFree(int blockNum) {
-        //TODO 测试能否直接覆盖输入
+
         //FIXME
     }
 
 
-
-
     /**
-     * 获取默认格式化的BLOCKS
-     *
-     * @return 默认BLOCKS
-     */
-    public static List<block> getDefaultBLOCKS() {
-
-        List<block> BLOCKS = new ArrayList<>(DISK_SIZE);
-        for (int i = 0; i < DISK_SIZE; i++) {  //初始化赋值全部为block
-            BLOCKS.add(new block());
-        }
-
-        return BLOCKS;
-    }
-
-    /**
-     * 字节数组设置BLOCKS的单个block内容
+     * 使用字节数组设置单个block内容
      *
      * @param bytes    字节数组内容
      * @param blockNum 块号
      */
-    public static void setSingleBLOCKS(byte[] bytes, int blockNum) {
+    public static void setSingleBlock(byte[] bytes, int blockNum) {
         diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
     }
 

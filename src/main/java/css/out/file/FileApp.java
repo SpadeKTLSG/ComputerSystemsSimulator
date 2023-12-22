@@ -42,7 +42,7 @@ public class FileApp {
 //        log.debug("文件模块成员初始化完成");
         normalRebootFile();
         log.debug("文件模块重读完成");
-
+        log.info("文件系统开机完成 -by SpadeK-");
     }
 
     /**
@@ -55,13 +55,13 @@ public class FileApp {
         if (auth.equals(ROOT_AUTH)) { //root权限执行
             log.debug("警告, 正在使用root权限执行系统操作");
             if (type.equals(1)) {
-                log.debug("格式化磁盘 + 重建索引");
+                log.info("///格式化磁盘 + 重建索引///");
                 kickDiskRoboot();
             } else if (type.equals(2)) {
-                log.debug("覆盖磁盘 + 重建索引");
+                log.info("///覆盖磁盘 + 重建索引///");
                 coverDiskRoboot();
             } else if (type.equals(3)) {
-                log.debug("摧毁系统, 世界毁灭吧");
+                log.info("///摧毁系统, 世界毁灭吧///");
 
                 try {
                     this.finalize();//手动回收掉this
@@ -70,10 +70,10 @@ public class FileApp {
                 }
 
             } else {
-                log.debug("宁的操作不在系统操作范围内");
+                log.info("宁的操作不在系统操作范围内");
             }
         } else {
-            log.debug("宁的权限不足. 对不起, 做不到");
+            log.info("宁的权限不足. 对不起, 做不到");
         }
     }
 
@@ -81,7 +81,7 @@ public class FileApp {
      * 重启文件系统
      */
     public void reboot() {
-        log.debug("文件系统重启中");
+        log.info("文件系统重启中");
         new FileApp();
     }
 
@@ -90,7 +90,7 @@ public class FileApp {
      * <p>重新从磁盘加载资源</p>
      */
     public void reload() {
-        log.debug("刷新中...正在重新从磁盘加载系统内容");
+        log.info("刷新中...正在重新从磁盘加载系统内容");
         normalRebootDisk();
         //文档重构
         //...TODO
@@ -100,7 +100,7 @@ public class FileApp {
      * 展示系统状态
      */
     public void state() {
-        log.debug("文件系统状态展示");
+        log.info("文件系统状态展示");
         //打印两个系统的主要成员信息
         //1. 磁盘系统
         System.out.println(diskSyS);

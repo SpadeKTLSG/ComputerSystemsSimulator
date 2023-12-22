@@ -3,7 +3,7 @@ package css.out.file.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import static css.out.file.handleB.HandleDISK.writeStr2Disk;
+import static css.out.file.handleB.HandleDISK.writeStr2DiskTXT;
 
 @Slf4j
 public class UtilTest {
@@ -14,7 +14,7 @@ public class UtilTest {
 
         //测试精确替换
         String path = "D:\\Workshop\\Codes\\JA\\ComputerSystemsSimulator\\src\\test\\resources\\common\\file\\temp.txt";
-        writeStr2Disk("1234567890", path, 11);
+        writeStr2DiskTXT("1234567890", path, 11);
 
         //测试能否覆盖写入
         //TODO

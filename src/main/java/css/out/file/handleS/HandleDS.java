@@ -19,7 +19,7 @@ public abstract class HandleDS {
      * <p>从磁盘映射文件完全加载磁盘系统</p>
      */
     public static void normalRebootDisk() {
-        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
+        putStr2Disk(readAllTXT(WORKSHOP_PATH + DISK_FILE));
         //通信...
     }
 
@@ -33,8 +33,8 @@ public abstract class HandleDS {
         mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
         mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
-        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
+        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+        putStr2Disk(readAllTXT(WORKSHOP_PATH + DISK_FILE));
         log.debug("磁盘模块覆盖完成");
     }
 
@@ -49,8 +49,8 @@ public abstract class HandleDS {
         mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
         mountFAT(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
         //写入磁盘
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
-        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
+        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+        putStr2Disk(readAllTXT(WORKSHOP_PATH + DISK_FILE));
         log.debug("{}格式化完成!", diskSyS.disk.name);
     }
 
