@@ -23,13 +23,9 @@ public class DiskSyS {
         this.disk = new disk(); //赋值成员变量空间
     }
 
-    public void reloadDiskSyS() {
-
-    }
-
     @Override
     public String toString() {
-        return "DiskSyS{" +
+        return "DiskSyS\n{" +
                 "disk=" + disk +
                 '}';
     }

@@ -20,6 +20,19 @@ import static css.out.file.utils.ByteUtil.str2Byte;
 public abstract class HandleDISK {
 
     /**
+     * diskJava对象初始化
+     *
+     * <p>此时DiskSyS还没有生成</p>
+     */
+    public static void initialDisk(disk disk) {
+        disk.name = DISK_NAME;
+        disk.BLOCKS = getDefaultBLOCKS(); //获得初始磁盘空间(全0)
+        disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
+        disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
+    }
+
+
+    /**
      * 将原生String msg直接破坏性狠狠注入磁盘映射文件的对应行
      * <p>这样我们就真的回不到过去了, 前辈!</p>
      * <p>狠狠滴调教啊混蛋</p>
@@ -70,8 +83,8 @@ public abstract class HandleDISK {
     public static void writeAllDISK(List<block> BLOCKS, String path) {
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
-            //将BLOCKS中的每个磁盘块的内容一个一个写入
-            for (block block : BLOCKS) {
+
+            for (block block : BLOCKS) {//将BLOCKS中的每个磁盘块的内容一个一个写入
 
                 byte[] byte_temp = block.bytes;
                 StringBuilder sb = new StringBuilder();
@@ -102,83 +115,28 @@ public abstract class HandleDISK {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
-//            log.debug("读取磁盘映射文件 {} 中", path);
-
-
             String line;
             while ((line = br.readLine()) != null) {
                 sb.append(line).append("\n");
             }
 
-
         } catch (Exception e) {
             log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
         }
-
 
         log.debug("读取磁盘映射文件成功");
         return sb.toString();
     }
 
-    /**
-     * 开机执行, 不破坏TXT文件的情况下, 从TXT文件中读取磁盘对象DISK.BLOCKS的流式全部内容
-     *
-     * <p>此时DiskSyS还没有生成</p>
-     */
-    public static void initialDisk(disk disk) {
-        disk.name = DISK_NAME;
-        disk.BLOCKS = getDefaultBLOCKS(); //获得初始磁盘空间(全0)
-        disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-        disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
-    }
 
     /**
-     * 完全重新格式化磁盘
-     * <p>重新格式化磁盘, 会清空磁盘中的所有数据</p>
-     */
-    public static void totalReloadDisk() {
-        diskSyS.disk.name = DISK_NAME;
-        diskSyS.disk.BLOCKS = getDefaultBLOCKS(); //获得磁盘空间
-
-        diskSyS.disk.FAT1 = getDefaultFAT1(); //获得FAT1对象
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-
-        diskSyS.disk.FAT2 = getDefaultFAT2(); //获得FAT2对象
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
-
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
-        log.debug("{}初始化完成!", diskSyS.disk.name);
-    }
-
-    /**
-     * 正常从磁盘完全加载磁盘系统
-     */
-    public static void normalRebootDisk() {
-        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
-        //通信...
-    }
-
-    /**
-     * 覆盖模式直接用当前磁盘对象覆盖磁盘映射文件
-     */
-    public static void coverRebootDisk() {
-        //需要手动把初始FAT覆盖磁盘, 因为默认是从磁盘读
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
-        mountFAT(diskSyS.disk.BLOCKS, getFATBytes(diskSyS.disk.FAT2), 2); //挂载FAT1字节对象
-        //然后才能写入磁盘
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
-        reloadStr2Disk(readAllDISK(WORKSHOP_PATH + DISK_FILE));
-    }
-
-    /**
-     * 从磁盘映射文件中读取磁盘对象
+     * 利用String磁盘内容赋值磁盘Java对象
      *
      * @param great_str 磁盘映射文件长字符串
      */
     public static void reloadStr2Disk(String great_str) {
 
         String[] str = great_str.split("\n");
-
 
         for (int i = 0; i < DISK_SIZE; i++) {
 
@@ -200,7 +158,7 @@ public abstract class HandleDISK {
             setSingleBLOCKS(bytes_temp, i);
         }
 
-        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //写入磁盘
+        writeAllDISK(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
         log.debug("{}初始化完成!", diskSyS.disk.name);
     }
 

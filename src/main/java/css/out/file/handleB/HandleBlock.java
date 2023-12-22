@@ -136,12 +136,14 @@ public abstract class HandleBlock {
      */
     public static List<Integer> fromFATBytes(byte[] bytes) {
         List<Integer> FAT = new ArrayList<>(FAT_SIZE);
-        for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为0
+        for (int i = 0; i < FAT_SIZE; i++) { //初始化赋值全部为514
             FAT.add(Null_Pointer);
         }
 
         for (int i = 0; i < FAT_SIZE; i++) {
-            FAT.set(i, (int) bytes[i]);
+            if ((int) bytes[i] != 0) {
+                FAT.set(i, (int) bytes[i]);
+            }
         }
 
         return FAT;

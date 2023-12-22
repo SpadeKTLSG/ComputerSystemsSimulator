@@ -281,6 +281,6 @@ public abstract class HandlePath {
             bindPathManager(new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK).fcb);
         }
 
-
+        log.debug("文件模块重读完成");
     }
 }

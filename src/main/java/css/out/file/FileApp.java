@@ -7,9 +7,8 @@ import lombok.extern.slf4j.Slf4j;
 import static css.out.file.entiset.GF.ROOT_AUTH;
 import static css.out.file.entiset.SF.initialDiskSyS;
 import static css.out.file.entiset.SF.initialFileSys;
-import static css.out.file.handleB.HandleDISK.coverRebootDisk;
-import static css.out.file.handleB.HandleDISK.normalRebootDisk;
 import static css.out.file.handleB.HandlePath.normalRebootFile;
+import static css.out.file.handleS.HandleDS.*;
 
 /**
  * 文件系统Application
@@ -56,13 +55,19 @@ public class FileApp {
         if (auth.equals(ROOT_AUTH)) { //root权限执行
             log.debug("警告, 正在使用root权限执行系统操作");
             if (type.equals(1)) {
-                log.debug("格式化磁盘");
+                log.debug("格式化磁盘 + 重建索引");
                 kickDiskRoboot();
             } else if (type.equals(2)) {
-                log.debug("正在执行重启文件系统操作");
-
+                log.debug("覆盖磁盘 + 重建索引");
+                coverDiskRoboot();
             } else if (type.equals(3)) {
-                log.debug("正在执行重启文件系统操作");
+                log.debug("摧毁系统, 世界毁灭吧");
+
+                try {
+                    this.finalize();//手动回收掉this
+                } catch (Throwable e) {
+                    throw new RuntimeException(e);
+                }
 
             } else {
                 log.debug("宁的操作不在系统操作范围内");
@@ -93,7 +98,6 @@ public class FileApp {
 
     /**
      * 展示系统状态
-     * //TODO 简化
      */
     public void state() {
         log.debug("文件系统状态展示");
@@ -105,14 +109,21 @@ public class FileApp {
     }
 
     /**
-     * 重启并格式化磁盘
+     * 覆盖模式
+     */
+    public void coverDiskRoboot() {
+        coverRebootDisk();
+        normalRebootFile(); //FIXME
+    }
+
+    /**
+     * !格式化模式
      */
     public void kickDiskRoboot() {
-        diskSyS = initialDiskSyS();
-        coverRebootDisk();
-        log.debug("磁盘模块格式化完成");
-        fileSyS = initialFileSys();
+        totalReloadDisk();
+        fileSyS = initialFileSys();//FIXME
         normalRebootFile();
-        log.debug("文件模块重读完成");
     }
+
+
 }
