@@ -1,4 +1,4 @@
-package css.out.file.handle;
+package css.out.file.handleB;
 
 import css.out.file.entity.block;
 import css.out.file.entity.disk;
@@ -10,7 +10,7 @@ import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.handle.HandleBlock.*;
+import static css.out.file.handleB.HandleBlock.*;
 import static css.out.file.utils.ByteUtil.str2Byte;
 
 /**

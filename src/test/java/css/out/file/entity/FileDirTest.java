@@ -9,7 +9,7 @@ import java.util.Arrays;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handle.HandleFile.setFileContextLength;
+import static css.out.file.handleB.HandleFile.setFileContextLength;
 
 /**
  * 文件&文件夹测试

@@ -8,8 +8,8 @@ import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.utils.ByteUtil.byteMerger;
 import static css.out.file.entiset.GF.FCB_BYTE_LENGTH;
 import static css.out.file.entiset.GF.FILE_NAME_DEFAULT;
-import static css.out.file.handle.HandleBlock.getFreeBlock;
-import static css.out.file.handle.HandlePath.getROOT_DIRPath;
+import static css.out.file.handleB.HandleBlock.getFreeBlock;
+import static css.out.file.handleB.HandlePath.getROOT_DIRPath;
 
 @Slf4j
 @Data

@@ -3,7 +3,7 @@ package css.out.file.utils;
 import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
-import static css.out.file.handle.HandleDISK.writeStr2Disk;
+import static css.out.file.handleB.HandleDISK.writeStr2Disk;
 
 @Slf4j
 public class UtilTest {

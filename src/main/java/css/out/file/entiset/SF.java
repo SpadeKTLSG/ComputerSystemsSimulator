@@ -1,15 +1,15 @@
-package css.out.file.system;
+package css.out.file.entiset;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.handle.HandleDISK.initialDisk;
-import static css.out.file.handle.HandlePath.*;
+import static css.out.file.handleB.HandleDISK.initialDisk;
+import static css.out.file.handleB.HandlePath.*;
 
 /**
  * 单例模式工厂
  */
 @Slf4j
-public class SinFactory {
+public class SF {
 
     /**
      * DiskSyS磁盘系统: 唯一
@@ -26,7 +26,7 @@ public class SinFactory {
      * private构造
      * 保证外部无法实例化
      */
-    private SinFactory() {
+    private SF() {
     }
 
     /**
