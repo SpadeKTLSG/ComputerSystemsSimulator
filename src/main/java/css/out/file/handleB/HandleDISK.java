@@ -261,7 +261,8 @@ public abstract class HandleDISK {
 
     /**
      * FAT查找第一个空闲块: 找NP
-     * <p>直接在FAT1 -> FAT2 中找值为NULL_POINTER的键即可</p>
+     * <p>直接在FAT1 -> FAT2 中找值为NULL_POINTER的键</p>
+     * 要删除掉虽然是NULL_Pointer但是事实上已经被指向的占用块: 从路径序列中找
      *
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
@@ -272,14 +273,11 @@ public abstract class HandleDISK {
         for (int i = 0; i < FAT_SIZE * 2; i++)
             allFATMap.put(i, allFAT.get(i));
 
-        //要删除掉虽然是NULL_Pointer但是事实上已经被指向的占用块: 从路径序列中找
-
-        List<Integer> order = getFATOrder(); //获取FAT序列,获得其最后一项的位置
-
+        List<Integer> order = getFATOrder();
         Integer pre;
 
         if (order != null) {
-            pre = order.get(order.size() - 1); //order最后一项的位置
+            pre = order.get(order.size() - 1);
         } else {
             log.warn("系统order序列不能正常使用了");
             return -1;

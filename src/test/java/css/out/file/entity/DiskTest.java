@@ -13,6 +13,7 @@ import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandleDISK.*;
 import static css.out.file.handleB.HandleFile.*;
+import static css.out.file.handleS.HandleDS.writeContext;
 
 /**
  * 文件&文件夹测试
@@ -107,9 +108,6 @@ public class DiskTest {
         List<Integer> order = getFATOrder();
         System.out.println(order);
 
-//        log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
-//        alertUser("磁盘被撑爆了, Behave yourself!");
-
 //        app.kickDiskRoboot();
         app.state();
 
@@ -195,6 +193,13 @@ public class DiskTest {
         //测试: 获得一个空块
         System.out.println(get1FreeBlock());
         System.out.println(get1FreeBlock());
+
+
+        writeContext();
+
+        //还原为初始状态
+        app.kickDiskRoboot();//格式化磁盘
+        app.state();
 
     }
 }

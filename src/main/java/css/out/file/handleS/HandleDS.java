@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
+import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entity.disk.initialDisk;
 import static css.out.file.handleB.HandleDISK.*;
@@ -83,7 +84,7 @@ public abstract class HandleDS {
 
 
     /**
-     * Str磁盘内容赋值磁盘Java对象
+     * StrTXT内容赋值BLOCKJava对象
      *
      * @param great_str 磁盘映射文件长字符串
      */
@@ -110,9 +111,35 @@ public abstract class HandleDS {
             setStr21Block(str[i], i); //或者是setBytes21Block
         }
 
-//        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
+        //writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE); //二次写入磁盘保证一致性
         log.debug("{}初始化完成!", diskSyS.disk.name);
     }
+
+    //TODO
+    public static void writeContext() {
+        //向磁盘系统写入(添加)对象(文件/文件夹)
+        // ? 1. get FAT 2.FAT->BLOCKS 3.BLOCKS ->TXT
+
+        //1. 占用盘块 in FAT
+        Integer inputPos = set1BlockUse();
+        log.debug("占用了盘块: {}", inputPos);
+
+        System.out.println(getFATOrder());//康康FAT占用顺序
+
+        if (inputPos == -1) {
+            log.warn("系统磁盘爆炸咯!");
+            alertUser("系统磁盘被撑爆了, Behave yourself!");
+            return;
+        }
+
+        //2. FAT覆盖磁盘
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+
+        //3. BLOCKS全量覆写TXT
+        writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+    }
+
 
 
 }
