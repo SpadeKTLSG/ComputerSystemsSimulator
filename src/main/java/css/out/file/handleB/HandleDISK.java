@@ -8,6 +8,7 @@ import java.util.List;
 import java.util.Objects;
 
 import static css.out.file.FileApp.diskSyS;
+import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handleB.HandleTXT.write1Str2TXT;
 import static css.out.file.utils.ByteUtil.byte2Str;
@@ -20,38 +21,6 @@ import static css.out.file.utils.ByteUtil.str2Byte;
 public abstract class HandleDISK {
 
     //! 1. 磁盘 - CRUD
-
-    //TODO: 根据FAT从磁盘中找到1个空闲的磁盘块位置
-    public static int get1FreeBlock() {
-
-        //在全局的FAT中查找第一个值为514的位置, 同时将FAT最晚的一个块指向这个位置, 这个位置同样指向空(514)
-        //返回这个位置的块号
-
-        //对象: diskSyS.disk.FAT1 + FAT2, 从开始盘块:全局变量FAT1开始指针查找, 将对应位置的值作为下一个访问的位置, 直到读取到514代表空; 而后写入新的对象
-        //如果FAT1遍历完了, 仍然没有找到空闲块, 则去FAT2查找, 仍然没有找到就报错
-        int pos = FAT1_DIR; //从FAT1开始
-        for (int i = 0; i < FAT_SIZE; i++) {
-            if (diskSyS.disk.FAT1.get(pos) == Null_Pointer) {
-                diskSyS.disk.FAT1.set(pos, Null_Pointer);
-                diskSyS.disk.FAT2.set(pos, Null_Pointer);
-                return pos;
-            }
-            pos = diskSyS.disk.FAT1.get(pos);
-        }
-
-        return 114;
-    }
-
-
-    /**
-     * 释放block空间
-     *
-     * @param blockNum
-     */
-    public static void set1BlockFree(int blockNum) {
-        //设置为空
-        //FIXME
-    }
 
 
     /**
@@ -76,7 +45,6 @@ public abstract class HandleDISK {
         diskSyS.disk.BLOCKS.set(blockNum, new block(str2Byte(str)));
         write1Str2TXT(str, WORKSHOP_PATH + DISK_FILE, blockNum);
     }
-
 
 
     //! 2. FAT - CRUD
@@ -179,5 +147,109 @@ public abstract class HandleDISK {
         return FAT;
     }
 
+    //手动
+
+    /**
+     * 指定FAT1为全满状态, 下一个空闲位置位于FAT2
+     * <p>或: 指定FAT2为全满状态,全部被占满</p>
+     */
+    public static void fullFAT1(Integer type) {
+        List<Integer> FAT1 = new ArrayList<>(FAT_SIZE);
+        int i = 0;
+        for (; i < FAT_SIZE; i++)
+            FAT1.add(i + 1);
+
+        FAT1.set(FAT_SIZE - 1, FAT_SIZE);
+
+        diskSyS.disk.FAT1 = FAT1;
+
+        if (type == 2) { //还要将FAT2设置为全满
+            List<Integer> FAT2 = new ArrayList<>(FAT_SIZE);
+
+            for (; i < FAT_SIZE * 2; i++)
+                FAT2.add(i + 1);
+
+            FAT2.set(FAT_SIZE - 1, Null_Pointer);
+
+            diskSyS.disk.FAT2 = FAT2;
+        }
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1); //挂载FAT1字节对象
+        mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2); //挂载FAT2字节对象
+    }
+
+
+    /**
+     * FAT序列中查找第一个值为514的位置
+     *
+     * @return FAT序列的综合下标; if -1: 没有找到空闲块
+     */
+    public static Integer get1FreeBlock() {
+
+        int pos = 0;
+        List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
+        boolean isFAT1 = false;
+
+        for (int i = 0; i < FAT_SIZE; i++) { //第一个FAT表遍历
+            if (!Objects.equals(diskSyS.disk.FAT1.get(pos), Null_Pointer)) {
+                pos = diskSyS.disk.FAT1.get(pos);
+                order.add(pos);
+
+            } else {
+                isFAT1 = true; //如果是有空闲块的退出则反转
+                break;
+            }
+
+        }
+
+
+        if (!isFAT1) { //如果FAT1遍历完了, 仍然没有找到空闲块
+            pos = FAT_SIZE;
+
+            for (int i = 0; i < FAT_SIZE - 1; i++) { //第二个FAT表遍历到最后一个元素前
+
+                if (!Objects.equals(diskSyS.disk.FAT2.get(pos - FAT_SIZE), Null_Pointer)) {
+                    pos = diskSyS.disk.FAT2.get(pos - FAT_SIZE);
+                    order.add(pos);
+
+                } else {
+                    isFAT1 = true;  //如果是有空闲块的退出则反转
+                    break;
+                }
+
+            }
+        }
+
+
+        if (!isFAT1) { //还是找不到
+            log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
+            alertUser("磁盘被撑爆了, Behave yourself!");
+//            throw new RuntimeException("没有找到空闲块!");
+            return -1;
+        }
+
+        //TODO 持久化BLOCKS
+        //TODO 刷新到TXT
+
+        return order.get(order.size() - 1); //返回最后一项的位置
+    }
+
+
+    /**
+     * 释放block空间: 将FAT最晚的一个块指向这个位置, 这个位置同样指向空(514)
+     *
+     * @param blockNum
+     */
+    public static void set1BlockFree(int blockNum) {
+        //设置为空
+
+        //将队列的最后一项指向当前这个末尾节点, 同时将当前这个末尾节点指向NULL_POINTER
+        //如果是在FAT1中找到的, 则在FAT1中设置; 如果是在FAT2中找到的, 则在FAT2中设置
+//        if (order.size() > 1) //如果有多个块, 则将最后一个块指向NULL_POINTER
+//            if (Objects.equals(diskSyS.disk.FAT1.get(order.get(order.size() - 2)), Null_Pointer)) //如果是在FAT1中找到的, 则在FAT1中设置
+//                diskSyS.disk.FAT1.set(order.get(order.size() - 2), Null_Pointer);
+//            else //如果是在FAT2中找到的, 则在FAT2中设置
+//                diskSyS.disk.FAT2.set(order.get(order.size() - 2), Null_Pointer);
+
+    }
 
 }

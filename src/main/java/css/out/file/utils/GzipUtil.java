@@ -11,7 +11,7 @@ import java.util.zip.GZIPInputStream;
 import java.util.zip.GZIPOutputStream;
 
 /**
- * Gzip压缩工具类
+ * Gzip压缩工具类 - 废案
  *
  * @author SK
  */

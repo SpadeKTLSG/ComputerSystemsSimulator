@@ -7,7 +7,7 @@ import java.lang.reflect.Field;
 import java.lang.reflect.Method;
 
 /**
- * 反射工具类
+ * 反射工具类 - 废案
  * @author SpadeK
  */
 public abstract class ReflectUtil {

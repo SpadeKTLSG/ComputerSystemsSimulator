@@ -8,6 +8,8 @@ import java.nio.charset.StandardCharsets;
 
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handleB.HandleDISK.fullFAT1;
+import static css.out.file.handleB.HandleDISK.get1FreeBlock;
 import static css.out.file.handleB.HandleFile.*;
 
 /**
@@ -86,8 +88,9 @@ public class DiskTest {
     @Test
     public void Disk_function1() throws IOException {
         FileApp app = new FileApp();
-        //System.out.println(readAllTXT2Str(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
-
+        fullFAT1(2); //全满
+        System.out.println(get1FreeBlock());
+        app.state();
     }
 
 

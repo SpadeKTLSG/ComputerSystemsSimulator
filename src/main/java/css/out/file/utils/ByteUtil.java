@@ -74,9 +74,10 @@ public abstract class ByteUtil {
         String[] str_temp = str.split(" "); //将str按照空格分割为String[]
         byte[] bytes_temp = new byte[str_temp.length];//创建一个byte[]
 
-        for (int i = 0; i < str_temp.length; i++) {
+        for (int i = 0; i < str_temp.length; i++)
             bytes_temp[i] = Byte.parseByte(str_temp[i]);
-        }
+
+
         return bytes_temp;
     }
 
@@ -89,9 +90,10 @@ public abstract class ByteUtil {
      */
     public static String byte2Str(byte[] bytes) {
         StringBuilder stringBuilder = new StringBuilder();
-        for (byte aByte : bytes) {
+
+        for (byte aByte : bytes)
             stringBuilder.append(aByte).append(" ");
-        }
+
         return stringBuilder.toString();
     }
 
@@ -109,20 +111,23 @@ public abstract class ByteUtil {
     public static byte[] toFixLenBytes(byte[] bytes, int len) {
 
         if (bytes.length < len) { // 如果长度小于len，就在右边填充空格
+
             byte[] padded = new byte[len];
             System.arraycopy(bytes, 0, padded, 0, bytes.length);
-            for (int i = bytes.length; i < len; i++) {
+            for (int i = bytes.length; i < len; i++)
                 padded[i] = ' ';
-            }
+
             return padded;
+
         } else if (bytes.length > len) { // 如果compressed的长度大于len，就截取左边的len个字节
+
             log.warn("有对象被截断");
             byte[] truncated = new byte[len];
             System.arraycopy(bytes, 0, truncated, 0, len);
+
             return truncated;
-        }
-        // 如果compressed的长度等于len，就直接返回
-        else {
+        } else {// 如果compressed的长度等于len，就直接返回
+
             return bytes;
         }
     }
