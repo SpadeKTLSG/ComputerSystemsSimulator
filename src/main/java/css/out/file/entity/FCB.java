@@ -91,8 +91,9 @@ public class FCB {
 
     }
 
+
     /**
-     * 指定FCB类型快速构建无挂载的对象(禁止)
+     * 指定FCB类型快速构建无挂载的对象(中间操作)
      *
      * @param typeFlag 文件or目录标识
      */
@@ -117,6 +118,7 @@ public class FCB {
             log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
         }
     }
+
 
     /**
      * 空白FCB构造(中间操作)
@@ -150,8 +152,6 @@ public class FCB {
                     '}';
         }
     }
-
-
 
 
 }

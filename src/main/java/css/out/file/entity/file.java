@@ -74,8 +74,6 @@ public class file {
         this.fcb = new FCB(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + FILE_NAME_DEFAULT, get1FreeBlock(), FILE);
         this.content = "";
         //TODO 标记磁盘块为已使用
-        //TODO 写入磁盘块
-        //TODO
     }
 
 }

@@ -19,9 +19,8 @@ public class block {
      */
     public block() {
         this.bytes = new byte[BLOCK_SIZE];
-        for (int i = 0; i < BLOCK_SIZE; i++) {
+        for (int i = 0; i < BLOCK_SIZE; i++)
             this.bytes[i] = Byte.parseByte("0");
-        }
     }
 
     /**

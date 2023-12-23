@@ -33,8 +33,8 @@ public class TREE {
 
     @Override
     public String toString() {
-        //直接调用方法把树形结构打印出来
+
         //printTree(root);
-        return showGreatTree(root);
+        return showGreatTree(root);//直接调用方法把树形结构打印出来
     }
 }

@@ -4,7 +4,6 @@ import css.out.file.entity.TREE;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -36,9 +35,9 @@ public class FileSyS {
      * 单例实现
      */
     public FileSyS() {
-        this.tree = new TREE(); //赋值成员变量空间
-        this.extendManager = new HashMap<>(); //赋值成员变量空间
-        this.pathManager = new HashMap<>(); //赋值成员变量空间
+//        this.tree = new TREE(); //赋值成员变量空间
+//        this.extendManager = new HashMap<>(); //赋值成员变量空间
+//        this.pathManager = new HashMap<>(); //赋值成员变量空间
     }
 
     @Override
