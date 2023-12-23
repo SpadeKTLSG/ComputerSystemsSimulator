@@ -7,14 +7,12 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 import java.util.List;
+import java.util.Map;
 
-import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handleB.HandleDISK.get1FreeBlock;
-import static css.out.file.handleB.HandleDISK.getFATOrder;
+import static css.out.file.handleB.HandleDISK.*;
 import static css.out.file.handleB.HandleFile.*;
-import static css.out.file.handleB.HandleTXT.writeAllDISK2TXT;
 
 /**
  * 文件&文件夹测试
@@ -96,14 +94,16 @@ public class DiskTest {
 
         //尝试设置一个文件
         //处理FAT磁盘逻辑
-//        fullFillFAT(1); //FAT1满
-//        fullFillFAT(2); //全满
-        Integer pos = get1FreeBlock();
-        if (pos != -1) {
-            System.out.println(pos + "是被找到的第一个空闲块");
-            //写入磁盘
-            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
-        }
+//        fullFill1FAT(1); //FAT1满
+//        fullFill1FAT(2); //全满
+//        Integer pos = get1FreeBlock();
+//
+//
+//        if (pos != -1) {
+//            System.out.println(pos + "是被找到的第一个空闲块");
+//            //写入磁盘
+//            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+//        }
         List<Integer> order = getFATOrder();
         System.out.println(order);
 
@@ -123,6 +123,78 @@ public class DiskTest {
      */
     @Test
     public void Disk_reload() throws IOException {
+        FileApp app = new FileApp();
+
+        app.state();
+    }
+
+    @Test
+    public void FAT() throws IOException {
+        FileApp app = new FileApp();
+
+        //        specifyFAT(1, 120);
+//        specifyFAT(120, 2);
+
+        Map<Integer, Integer> map = Map.of( //逻辑FAT -> 手动指定FAT
+                3, 80,
+                80, 50,
+                50, 70,
+                70, 40,
+                40, 90,
+                90, 60,
+                60, Null_Pointer
+        );
+        specifyFAT(map);
+        //模拟具体环境FAT操作, 开始FAT的表演吧
+
+//        fullFill1FAT(1); //FAT1满
+//        fullFill1FAT(2); //全满
+
+//        System.out.println(getFATOrder());
+        System.out.println(get1FreeBlock());
+        System.out.println(set1BlockUse());
+        System.out.println(getFATOrder());
+        System.out.println(get1FreeBlock());
+        System.out.println(set1BlockUse());
+        System.out.println(getFATOrder());
+        System.out.println(set1BlockUse());
+
+        System.out.println(getFATOrder());
+        System.out.println(set1BlockUse());
+        System.out.println(get1FreeBlock());
+        System.out.println(getFATOrder());
+
+
+        app.state();
+    }
+
+    @Test
+    public void FileMount() throws IOException {
+        FileApp app = new FileApp();
+
+        Map<Integer, Integer> map = Map.of(
+                3, 80,
+                80, 50,
+                50, 70,
+                70, 40,
+                40, 90,
+                90, 60,
+                60, Null_Pointer
+        );
+        specifyFAT(map);
+
+        //占用盘块流程:
+        System.out.println(set1BlockUse());
+        System.out.println(set1BlockUse());
+        System.out.println(set1BlockUse());
+        System.out.println(set1BlockUse());
+
+        //查看盘块状态
+        System.out.println(getFATOrder());
+
+        //测试: 获得一个空块
+        System.out.println(get1FreeBlock());
+        System.out.println(get1FreeBlock());
 
     }
 }

@@ -145,6 +145,29 @@ public abstract class HandleDISK {
         return FAT;
     }
 
+    /**
+     * 将FAT1和FAT2合并为一整个FAT
+     *
+     * @return FAT1 + FAT2 = allFAT
+     */
+    public static List<Integer> mergeFATs() {
+        List<Integer> allFAT = new ArrayList<>();
+        for (int i = 0; i < FAT_SIZE; i++)
+            allFAT.add(diskSyS.disk.FAT1.get(i));
+        for (int i = 0; i < FAT_SIZE; i++)
+            allFAT.add(diskSyS.disk.FAT2.get(i));
+        return allFAT;
+    }
+
+    /**
+     * 将逻辑allFAT分割为FAT1和FAT2保存
+     *
+     * @param allFAT 逻辑allFAT
+     */
+    public static void breakFAT(List<Integer> allFAT) {
+        diskSyS.disk.FAT1 = allFAT.subList(0, FAT_SIZE);
+        diskSyS.disk.FAT2 = allFAT.subList(FAT_SIZE, FAT_SIZE * 2);
+    }
 
     /**
      * 指定FAT1为全满状态, 下一个空闲位置位于FAT2
@@ -152,7 +175,7 @@ public abstract class HandleDISK {
      *
      * @param type 1: FAT1 2: FAT2
      */
-    public static void fullFillFAT(Integer type) {
+    public static void fullFill1FAT(Integer type) {
         List<Integer> FAT1 = new ArrayList<>(FAT_SIZE);
         int i = 0;
         for (; i < FAT_SIZE; i++)
@@ -178,7 +201,34 @@ public abstract class HandleDISK {
 
 
     /**
+     * 使用键值对手动指定逻辑大FAT中的某个位置
+     *
+     * @param pos   位置
+     * @param value 值
+     */
+    public static void specifyFAT(Integer pos, Integer value) {
+        List<Integer> allFAT = mergeFATs();
+        allFAT.set(pos, value);
+        breakFAT(allFAT);
+    }
+
+    /**
+     * 使用Map来手动指定逻辑大FAT中的一些位置的值
+     *
+     * @param map 键值对
+     */
+    public static void specifyFAT(Map<Integer, Integer> map) {
+        List<Integer> allFAT = mergeFATs();
+
+        for (Map.Entry<Integer, Integer> entry : map.entrySet())//解析传入的键值对, 将其设置到allFAT中
+            allFAT.set(entry.getKey(), entry.getValue());
+
+        breakFAT(allFAT);
+    }
+
+    /**
      * 利用FAT构建当前磁盘块的顺序访问序列order
+     * <p>order的最后一项就是最后一个占用了的盘块, 其指向空</p>
      *
      * @return 顺序访问的盘块号List序列
      */
@@ -186,44 +236,26 @@ public abstract class HandleDISK {
 
         int pos = 0;
         List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
-        boolean isFAT1 = false;
+
+        //需要将两个FAT合并为逻辑上的一个整个FAT
+        List<Integer> allFAT = mergeFATs();
 
         order.add(pos); //第一个肯定是在队列中的
-        for (int i = 0; i < FAT_SIZE; i++) { //第一个FAT表遍历
-            if (!Objects.equals(diskSyS.disk.FAT1.get(pos), Null_Pointer)) {
-                pos = diskSyS.disk.FAT1.get(pos);
+
+        for (int i = 0; i < FAT_SIZE * 2; i++) {
+
+            if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
+                pos = allFAT.get(pos);
                 order.add(pos);
 
-            } else {
-                isFAT1 = true; //如果是有空闲块的退出则反转标志位
-                break;
-            }
-
+            } else //查找链断裂, 代表找到了全部的Order
+                return order;
         }
 
 
-        if (!isFAT1) {//正常退出后去找FAT2
-            pos = FAT_SIZE;
-
-            for (int i = 0; i < FAT_SIZE - 1; i++) { //第二个FAT表遍历到最后一个元素前
-
-                if (!Objects.equals(diskSyS.disk.FAT2.get(pos - FAT_SIZE), Null_Pointer)) {
-                    pos = diskSyS.disk.FAT2.get(pos - FAT_SIZE);
-                    order.add(pos);
-
-                } else {
-                    isFAT1 = true;  //如果是有空闲块的退出则反转
-                    break;
-                }
-
-            }
-        }
-
-        if (!isFAT1) { //还是找不到退出?
-            log.debug("FATorder序列已经满了");
-        }
-
-        return order;
+        //还是找不到退出?
+        log.debug("FATorder序列不能正常使用了");
+        return null;
     }
 
 
@@ -234,42 +266,36 @@ public abstract class HandleDISK {
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
     public static Integer get1FreeBlock() {
+        List<Integer> allFAT = mergeFATs();
+        Map<Integer, Integer> allFATMap = new HashMap<>();
 
-//        Optional<Integer> pos = diskSyS.disk.FAT1
-//                .stream()
-//                .filter(i -> Objects.equals(i, Null_Pointer))
-//                .findFirst();
-        //需要返回其键, 而不是值:
-        //将 diskSyS.disk.FAT1构造为Map, 然后获取其键
+        for (int i = 0; i < FAT_SIZE * 2; i++)
+            allFATMap.put(i, allFAT.get(i));
 
-        Map<Integer, Integer> FAT1 = new HashMap<>();
+        //要删除掉虽然是NULL_Pointer但是事实上已经被指向的占用块: 从路径序列中找
 
-        for (int i = 0; i < FAT_SIZE; i++)
-            FAT1.put(i, diskSyS.disk.FAT1.get(i));
+        List<Integer> order = getFATOrder(); //获取FAT序列,获得其最后一项的位置
 
+        Integer pre;
 
-        List<Integer> keys = FAT1.entrySet().stream()
+        if (order != null) {
+            pre = order.get(order.size() - 1); //order最后一项的位置
+        } else {
+            log.warn("系统order序列不能正常使用了");
+            return -1;
+        }
+
+        allFATMap.remove(pre);
+
+        List<Integer> keys = allFATMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(Null_Pointer))
                 .map(Map.Entry::getKey)
                 .toList();
+
         Integer pos = keys.get(0);
 
-        if (pos != null)
+        if (pos != null && !pos.equals(FAT_SIZE * 2 - 1))
             return pos;
-
-        Map<Integer, Integer> FAT2 = new HashMap<>();
-
-        for (int i = 0; i < FAT_SIZE; i++)
-            FAT2.put(i, diskSyS.disk.FAT1.get(i));
-
-        keys = FAT2.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(Null_Pointer))
-                .map(Map.Entry::getKey)
-                .toList();
-        pos = keys.get(0);
-
-        if (pos != null)
-            return pos + FAT_SIZE;
 
         log.warn("咩有空闲块咯");
         //throw new RuntimeException("没有找到空闲块!");
@@ -279,6 +305,7 @@ public abstract class HandleDISK {
 
     //FAT序列中占用第一个空闲块, 返回逻辑FAT位置
     public static Integer set1BlockUse() {
+
         Integer pos = get1FreeBlock(); //先看看FAT序列中有没有空闲块
 
         if (pos == -1) {
@@ -288,27 +315,24 @@ public abstract class HandleDISK {
 
         List<Integer> order = getFATOrder(); //获取FAT序列,获得其最后一项的位置
 
-        Integer pre = order.get(order.size() - 1); //返回最后一项的位置
-        //判断其位于FAT1还是FAT2中
-        boolean isFAT1 = pre < FAT_SIZE;
+        Integer pre;
 
-
-        if (isFAT1) {
-            //标记其上一个路径序列中的元素pre指向pos: pre的值为pos
-            diskSyS.disk.FAT1.set(pre, pos);
+        if (order != null) {
+            pre = order.get(order.size() - 1); //order最后一项的位置
         } else {
-            //标记其上一个路径序列中的元素pre指向pos: pre的值为pos
-            diskSyS.disk.FAT2.set(pre - FAT_SIZE, pos - FAT_SIZE);
-            //如果是在FAT2中找到的, 则在FAT2中设置
+            log.warn("系统order序列不能正常使用了");
+            return -1;
         }
 
+        List<Integer> allFAT = mergeFATs();
 
-        //同步后, 将其值修改为下一个空闲块位置
+        allFAT.set(pre, pos); //将最后一项指向空闲块位置
+
+        breakFAT(allFAT);
 
 
-        //TODO 持久化BLOCKS
         //TODO 刷新到TXT
-        return -1;
+        return pos;
     }
 
 
