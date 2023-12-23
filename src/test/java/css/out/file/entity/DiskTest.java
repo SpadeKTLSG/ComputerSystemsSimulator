@@ -13,7 +13,6 @@ import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandleDISK.*;
 import static css.out.file.handleB.HandleFile.*;
-import static css.out.file.handleS.HandleDS.writeContext;
 
 /**
  * 文件&文件夹测试
@@ -195,7 +194,7 @@ public class DiskTest {
         System.out.println(get1FreeBlock());
 
 
-        writeContext();
+//        writeContext();
 
         //还原为初始状态
         app.kickDiskRoboot();//格式化磁盘

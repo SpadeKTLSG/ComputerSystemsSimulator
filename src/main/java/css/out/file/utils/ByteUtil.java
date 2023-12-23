@@ -127,7 +127,6 @@ public abstract class ByteUtil {
 
             return truncated;
         } else {// 如果compressed的长度等于len，就直接返回
-
             return bytes;
         }
     }

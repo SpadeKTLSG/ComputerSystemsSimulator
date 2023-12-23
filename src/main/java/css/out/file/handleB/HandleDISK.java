@@ -7,6 +7,7 @@ import java.util.*;
 
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
+import static css.out.file.handleB.HandleBlock.setBytes21Block;
 import static css.out.file.handleB.HandleTXT.write1Str2TXT;
 import static css.out.file.utils.ByteUtil.byte2Str;
 import static css.out.file.utils.ByteUtil.str2Byte;
@@ -26,8 +27,8 @@ public abstract class HandleDISK {
      * @param bytes    字节数组内容
      * @param blockNum 块号
      */
-    public static void setBytes21Block(byte[] bytes, int blockNum) {
-        diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
+    public static void setBytes21Block_TXT(byte[] bytes, int blockNum) {
+        setBytes21Block(bytes, blockNum);
         write1Str2TXT(byte2Str(bytes), WORKSHOP_PATH + DISK_FILE, blockNum);
     }
 
@@ -38,8 +39,8 @@ public abstract class HandleDISK {
      * @param str      字符串内容
      * @param blockNum 块号
      */
-    public static void setStr21Block(String str, int blockNum) {
-        diskSyS.disk.BLOCKS.set(blockNum, new block(str2Byte(str)));
+    public static void setStr21Block_TXT(String str, int blockNum) {
+        setBytes21Block(str2Byte(str), blockNum);
         write1Str2TXT(str, WORKSHOP_PATH + DISK_FILE, blockNum);
     }
 
@@ -301,7 +302,11 @@ public abstract class HandleDISK {
     }
 
 
-    //FAT序列中占用第一个空闲块, 返回逻辑FAT位置
+    /**
+     * FAT序列中占用第一个空闲块, 返回逻辑FAT位置
+     *
+     * @return 逻辑FAT位置
+     */
     public static Integer set1BlockUse() {
 
         Integer pos = get1FreeBlock(); //先看看FAT序列中有没有空闲块
@@ -328,8 +333,6 @@ public abstract class HandleDISK {
 
         breakFAT(allFAT);
 
-
-        //TODO 刷新到TXT
         return pos;
     }
 

@@ -58,7 +58,7 @@ public abstract class HandleFile {
      * @param dir dir
      * @return Bytes
      */
-    public byte[] dir2Bytes(dir dir) {
+    public static byte[] dir2Bytes(dir dir) {
         return byteMerger(fcb2Bytes(dir.fcb), dir.content.getBytes());
     }
 
@@ -69,7 +69,7 @@ public abstract class HandleFile {
      * @param bytes Bytes
      * @return dir
      */
-    public dir bytes2Dir(byte[] bytes) {
+    public static dir bytes2Dir(byte[] bytes) {
         dir dir = new dir();
         dir.fcb = bytes2Fcb(bytes);
         return dir;
@@ -127,7 +127,7 @@ public abstract class HandleFile {
      * @return 文件内容String类型的长度
      */
     public static Integer getFileLength(file file) {
-        return file.getContent().length();
+        return FCB_BYTE_LENGTH + file.getContent().length();
     }
 
 

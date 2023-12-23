@@ -1,6 +1,7 @@
 package css.out.file.entity;
 
 import css.out.file.enums.FileDirTYPE;
+import css.out.file.enums.ROOT_PATH;
 import lombok.AllArgsConstructor;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
+import static css.out.file.handleB.HandleFile.str2Path;
 
 /**
  * FCB 文件控制块
@@ -59,20 +61,21 @@ public class FCB {
 
 
     /**
-     * 指定目录和磁盘块快速新建文件/文件夹构造
+     * 指定目录和磁盘块手动新建文件/文件夹构造
+     * <p>还需要处理的属性: 扩展名 + 长度</p>
      *
-     * @param pathName   目录名+文件名
+     * @param pathName   目录名:文件名
      * @param startBlock 起始盘块号
      * @param typeFlag   文件or目录标识
      */
-    public FCB(String pathName, int startBlock, FileDirTYPE typeFlag) {
+    public FCB(String pathName, Integer startBlock, FileDirTYPE typeFlag) {
         if (typeFlag == DIR) { //目录
 
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
+            this.typeFlag = DIR;
             this.extendName = DIR_EXTEND.get(0);
-            this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
@@ -80,7 +83,41 @@ public class FCB {
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
+            this.typeFlag = FILE;
             this.extendName = FILE_EXTEND.get(0);
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
+
+        } else { //出错
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
+        }
+
+    }
+
+    /**
+     * DTO类型FCB构造, 前端传递使用
+     * <p>还需要处理的属性: 盘块位置 + 长度</p>
+     *
+     * @param pathName   目录名:文件名
+     * @param extendName 扩展名
+     * @param typeFlag   文件or目录标识
+     */
+    public FCB(String pathName, String extendName, FileDirTYPE typeFlag) {
+        if (typeFlag == DIR) { //目录
+
+            this.pathName = pathName;
+            this.extendName = extendName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.typeFlag = DIR;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
+
+        } else if (typeFlag == FILE) { //文件
+
+            this.pathName = pathName;
+            this.extendName = extendName;
+            //autofill
+            this.startBlock = Null_Pointer;
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
@@ -91,6 +128,37 @@ public class FCB {
 
     }
 
+    /**
+     * 指定目录(用户友好型)新建文件/文件夹构造
+     *
+     * @param pathName 目录名:文件名
+     * @param typeFlag 文件or目录标识
+     */
+    public FCB(String pathName, FileDirTYPE typeFlag) {
+
+        if (typeFlag == DIR) { //目录
+
+            this.pathName = pathName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.extendName = DIR_EXTEND.get(0);
+            this.typeFlag = DIR;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
+
+        } else if (typeFlag == FILE) { //文件
+
+            this.pathName = pathName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.extendName = FILE_EXTEND.get(0);
+            this.typeFlag = FILE;
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
+
+        } else { //出错
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
+        }
+    }
 
     /**
      * 指定FCB类型快速构建无挂载的对象(中间操作)
@@ -102,13 +170,17 @@ public class FCB {
         if (typeFlag == DIR) { //目录
 
             //autofill
+            this.pathName = str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + DIR_NAME_DEFAULT;
+            this.startBlock = Null_Pointer;
             this.extendName = DIR_EXTEND.get(0);
-            this.typeFlag = FILE;
+            this.typeFlag = DIR;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
 
             //autofill
+            this.pathName = str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + FILE_NAME_DEFAULT;
+            this.startBlock = Null_Pointer;
             this.extendName = FILE_EXTEND.get(0);
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;

@@ -35,6 +35,7 @@ public class FileApp {
         log.debug("文件模块成员初始化完成");
         normalRebootFile();
         log.debug("文件模块重读完成");
+        reload();
         log.info("文件系统开机完成 -by SpadeK-");
     }
 
