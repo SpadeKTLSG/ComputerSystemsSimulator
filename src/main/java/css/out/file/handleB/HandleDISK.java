@@ -3,12 +3,9 @@ package css.out.file.handleB;
 import css.out.file.entity.block;
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Objects;
+import java.util.*;
 
 import static css.out.file.FileApp.diskSyS;
-import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handleB.HandleTXT.write1Str2TXT;
 import static css.out.file.utils.ByteUtil.byte2Str;
@@ -220,9 +217,8 @@ public abstract class HandleDISK {
             }
         }
 
-
         if (!isFAT1) { //还是找不到退出?
-            log.debug("FATorder序列已经满了:{}", order);
+            log.debug("FATorder序列已经满了");
         }
 
         return order;
@@ -230,46 +226,77 @@ public abstract class HandleDISK {
 
 
     /**
-     * FATorder序列中查找第一个空闲块
+     * FAT查找第一个空闲块: 找NP
+     * <p>直接在FAT1 -> FAT2 中找值为NULL_POINTER的键即可</p>
      *
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
     public static Integer get1FreeBlock() {
-        List<Integer> order = getFATOrder();
 
-        if (order.size() == FAT_SIZE * 2 - 1) {
-            log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
-            alertUser("磁盘被撑爆了, Behave yourself!");
-            //throw new RuntimeException("没有找到空闲块!");
-            return -1;
-        }
+//        Optional<Integer> pos = diskSyS.disk.FAT1
+//                .stream()
+//                .filter(i -> Objects.equals(i, Null_Pointer))
+//                .findFirst();
+        //需要返回其键, 而不是值:
+        //将 diskSyS.disk.FAT1构造为Map, 然后获取其键
 
-        return order.get(order.size() - 1); //返回最后一项的位置
+        Map<Integer, Integer> FAT1 = new HashMap<>();
+
+        for (int i = 0; i < FAT_SIZE; i++)
+            FAT1.put(i, diskSyS.disk.FAT1.get(i));
+
+
+        List<Integer> keys = FAT1.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(Null_Pointer))
+                .map(Map.Entry::getKey)
+                .toList();
+        Integer pos = keys.get(0);
+
+        if (pos != null)
+            return pos;
+
+        Map<Integer, Integer> FAT2 = new HashMap<>();
+
+        for (int i = 0; i < FAT_SIZE; i++)
+            FAT2.put(i, diskSyS.disk.FAT1.get(i));
+
+        keys = FAT2.entrySet().stream()
+                .filter(entry -> entry.getValue().equals(Null_Pointer))
+                .map(Map.Entry::getKey)
+                .toList();
+        pos = keys.get(0);
+
+        if (pos != null)
+            return pos + FAT_SIZE;
+
+        log.warn("咩有空闲块咯");
+        //throw new RuntimeException("没有找到空闲块!");
+        return -1;
     }
 
 
     //FAT序列中占用第一个空闲块, 返回逻辑FAT位置
     public static Integer set1BlockUse() {
-        Integer target = get1FreeBlock();
-        //判断其位于FAT1还是FAT2中
-        boolean isFAT1 = target < FAT_SIZE;
+        Integer pos = get1FreeBlock(); //先看看FAT序列中有没有空闲块
 
-        List<Integer> order = getFATOrder();
-        if (order.size() == FAT_SIZE * 2) {
-            log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
-            alertUser("磁盘被撑爆了, Behave yourself!");
-            //throw new RuntimeException("没有找到空闲块!");
+        if (pos == -1) {
+            log.warn("FAT序列中没有空闲块");
             return -1;
         }
 
+        List<Integer> order = getFATOrder(); //获取FAT序列,获得其最后一项的位置
+
+        Integer pre = order.get(order.size() - 1); //返回最后一项的位置
+        //判断其位于FAT1还是FAT2中
+        boolean isFAT1 = pre < FAT_SIZE;
+
 
         if (isFAT1) {
-            //标记其上一个路径序列中的元素指向其自身
-            //如果是在FAT1中找到的, 则在FAT1中设置
-        }
-//            diskSyS.disk.FAT1.set(pos, pos);
-        else {
-
+            //标记其上一个路径序列中的元素pre指向pos: pre的值为pos
+            diskSyS.disk.FAT1.set(pre, pos);
+        } else {
+            //标记其上一个路径序列中的元素pre指向pos: pre的值为pos
+            diskSyS.disk.FAT2.set(pre - FAT_SIZE, pos - FAT_SIZE);
             //如果是在FAT2中找到的, 则在FAT2中设置
         }
 
