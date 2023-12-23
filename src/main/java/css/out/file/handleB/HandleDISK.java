@@ -147,13 +147,14 @@ public abstract class HandleDISK {
         return FAT;
     }
 
-    //手动
 
     /**
      * 指定FAT1为全满状态, 下一个空闲位置位于FAT2
      * <p>或: 指定FAT2为全满状态,全部被占满</p>
+     *
+     * @param type 1: FAT1 2: FAT2
      */
-    public static void fullFAT1(Integer type) {
+    public static void fullFillFAT(Integer type) {
         List<Integer> FAT1 = new ArrayList<>(FAT_SIZE);
         int i = 0;
         for (; i < FAT_SIZE; i++)
@@ -179,11 +180,11 @@ public abstract class HandleDISK {
 
 
     /**
-     * FAT序列中查找第一个值为514的位置
+     * 利用FAT构建当前磁盘块的顺序访问序列order
      *
-     * @return FAT序列的综合下标; if -1: 没有找到空闲块
+     * @return 顺序访问的盘块号List序列
      */
-    public static Integer get1FreeBlock() {
+    public static List<Integer> getFATOrder() {
 
         int pos = 0;
         List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
@@ -195,14 +196,14 @@ public abstract class HandleDISK {
                 order.add(pos);
 
             } else {
-                isFAT1 = true; //如果是有空闲块的退出则反转
+                isFAT1 = true; //如果是有空闲块的退出则反转标志位
                 break;
             }
 
         }
 
 
-        if (!isFAT1) { //如果FAT1遍历完了, 仍然没有找到空闲块
+        if (!isFAT1) {//正常退出后去找FAT2
             pos = FAT_SIZE;
 
             for (int i = 0; i < FAT_SIZE - 1; i++) { //第二个FAT表遍历到最后一个元素前
@@ -220,17 +221,65 @@ public abstract class HandleDISK {
         }
 
 
-        if (!isFAT1) { //还是找不到
+        if (!isFAT1) { //还是找不到退出?
+            log.debug("FATorder序列已经满了:{}", order);
+        }
+
+        return order;
+    }
+
+
+    /**
+     * FATorder序列中查找第一个空闲块
+     *
+     * @return FAT序列的综合下标; if -1: 没有找到空闲块
+     */
+    public static Integer get1FreeBlock() {
+        List<Integer> order = getFATOrder();
+
+        if (order.size() == FAT_SIZE * 2 - 1) {
             log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
             alertUser("磁盘被撑爆了, Behave yourself!");
-//            throw new RuntimeException("没有找到空闲块!");
+            //throw new RuntimeException("没有找到空闲块!");
             return -1;
         }
 
+        return order.get(order.size() - 1); //返回最后一项的位置
+    }
+
+
+    //FAT序列中占用第一个空闲块, 返回逻辑FAT位置
+    public static Integer set1BlockUse() {
+        Integer target = get1FreeBlock();
+        //判断其位于FAT1还是FAT2中
+        boolean isFAT1 = target < FAT_SIZE;
+
+        List<Integer> order = getFATOrder();
+        if (order.size() == FAT_SIZE * 2) {
+            log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
+            alertUser("磁盘被撑爆了, Behave yourself!");
+            //throw new RuntimeException("没有找到空闲块!");
+            return -1;
+        }
+
+
+        if (isFAT1) {
+            //标记其上一个路径序列中的元素指向其自身
+            //如果是在FAT1中找到的, 则在FAT1中设置
+        }
+//            diskSyS.disk.FAT1.set(pos, pos);
+        else {
+
+            //如果是在FAT2中找到的, 则在FAT2中设置
+        }
+
+
+        //同步后, 将其值修改为下一个空闲块位置
+
+
         //TODO 持久化BLOCKS
         //TODO 刷新到TXT
-
-        return order.get(order.size() - 1); //返回最后一项的位置
+        return -1;
     }
 
 

@@ -6,11 +6,13 @@ import org.junit.Test;
 import java.io.*;
 import java.nio.charset.StandardCharsets;
 
+import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handleB.HandleDISK.fullFAT1;
+import static css.out.file.handleB.HandleDISK.fullFillFAT;
 import static css.out.file.handleB.HandleDISK.get1FreeBlock;
 import static css.out.file.handleB.HandleFile.*;
+import static css.out.file.handleB.HandleTXT.writeAllDISK2TXT;
 
 /**
  * 文件&文件夹测试
@@ -88,9 +90,23 @@ public class DiskTest {
     @Test
     public void Disk_function1() throws IOException {
         FileApp app = new FileApp();
-        fullFAT1(2); //全满
-        System.out.println(get1FreeBlock());
+
+        //尝试设置一个文件
+        //处理FAT磁盘逻辑
+        fullFillFAT(1); //FAT1满
+        fullFillFAT(2); //全满
+        Integer pos = get1FreeBlock();
+        if (pos != -1) {
+            System.out.println(pos + "是被找到的第一个空闲块");
+            //写入磁盘
+            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+        }
+
+//        app.kickDiskRoboot();
         app.state();
+
+        //设置一个盘块占用了
+
     }
 
 
