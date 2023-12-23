@@ -125,7 +125,7 @@ public abstract class HandleDS {
      *
      * @param A 文件/文件夹对象
      */
-    public static void writeContext(Object A) {
+    public static void addContext(Object A) {
 
 
         //0. 合法性校验
@@ -140,10 +140,9 @@ public abstract class HandleDS {
 
 
         //1. 占用盘块资源 in FAT
-        Integer inputPos = set1BlockUse();
+        Integer inputPos = set1FATUse();
         log.debug("占用了盘块: {}", inputPos);
 
-        System.out.println(getFATOrder());//康康FAT占用顺序
 
         if (inputPos == -1) {
             log.warn("系统磁盘爆炸咯!");
@@ -155,14 +154,14 @@ public abstract class HandleDS {
         //2. 文件属性处理 + 2.5 写入BLOCKS
 
         if (A instanceof file file_temp) {
-            log.debug("正在保存文件{}", ((file) A).fcb.getPathName());
+            log.debug("正在往磁盘保存文件{}", file_temp.fcb.getPathName());
             //?属性拷贝: 对于DTO文件XXX.txt, 创建path和文件名(扩展名)和文件类型都已经赋值好. (仿照Linux交互)
             file_temp.fcb.setStartBlock(inputPos); //设置文件起始块
             file_temp.fcb.setFileLength(getFileLength(file_temp)); //设置文件长度
             setBytes21Block(file2Bytes(file_temp), inputPos); //写入磁盘
 
         } else if (A instanceof dir dir_temp) {
-            log.debug("正在保存文件夹{}", ((dir) A).fcb.getPathName());
+            log.debug("正在往磁盘保存文件夹{}", dir_temp.fcb.getPathName());
             dir_temp.fcb.setStartBlock(inputPos); //设置文件起始块
             setBytes21Block(dir2Bytes(dir_temp), inputPos); //写入磁盘
 
@@ -183,5 +182,65 @@ public abstract class HandleDS {
 
     }
 
+
+    /**
+     * 将文件对象赶出磁盘模块
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static void deleteContext(Object A) {
+
+
+        if (A instanceof file file_temp) {
+            log.debug("正在从磁盘删除文件{}", file_temp.fcb.getPathName());
+
+            //1. 定位盘块, 回收对应FAT
+            Integer state = set1FATFree(file_temp.fcb.getStartBlock());
+            if (state == -1) {
+                log.warn("文件{}不存在, 无法删除", file_temp.fcb.getPathName());
+                alertUser("你请求的文件不存在, 无法删除");
+                return;
+            }
+
+            //2. FAT写入BLOCKS
+            mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1);
+            mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2);
+            //3. BLOCKS全量覆写TXT
+            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+
+        } else if (A instanceof dir dir_temp) {
+            log.debug("正在从磁盘删除文件夹{}", dir_temp.fcb.getPathName());
+
+            //1. 定位盘块, 回收对应FAT
+            Integer state = set1FATFree(dir_temp.fcb.getStartBlock());
+            if (state == -1) {
+                log.warn("文件夹{}不存在, 无法删除", dir_temp.fcb.getPathName());
+                alertUser("你请求的文件夹不存在, 无法删除");
+                return;
+            }
+
+            //2. FAT写入BLOCKS
+            mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1);
+            mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2);
+            //3. BLOCKS全量覆写TXT
+            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+
+        } else {//无需清除BLock和TXT对应位置内容, 下次写入和更新时直接自动覆盖对应行
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+            //从磁盘刷新系统, 还原被错误操作的FAT空间
+            normalRebootDisk();
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
+
+    }
+
+
+    public static void alterContext(Object A) {
+        //TODO
+    }
+
+    public static void selectContext(Object A) {
+        //TODO
+    }
 
 }

@@ -33,7 +33,8 @@ public class FCB {
     public String pathName;
 
     /**
-     * 起始盘块号
+     * 起始盘块号(对应块号)
+     * <p>很抱歉, 为了项目进度锁定了一个文件只能占一个块</p>
      * <p>3 <= startBlock <= 127</p>
      */
     public Integer startBlock;

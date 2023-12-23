@@ -18,6 +18,7 @@ import static css.out.file.utils.ByteUtil.str2Byte;
 @Slf4j
 public abstract class HandleDISK {
 
+
     //! 1. 磁盘 - CRUD
 
 
@@ -146,6 +147,7 @@ public abstract class HandleDISK {
         return FAT;
     }
 
+
     /**
      * 将FAT1和FAT2合并为一整个FAT
      *
@@ -160,6 +162,7 @@ public abstract class HandleDISK {
         return allFAT;
     }
 
+
     /**
      * 将逻辑allFAT分割为FAT1和FAT2保存
      *
@@ -169,6 +172,7 @@ public abstract class HandleDISK {
         diskSyS.disk.FAT1 = allFAT.subList(0, FAT_SIZE);
         diskSyS.disk.FAT2 = allFAT.subList(FAT_SIZE, FAT_SIZE * 2);
     }
+
 
     /**
      * 指定FAT1为全满状态, 下一个空闲位置位于FAT2
@@ -213,6 +217,7 @@ public abstract class HandleDISK {
         breakFAT(allFAT);
     }
 
+
     /**
      * 使用Map来手动指定逻辑大FAT中的一些位置的值
      *
@@ -226,6 +231,7 @@ public abstract class HandleDISK {
 
         breakFAT(allFAT);
     }
+
 
     /**
      * 利用FAT构建当前磁盘块的顺序访问序列order
@@ -267,7 +273,7 @@ public abstract class HandleDISK {
      *
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
-    public static Integer get1FreeBlock() {
+    public static Integer get1FreeFAT() {
         List<Integer> allFAT = mergeFATs();
         Map<Integer, Integer> allFATMap = new HashMap<>();
 
@@ -307,9 +313,9 @@ public abstract class HandleDISK {
      *
      * @return 逻辑FAT位置
      */
-    public static Integer set1BlockUse() {
+    public static Integer set1FATUse() {
 
-        Integer pos = get1FreeBlock(); //先看看FAT序列中有没有空闲块
+        Integer pos = get1FreeFAT(); //先看看FAT序列中有没有空闲块
 
         if (pos == -1) {
             log.warn("FAT序列中没有空闲块");
@@ -340,19 +346,57 @@ public abstract class HandleDISK {
     /**
      * 释放block空间: 将FAT最晚的一个块指向这个位置, 这个位置同样指向空(514)
      *
-     * @param blockNum
+     * @param blockNum 要释放的块号
+     * @return FAT中释放的块号(可能已经不能使用) / -1失败
      */
-    public static void set1BlockFree(int blockNum) {
-        //设置为空
+    public static Integer set1FATFree(int blockNum) {
 
-        //将队列的最后一项指向当前这个末尾节点, 同时将当前这个末尾节点指向NULL_POINTER
-        //如果是在FAT1中找到的, 则在FAT1中设置; 如果是在FAT2中找到的, 则在FAT2中设置
-//        if (order.size() > 1) //如果有多个块, 则将最后一个块指向NULL_POINTER
-//            if (Objects.equals(diskSyS.disk.FAT1.get(order.get(order.size() - 2)), Null_Pointer)) //如果是在FAT1中找到的, 则在FAT1中设置
-//                diskSyS.disk.FAT1.set(order.get(order.size() - 2), Null_Pointer);
-//            else //如果是在FAT2中找到的, 则在FAT2中设置
-//                diskSyS.disk.FAT2.set(order.get(order.size() - 2), Null_Pointer);
+        List<Integer> order = getFATOrder();
+
+        int pos;
+        if (order != null) {//定位blockNum
+            pos = order.indexOf(blockNum);
+        } else {
+            log.warn("系统order序列不能正常使用了");
+            return -1;
+        }
+
+        if (pos == -1) {
+            log.warn("要释放的块号不在FAT序列中");
+            return -1;
+        }
+
+        //LinkedList思维 : 在allFAT中定位值为pre和pos的sit
+
+        int pre = pos - 1;
+
+        if (pos == order.size() - 1) { //pos是序列中的最后者
+            List<Integer> allFAT = mergeFATs();
+
+            int posSit = allFAT.indexOf(order.get(pos));
+            int preSit = allFAT.indexOf(order.get(pos));
+
+            allFAT.set(preSit, Null_Pointer);
+            breakFAT(allFAT);
+            return posSit;
+
+        } else {
+
+            Integer post = order.get(pos + 1);
+
+            List<Integer> allFAT = mergeFATs();
+
+            int posSit = allFAT.indexOf(pos);
+            int preSit = allFAT.indexOf(pre);
+            int postSit = allFAT.indexOf(post);
+
+            allFAT.set(preSit, postSit);
+            breakFAT(allFAT);
+            return posSit;
+        }
+
 
     }
+
 
 }

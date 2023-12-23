@@ -96,7 +96,7 @@ public class DiskTest {
         //处理FAT磁盘逻辑
 //        fullFill1FAT(1); //FAT1满
 //        fullFill1FAT(2); //全满
-//        Integer pos = get1FreeBlock();
+//        Integer pos = get1FreeFAT();
 //
 //
 //        if (pos != -1) {
@@ -148,17 +148,17 @@ public class DiskTest {
 //        fullFill1FAT(2); //全满
 
 //        System.out.println(getFATOrder());
-        System.out.println(get1FreeBlock());
-        System.out.println(set1BlockUse());
+        System.out.println(get1FreeFAT());
+        System.out.println(set1FATUse());
         System.out.println(getFATOrder());
-        System.out.println(get1FreeBlock());
-        System.out.println(set1BlockUse());
+        System.out.println(get1FreeFAT());
+        System.out.println(set1FATUse());
         System.out.println(getFATOrder());
-        System.out.println(set1BlockUse());
+        System.out.println(set1FATUse());
 
         System.out.println(getFATOrder());
-        System.out.println(set1BlockUse());
-        System.out.println(get1FreeBlock());
+        System.out.println(set1FATUse());
+        System.out.println(get1FreeFAT());
         System.out.println(getFATOrder());
 
 
@@ -181,17 +181,17 @@ public class DiskTest {
         specifyFAT(map);
 
         //占用盘块流程:
-        System.out.println(set1BlockUse());
-        System.out.println(set1BlockUse());
-        System.out.println(set1BlockUse());
-        System.out.println(set1BlockUse());
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
 
         //查看盘块状态
         System.out.println(getFATOrder());
 
         //测试: 获得一个空块
-        System.out.println(get1FreeBlock());
-        System.out.println(get1FreeBlock());
+        System.out.println(get1FreeFAT());
+        System.out.println(get1FreeFAT());
 
 
 //        writeContext();
