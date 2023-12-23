@@ -9,10 +9,10 @@ import java.nio.charset.StandardCharsets;
 import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
-import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handleB.HandleDISK.*;
+import static css.out.file.handleB.HandleDISK.get1FreeBlock;
+import static css.out.file.handleB.HandleDISK.getFATOrder;
 import static css.out.file.handleB.HandleFile.*;
 import static css.out.file.handleB.HandleTXT.writeAllDISK2TXT;
 
@@ -107,8 +107,8 @@ public class DiskTest {
         List<Integer> order = getFATOrder();
         System.out.println(order);
 
-        log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
-        alertUser("磁盘被撑爆了, Behave yourself!");
+//        log.warn("FAT1和FAT2都装不下咯!, 当前FAT状态: FAT1: {}, FAT2: {}", diskSyS.disk.FAT1, diskSyS.disk.FAT2);
+//        alertUser("磁盘被撑爆了, Behave yourself!");
 
 //        app.kickDiskRoboot();
         app.state();

@@ -80,7 +80,8 @@ public abstract class HandleDISK {
 
         FAT.set(0, 1); //0号块指向1号块FAT1
         FAT.set(1, 2); //1号块指向2号块FAT2
-        FAT.set(2, 3); //2号块指向3号块(第一个空闲块)
+        FAT.set(2, 3); //2号块指向3号块(系统目录挂载块)
+        //3号块指向空, 4号块为第一个空闲块
 
         return FAT;
     }
@@ -187,6 +188,7 @@ public abstract class HandleDISK {
         List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
         boolean isFAT1 = false;
 
+        order.add(pos); //第一个肯定是在队列中的
         for (int i = 0; i < FAT_SIZE; i++) { //第一个FAT表遍历
             if (!Objects.equals(diskSyS.disk.FAT1.get(pos), Null_Pointer)) {
                 pos = diskSyS.disk.FAT1.get(pos);
