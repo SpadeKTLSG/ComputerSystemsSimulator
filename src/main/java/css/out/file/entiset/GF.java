@@ -5,14 +5,13 @@ import java.util.Map;
 
 /**
  * GlobalField全局变量&信息定义
- *
  */
 public abstract class GF {
 
     //!磁盘DISK
 
     /**
-     * 默认磁盘名 = 西数
+     * 默认磁盘名 = 西数XXX
      */
     public static final String DISK_NAME = "西数8KB岩浆暖气片";
 
@@ -127,10 +126,10 @@ public abstract class GF {
 
 
     /**
-     * 一次输入的最大字符数 = 255/一个字节容量
+     * 一次输入的最大字符数 = 255/一个字节容量 -> 一个块的大小-FCB大小 = 56个ASCII字符
      * <p>输入长度超过时自动分配空间</p>
      */
-    public static final Integer MAX_INPUT_INONCE = 255;
+    public static final Integer MAX_1INPUT = BLOCK_SIZE - FCB_BYTE_LENGTH;
 
     /**
      * 文件扩展名S List = .txt,...

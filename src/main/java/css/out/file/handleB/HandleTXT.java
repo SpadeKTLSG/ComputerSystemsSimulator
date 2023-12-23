@@ -15,7 +15,7 @@ import static css.out.file.entiset.GF.*;
  * @comment 取名TXT会不会太随便了, 嗯?
  */
 @Slf4j
-public class HandleTXT {
+public abstract class HandleTXT {
 
     //! 1.单行TXT操作
 
@@ -49,19 +49,19 @@ public class HandleTXT {
                 }
                 pos_temp++;
             }
+
         } catch (Exception e) {
             log.error("注入msg到{}位置失败! {}", path, e.getMessage());
         }
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
 
-            //通过sb全部写入:
             for (String line : sb.toString().split("\n")) {
-
                 bw.write(line);
                 bw.newLine();
             }
             bw.flush();
+
         } catch (Exception e) {
             log.error("写入磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
         }
@@ -88,10 +88,10 @@ public class HandleTXT {
         }
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
-            //跳过前面的pos-1行, 读取pos行的内容到s
-            for (int i = 0; i < pos - 1; i++) {
+
+            for (int i = 0; i < pos - 1; i++)  //跳过前面的pos-1行, 读取pos行的内容到s
                 br.readLine();
-            }
+
             res = br.readLine();
 
         } catch (Exception e) {
@@ -114,13 +114,14 @@ public class HandleTXT {
 
         try (BufferedWriter bw = new BufferedWriter(new OutputStreamWriter(new FileOutputStream(path), StandardCharsets.UTF_8))) {
 
-            for (block block : BLOCKS) {//将BLOCKS中的每个磁盘块的内容一个一个写入
+            for (block block : BLOCKS) {
 
                 byte[] byte_temp = block.bytes;
                 StringBuilder sb = new StringBuilder();
-                for (byte b : byte_temp) {
+
+                for (byte b : byte_temp)
                     sb.append(b).append(" ");
-                }
+
                 bw.write(sb.toString());
                 bw.newLine();
             }
@@ -146,10 +147,12 @@ public class HandleTXT {
         StringBuilder sb = new StringBuilder();
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(path), StandardCharsets.UTF_8))) {
+
             String line;
-            while ((line = br.readLine()) != null) {
+
+            while ((line = br.readLine()) != null)
                 sb.append(line).append("\n");
-            }
+
 
         } catch (Exception e) {
             log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());

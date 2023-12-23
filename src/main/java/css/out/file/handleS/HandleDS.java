@@ -74,9 +74,9 @@ public abstract class HandleDS {
     public static List<block> initialBLOCKS() {
 
         List<block> BLOCKS = new ArrayList<>(DISK_SIZE);
-        for (int i = 0; i < DISK_SIZE; i++) {
+        for (int i = 0; i < DISK_SIZE; i++)
             BLOCKS.add(new block());
-        }
+
 
         return BLOCKS;
     }

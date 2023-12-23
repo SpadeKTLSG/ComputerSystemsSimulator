@@ -2,7 +2,6 @@ package css.out.file.entiset;
 
 import lombok.extern.slf4j.Slf4j;
 
-
 import static css.out.file.entity.disk.initialDisk;
 import static css.out.file.handleS.HandleFS.*;
 
@@ -10,7 +9,7 @@ import static css.out.file.handleS.HandleFS.*;
  * 单例模式工厂
  */
 @Slf4j
-public abstract class SF {
+public abstract class SFA {
 
     /**
      * DiskSyS磁盘系统: 唯一
@@ -27,8 +26,9 @@ public abstract class SF {
      * private构造
      * 保证外部无法实例化
      */
-    private SF() {
+    private SFA() {
     }
+
 
     /**
      * 获取磁盘系统
@@ -37,6 +37,7 @@ public abstract class SF {
         DISK_SYS.disk = initialDisk();
         return DISK_SYS;
     }
+
 
     /**
      * 获取文件系统

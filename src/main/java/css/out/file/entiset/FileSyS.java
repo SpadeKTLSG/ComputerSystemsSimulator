@@ -35,10 +35,8 @@ public class FileSyS {
      * 单例实现
      */
     public FileSyS() {
-//        this.tree = new TREE(); //赋值成员变量空间
-//        this.extendManager = new HashMap<>(); //赋值成员变量空间
-//        this.pathManager = new HashMap<>(); //赋值成员变量空间
     }
+
 
     @Override
     public String toString() {
