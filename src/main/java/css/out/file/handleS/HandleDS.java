@@ -121,7 +121,7 @@ public abstract class HandleDS {
 
 
     /**
-     * 将文件对象写入磁盘模块
+     * 将对象加入磁盘模块
      *
      * @param A 文件/文件夹对象
      */
@@ -184,7 +184,7 @@ public abstract class HandleDS {
 
 
     /**
-     * 将文件对象赶出磁盘模块
+     * 将对象赶出磁盘模块
      *
      * @param A 文件/文件夹对象
      */
@@ -205,6 +205,7 @@ public abstract class HandleDS {
             //2. FAT写入BLOCKS
             mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1);
             mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2);
+
             //3. BLOCKS全量覆写TXT
             writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
 
@@ -222,6 +223,7 @@ public abstract class HandleDS {
             //2. FAT写入BLOCKS
             mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT1), 1);
             mountFAT2BLOCKS(diskSyS.disk.BLOCKS, FAT2Bytes(diskSyS.disk.FAT2), 2);
+
             //3. BLOCKS全量覆写TXT
             writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
 
@@ -234,12 +236,29 @@ public abstract class HandleDS {
 
     }
 
+    /**
+     * 修改磁盘模块的一个对象
+     *
+     * @param A
+     * @param B
+     */
+    public static void alterContext(Object A, Object B) {
+        //改文件为新文件: 直接删除后新增到相同盘块位置; FAT保持不变
+        //情境分析: 文件/文件夹内部修改, 要么改名要么改类型, 要么改内容, 或者同时; 其他的都不变
 
-    public static void alterContext(Object A) {
-        //TODO
+        //1. 定位文件A, 获得盘块位置
+
+
+        //2. 清空对应位置的盘块而不释放, 然后修改调用addContext(B)精确到位置
+
+        //3. FAT写入BLOCKS
+
+
+        //4. 持久化到TXT
     }
 
     public static void selectContext(Object A) {
+        //查找这个文件的相关信息
         //TODO
     }
 
