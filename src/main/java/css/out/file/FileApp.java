@@ -18,9 +18,18 @@ import static css.out.file.handleS.HandleFS.*;
 @Slf4j
 public class FileApp {
 
+    /**
+     * 全局单例磁盘系统
+     */
     public static DiskSyS diskSyS;
 
+    /**
+     * 全局单例文件系统
+     */
     public static FileSyS fileSyS;
+
+    //! 1. 系统操作
+
 
     /**
      * 初始化系统成员 + 读取磁盘内容
@@ -36,11 +45,11 @@ public class FileApp {
         normalRebootFile();
         log.debug("文件模块重读完成");
         reload();
-        log.info("文件系统开机完成 -by SpadeK-");
+        log.info("文件系统开机完成 -by SpadeKTLSG-");
     }
 
     /**
-     * 重启磁盘系统
+     * 系统特殊操作
      *
      * @param auth 权限
      * @param type 操作类型
@@ -67,6 +76,7 @@ public class FileApp {
         }
     }
 
+
     /**
      * 重启文件系统
      */
@@ -75,6 +85,7 @@ public class FileApp {
         new FileApp();
     }
 
+
     /**
      * 刷新
      * <p>重新从磁盘加载资源</p>
@@ -82,15 +93,16 @@ public class FileApp {
     public void reload() {
         log.info("刷新中...正在重新从磁盘加载系统内容");
         normalRebootDisk();
-        //文档重构
-        //...TODO
+        log.info("刷新中...正在重建文件系统索引");
+        normalRebootFile();
     }
+
 
     /**
      * 展示系统状态
      */
     public void state() {
-        log.info("文件系统状态展示");
+        log.info("磁盘模块-文件模块状态展示");
         //打印两个系统的主要成员信息
         //1. 磁盘系统
         System.out.println(diskSyS);
@@ -98,21 +110,68 @@ public class FileApp {
         System.out.println(fileSyS);
     }
 
+
     /**
-     * 覆盖模式
+     * 覆盖模式启动
      */
     public void coverDiskRoboot() {
         coverRebootDisk();
         coverRebootFile();
     }
 
+
     /**
-     * !格式化模式
+     * 格式化模式启动
      */
     public void kickDiskRoboot() {
         cleanRebootDisk();
-
         cleanRebootFile();
+    }
+
+    //! 2. 系统功能接口实现 - CRUD
+    //API传递使用Object充当DTO, 只赋值PathName
+
+    /**
+     * 新增文件系统的一个对象
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static void addContent(Object A) {
+        addContentFS(A);
+        addContentDS(A);
+    }
+
+    /**
+     * 删除文件系统的一个对象
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static void deleteContent(Object A) {
+        deleteContentFS(A);
+        deleteContentDS(A);
+
+    }
+
+    /**
+     * 修改文件系统的一个对象
+     *
+     * @param A 被修改的对象
+     * @param B 修改后的对象
+     */
+    public static void alterContent(Object A, Object B) {
+        alterContentFS(A, B);
+        alterContentDS(A, B);
+    }
+
+    /**
+     * 查找文件系统的一个对象
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static Object selectContent(Object A) {
+
+        return selectContentFS(A);
+        //selectContentDS(A); //无需关注底层磁盘实现
     }
 
 

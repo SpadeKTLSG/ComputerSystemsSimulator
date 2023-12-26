@@ -76,6 +76,14 @@ public abstract class HandlePATH {
         return sb.toString();
     }
 
+    //新增TR节点
+
+    //删除TR节点
+
+    //查询TR节点
+
+    //修改TR节点
+
 
     //! 2. 路径管理器PM
 
@@ -131,6 +139,21 @@ public abstract class HandlePATH {
         return keys.get(0);
     }
 
+    /**
+     * PM删除PathName
+     *
+     * @param pathName FCB的PathName
+     * @return 路径管理器中的键
+     */
+    public static Integer deletePM(String pathName) {
+        List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
+                .filter(entry -> entry.getValue().equals(pathName))
+                .map(Map.Entry::getKey)
+                .toList();
+
+        fileSyS.pathManager.put(keys.get(0), "");
+        return keys.get(0);
+    }
 
     /**
      * PM定位PathName

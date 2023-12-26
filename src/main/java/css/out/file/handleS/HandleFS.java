@@ -29,7 +29,8 @@ public abstract class HandleFS {
         //需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建
         //因为设置了一个块里只能有一个文件(整个/部分), 因此需要按照FAT的顺序遍历磁盘, 读取每个文件对象(file/dir)的字节流, 转换为对象, 挂载到树上
 
-        //TODO 最后来
+        //TODO
+        //使用order序列遍历查找对应文件/文件夹的内容, 逐个添加到树上, 同时加到PM上
 
         setDefaultPM();
         setDefaultEM();
@@ -60,6 +61,8 @@ public abstract class HandleFS {
         FileApp.fileSyS = initialFileSys();
         log.debug("文件模块格式化完成");
     }
+
+
     //! 1. 文件系统树形结构TR/
 
 
@@ -102,5 +105,44 @@ public abstract class HandleFS {
         return em;
     }
 
+
+    //! 4.CRUD FS
+
+    /**
+     * 将对象加入文件模块
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static void addContentFS(Object A) {
+
+    }
+
+    /**
+     * 将对象赶出磁盘模块
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static void deleteContentFS(Object A) {
+
+    }
+
+    /**
+     * 修改文件模块的一个对象
+     *
+     * @param A 被修改的对象
+     * @param B 修改后的对象
+     */
+    public static void alterContentFS(Object A, Object B) {
+
+    }
+
+    /**
+     * 查找文件模块的一个对象信息
+     *
+     * @param A 文件/文件夹对象
+     */
+    public static Object selectContentFS(Object A) {
+        return null;
+    }
 
 }

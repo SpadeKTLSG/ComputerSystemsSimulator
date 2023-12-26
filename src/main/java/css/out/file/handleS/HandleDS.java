@@ -124,7 +124,7 @@ public abstract class HandleDS {
      *
      * @param A 文件/文件夹对象
      */
-    public static void addContext(Object A) {
+    public static void addContentDS(Object A) {
 
 
         //0. 合法性校验
@@ -187,7 +187,7 @@ public abstract class HandleDS {
      *
      * @param A 文件/文件夹对象
      */
-    public static void deleteContext(Object A) {
+    public static void deleteContentDS(Object A) {
 
 
         if (A instanceof file file_temp) {
@@ -243,7 +243,7 @@ public abstract class HandleDS {
      * @param A 被修改的对象
      * @param B 修改后的对象(完整)
      */
-    public static void alterContext(Object A, Object B) {
+    public static void alterContentDS(Object A, Object B) {
         //由于存在两种甚至多重类型, 因此不能简单采用直接替换的方法, 而是用删除后新增(直接覆盖)的方式
         //改文件为新文件(文件夹): 直接删除后新增到相同盘块位置; FAT保持不变
         //情境分析: 文件/文件夹内部修改, 要么改名要么改类型, 要么改内容, 或者同时; 其他的都不变
@@ -290,7 +290,7 @@ public abstract class HandleDS {
      *
      * @param A 文件/文件夹对象
      */
-    public static void selectContext(Object A) {
+    public static void selectContentDS(Object A) {
         //1. 定位文件A, 获得盘块位置
         Integer pos = A instanceof file ? ((file) A).fcb.getStartBlock() : ((dir) A).fcb.getStartBlock();
         //2. 读取磁盘对应位置内容

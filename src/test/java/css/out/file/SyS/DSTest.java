@@ -51,11 +51,11 @@ public class DSTest {
 
 //        System.out.println(getFATOrder());//康康FAT占用顺序
 
-        addContext(temp_file);
+        addContentDS(temp_file);
 
 //        System.out.println(getFATOrder());//康康FAT占用顺序
 
-        deleteContext(temp_file);
+        deleteContentDS(temp_file);
 //
 //        System.out.println(getFATOrder());//康康FAT占用顺序
 //
@@ -63,22 +63,21 @@ public class DSTest {
 //
 //        System.out.println(getFATOrder());//康康FAT占用顺序
 //
-//        deleteContext(temp_dir);
+//        deleteContentDS(temp_dir);
 //
 //        System.out.println(getFATOrder());//康康FAT占用顺序
 
 
         //这时候能看到BLOCK中还残留着垃圾内容, 但是FAT已经清空了; TXT的内容是全空
 //        addContext(temp_obj);
-//        deleteContext(temp_obj);
+//        deleteContentDS(temp_obj);
 
         //改
-        addContext(temp_file);
+        addContentDS(temp_file);
 
-        alterContext(temp_file, temp_fileAltered);
+        alterContentDS(temp_file, temp_fileAltered);
 
-        //查 FIXME 等文件完成
-        selectContext(temp_fileAltered);
+        selectContentDS(temp_fileAltered);
 
         app.state();
 
