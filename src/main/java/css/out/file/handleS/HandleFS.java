@@ -1,5 +1,6 @@
 package css.out.file.handleS;
 
+import css.out.file.FileApp;
 import css.out.file.entity.TREE;
 import css.out.file.entity.node;
 import lombok.extern.slf4j.Slf4j;
@@ -9,6 +10,7 @@ import java.util.Map;
 
 import static css.out.file.entiset.GF.FILE_TREE_NAME;
 import static css.out.file.entiset.GF.ROOT_AUTH;
+import static css.out.file.entiset.SFA.initialFileSys;
 import static css.out.file.handleB.HandlePATH.*;
 
 /**
@@ -38,12 +40,11 @@ public abstract class HandleFS {
 
     /**
      * ?覆盖模式
-     * <p>直接用当前JAVA磁盘对象覆盖文件系统对象</p>
-     *
-     * @comment 这个行动完全没有意义可言
+     * <p>直接用当前JAVA文件对象结构重建系统</p>
+     * <p>根据当前Java对象的挂载关系操作</p>
      */
     public static void coverRebootFile() {
-
+        //由于超纲, 未实现
 
         log.debug("文件模块覆盖完成");
     }
@@ -56,7 +57,7 @@ public abstract class HandleFS {
      */
     public static void cleanRebootFile() {
 
-
+        FileApp.fileSyS = initialFileSys();
         log.debug("文件模块格式化完成");
     }
     //! 1. 文件系统树形结构TR/

@@ -38,7 +38,7 @@ public abstract class HandleDS {
 
     /**
      * ?覆盖模式
-     * <p>直接用当前JAVA磁盘对象覆盖磁盘映射文件</p>
+     * <p>直接用当前JAVA对象覆盖磁盘映射文件TXT</p>
      */
     public static void coverRebootDisk() {
         //手动把当前的FAT覆盖磁盘

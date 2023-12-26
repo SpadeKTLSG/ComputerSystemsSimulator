@@ -8,7 +8,7 @@ import static css.out.file.entiset.GF.ROOT_AUTH;
 import static css.out.file.entiset.SFA.initialDiskSyS;
 import static css.out.file.entiset.SFA.initialFileSys;
 import static css.out.file.handleS.HandleDS.*;
-import static css.out.file.handleS.HandleFS.normalRebootFile;
+import static css.out.file.handleS.HandleFS.*;
 
 /**
  * 文件系统Application
@@ -103,7 +103,7 @@ public class FileApp {
      */
     public void coverDiskRoboot() {
         coverRebootDisk();
-        normalRebootFile(); //FIXME
+        coverRebootFile();
     }
 
     /**
@@ -111,8 +111,8 @@ public class FileApp {
      */
     public void kickDiskRoboot() {
         cleanRebootDisk();
-        fileSyS = initialFileSys();//FIXME
-        normalRebootFile();
+
+        cleanRebootFile();
     }
 
 
