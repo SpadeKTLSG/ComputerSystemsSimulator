@@ -114,6 +114,9 @@ public abstract class HandleFS {
      * @param A 文件/文件夹对象
      */
     public static void addContentFS(Object A) {
+        //?自动绑定PM和EM, Path名字和扩展名都会在创建文件FCB字节对象时候自动绑定
+        //?那么文件系统剩下的工作就是加入
+
 
     }
 
