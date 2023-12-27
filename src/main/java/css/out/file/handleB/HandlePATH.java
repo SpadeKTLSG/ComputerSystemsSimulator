@@ -9,8 +9,10 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
 import static css.out.file.FileApp.fileSyS;
+import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.handleB.HandleFile.*;
@@ -78,26 +80,75 @@ public abstract class HandlePATH {
     }
 
 
-    //新增TR节点
+    /**
+     * 新增TR节点
+     *
+     * @param fcb 新增对象的FCB
+     */
     public static void addTR(FCB fcb) { //fcb或者是node皆可
-        //? 拿到FCB后, 通过String切分判断其上级已存在node的位置
-        //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
+        //? 拿到FCB后, 通过String切分判断其上级已存在node的位置, 封装到searchUpperNode方法中
+        node dir_temp = searchUpperNode(fcb);
 
-        String[] pathTemp = fcb.pathName.split(":");
-        //1.1
-
-        String[] dir = getPathArray(fcb);
-        String name = getName(fcb);
-        node temp_node = fileSyS.tree.root.left;            //创建游标指针tempnode去TR中跟踪序列, 指向根节点的左子树, 也就是第一个挂载到/的节点
-        StringBuilder sb = new StringBuilder();     //创建SB存储目录序列
-
-
-        //2. 遍历目录数组, 每次遍历到一个目录, 就判断其是否是tempnode的左子树, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
-        node dir_temp = searchNode(temp_node, dir, 0, sb); //得到要新增的节点的父节点
-        System.out.println(sb); //展示目录序列
-
+        if (dir_temp == null) {
+            return;
+        }
 
         //?新增逻辑: fcb/node组装为node, 挂载到孩子兄弟树TR上父节点的左孩子或者是左孩子的右兄弟上
+
+        node input = new node(fcb); //直接将fcb封装为node, 左右子节点均为null
+
+        if (dir_temp.left == null) {
+            dir_temp.left = input; //如果父节点的左孩子为空, 直接挂载到左孩子上
+        } else {
+            node tempnode = dir_temp.left;
+            while (tempnode.right != null) {
+                tempnode = tempnode.right; //递归查找根节点的左子树的最后一个右孩子节点
+            }
+            tempnode.right = input;//将新节点挂载到最后一个右孩子节点的右兄弟上
+        }
+
+    }
+
+
+    /**
+     * 删除TR节点
+     *
+     * @param fcb 删除对象的FCB
+     */
+    public static void deleteTR(FCB fcb) {
+        node parentNode = searchUpperNode(fcb); //得到要删除的节点的父节点(一定是目录)
+        node targetNode = selectTR(fcb);//得到要删除的节点本身
+
+        if (parentNode == null) {
+            return;
+        }
+
+        if (targetNode == null) {
+            return;
+        }
+
+        if (Objects.equals(parentNode.fcb.getPathName(), "/:")) { //安全判断
+            log.warn("根目录下的8个节点不能删除!");
+            alertUser("小子, 你在玩火!");
+            return;
+        }
+
+        // 如果要删除的节点是其父节点的左孩子
+        if (parentNode.left == targetNode) {
+            parentNode.left = targetNode.right; // 将父节点的左孩子指针指向要删除节点的右兄弟
+        } else {
+            // 如果要删除的节点是其兄弟节点的右兄弟
+            node siblingNode = parentNode.left;
+            while (siblingNode != null && siblingNode.right != targetNode) {
+                siblingNode = siblingNode.right; // 找到要删除节点的左兄弟
+            }
+            if (siblingNode != null) {
+                siblingNode.right = targetNode.right; // 将其兄弟节点的右兄弟指针指向要删除节点的右兄弟
+            }
+        }
+
+        targetNode.left = null; // 清除要删除节点的左孩子指针
+        targetNode.right = null; // 清除要删除节点的右兄弟指针
 
     }
 
@@ -110,14 +161,14 @@ public abstract class HandlePATH {
      * @param sb    目录序列
      * @return 返回定位到的节点
      */
-    static node searchNode(node root, String[] dir, int index, StringBuilder sb) {
+    static node searchNodebyOrder(node root, String[] dir, int index, StringBuilder sb) {
         //从根节点的左子树开始遍历, 每次遍历到一个节点, 就判断其是否是目录数组中的目录, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
         //如果遍历到最后一个目录, 就将tempnode指向其左子树, 然后将其右子树指向新节点
         if (root == null) {
             return null;
         }
 
-        if (root.fcb.pathName.equals(dir[index])) { //比对当前节点的fcb的pathName切分后提取出的文件名和目录数组中的目录是否相同
+        if (getName(root.fcb).equals(dir[index])) { //比对当前节点的fcb的pathName切分后提取出的文件名和目录数组中的目录是否相同
             // 如果这是目录数组的最后一个元素, 定位到了, 则返回当前节点
             if (index == dir.length - 1) {
                 sb.append(root.fcb.pathName.split(":")[1]).append("/"); //将当前root指向的fcb的文件名拼接到sb中
@@ -127,26 +178,73 @@ public abstract class HandlePATH {
             // 否则，还得继续在左子树中搜索下一个目录
             else {
                 sb.append(root.fcb.pathName.split(":")[1]).append("/"); //将当前root指向的fcb的文件名拼接到sb中
-                return searchNode(root.left, dir, index + 1, sb);
+                return searchNodebyOrder(root.left, dir, index + 1, sb);
             }
         }
 
         // 在右子树中搜索
-        return searchNode(root.right, dir, index, sb);
-    }
-
-    //删除TR节点
-    public static void deleteTR(FCB fcb) {
-        //? 拿到FCB后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的删除节点操作
-
+        return searchNodebyOrder(root.right, dir, index, sb);
     }
 
 
-    //查询TR节点
-    public static String selectTR(FCB fcb) {
+    /**
+     * 查找给定fcb的对应节点的父节点(上一个文件层级
+     *
+     * @param fcb 给定的fcb
+     * @return 返回父节点
+     */
+    public static node searchUpperNode(FCB fcb) {
+
+        //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
+        String[] dir = getPathArray(fcb);
+        String name = getName(fcb);
+        node temp_node = fileSyS.tree.root.left;      //创建游标指针tempnode去TR中跟踪序列, 指向根节点的左子树, 也就是第一个挂载到/的节点
+        StringBuilder sb = new StringBuilder();     //创建SB存储目录序列
+
+
+        //2. 遍历目录数组, 每次遍历到一个目录, 就判断其是否是tempnode的左子树, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
+        node dir_temp = searchNodebyOrder(temp_node, dir, 0, sb); //得到要新增的节点的父节点
+
+        if (dir_temp == null) {
+            log.warn("文件树层级关系错误, 请检查文件系统树形结构");
+            alertUser("Ooops! 系统中找不到对应的目录");
+            return null;
+        }
+
+        //System.out.println(sb); //展示搜索到的目录序列
+        //System.out.println(dir_temp);//展示当前找到的插入目标文件夹
+        return dir_temp;
+    }
+
+
+    //查询TR节点 -> 得到node
+    public static node selectTR(FCB fcb) {
         //? 拿到FCB后, 通过String切分判断其位置(树上意义无意义),因此暂时直接调用pathTR返回类似order的路径
-//        pathTR(new node(fcb));
-        return null;
+
+        //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
+        String[] dir = getPathArray(fcb);
+        String name = getName(fcb);
+
+        //将dir和name合并
+        String[] dir_name = new String[dir.length + 1];
+        System.arraycopy(dir, 0, dir_name, 0, dir.length);
+        dir_name[dir.length] = name;
+
+
+        node temp_node = fileSyS.tree.root.left;      //创建游标指针tempnode去TR中跟踪序列, 指向根节点的左子树, 也就是第一个挂载到/的节点
+        StringBuilder sb = new StringBuilder();     //创建SB存储目录序列
+
+
+        //2. 遍历目录数组, 每次遍历到一个目录, 就判断其是否是tempnode的左子树, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
+        node dir_temp = searchNodebyOrder(temp_node, dir_name, 0, sb); //得到要新增的节点
+
+        if (dir_temp == null) {
+            log.warn("文件树层级关系错误, 请检查文件系统树形结构");
+            alertUser("Ooops! 系统中找不到对应的目录");
+            return null;
+        }
+
+        return dir_temp;
     }
 
 
@@ -163,6 +261,8 @@ public abstract class HandlePATH {
     public static void alterTR(FCB fcb1, FCB fcb2) {
         //? 拿到FCB1后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的修改节点操作
         //? 直接替换内容也可
+        //! 不能删除根目录下的8个节点!
+
 
     }
 
@@ -228,10 +328,29 @@ public abstract class HandlePATH {
      * @return 路径管理器中的键
      */
     public static Integer deletePM(String pathName) {
+        //!合法性校验: 禁止删除根目录和根目录下的节点
+
+        if (pathName.equals("/")) {
+            log.warn("根目录不能删除!");
+            return null;
+        }
+
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+            if (pathName.equals("/" + root_path.getName())) {
+                log.warn("根目录下的8个节点不能删除!");
+                return null;
+            }
+        }
+
         List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
                 .filter(entry -> entry.getValue().equals(pathName))
                 .map(Map.Entry::getKey)
                 .toList();
+
+        if (keys.isEmpty()) {
+            log.warn("路径管理器中找不到对应的路径{}?!", pathName);
+            return null;
+        }
 
         fileSyS.pathManager.put(keys.get(0), "");
         return keys.get(0);
@@ -325,4 +444,5 @@ public abstract class HandlePATH {
         return fileSyS.extendManager.get(key);
     }
 
+    //默认不提供其他修改扩展名方法. 这件事由卖电脑的家伙决定!(哈哈哈)
 }

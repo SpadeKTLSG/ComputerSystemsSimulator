@@ -4,6 +4,8 @@ package css.out.file.utils;
 import css.out.file.entity.node;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.handleB.HandleFile.getName;
+
 /**
  * 处理树结构的工具类
  *
@@ -54,6 +56,29 @@ public abstract class TreeUtil {
             res[rowIndex + 1][columnIndex + gap] = "|";
             writeArray(currNode.right, rowIndex + 2, columnIndex + gap, res, treeDepth);
         }
+    }
+
+    /**
+     * 自定义打印基础树结构, 没有区分文件/文件夹, 一视同仁
+     *
+     * @param root   根节点
+     * @param indent 初始符号
+     * @return 树结构
+     */
+    public static String printTree(node root, String indent) {
+        if (root == null) {
+            return "";
+        }
+
+        // 添加当前节点的信息
+
+        return indent + getName(root.fcb) + root.fcb.getExtendName() + "\n" +
+
+                // 递归添加左子树（孩子）的信息
+                printTree(root.left, indent + "\t") +
+
+                // 递归添加右子树（兄弟）的信息
+                printTree(root.right, indent);
     }
 
     /**

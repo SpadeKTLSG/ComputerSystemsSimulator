@@ -7,6 +7,8 @@ import css.out.file.enums.FCB_FIELD;
 import css.out.file.enums.FileDirTYPE;
 import lombok.extern.slf4j.Slf4j;
 
+import java.util.Objects;
+
 import static css.out.file.entiset.GF.FCB_BYTE_LENGTH;
 import static css.out.file.entiset.GF.FCB_LENGTH;
 import static css.out.file.enums.FileDirTYPE.DIR;
@@ -112,10 +114,14 @@ public abstract class HandleFile {
      * @return 文件/文件夹对象单独真名
      */
     public static String getName(FCB fcb) {
-        return fcb.getPathName().split(":")[1];
+        if (!Objects.equals(fcb.getPathName(), "/" + ":")) {
+            return fcb.getPathName().split(":")[1];
+        } else { //根目录
+            return "-> /";
+        }
     }
 
-    
+
     /**
      * 获取文件/文件夹对象单独真名
      *

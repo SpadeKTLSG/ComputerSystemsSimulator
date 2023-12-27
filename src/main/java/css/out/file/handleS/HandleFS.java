@@ -2,6 +2,8 @@ package css.out.file.handleS;
 
 import css.out.file.FileApp;
 import css.out.file.entity.TREE;
+import css.out.file.entity.dir;
+import css.out.file.entity.file;
 import css.out.file.entity.node;
 import lombok.extern.slf4j.Slf4j;
 
@@ -114,10 +116,21 @@ public abstract class HandleFS {
      * @param A 文件/文件夹对象
      */
     public static void addContentFS(Object A) {
-        //?自动绑定PM和EM, Path名字和扩展名都会在创建文件FCB字节对象时候自动绑定
+        //?自动绑定PM和EM, Path名字和扩展名都会在创建磁盘系统创建文件FCB字节对象时候自动绑定 (这叫解耦? SpadeK?)
         //?那么文件系统剩下的工作就是加入TR了
         //? TR新增节点
+        if (A instanceof file file_temp) {
+            log.debug("正在往文件树记录文件索引{}", file_temp.fcb.getPathName());
+            addTR(file_temp.fcb);
 
+        } else if (A instanceof dir dir_temp) {
+            log.debug("正在往文件树记录文件夹索引{}", dir_temp.fcb.getPathName());
+            addTR(dir_temp.fcb);
+
+        } else {
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
 
 
     }
@@ -129,11 +142,25 @@ public abstract class HandleFS {
      */
     public static void deleteContentFS(Object A) {
 
-
-        //?需要解除PM的绑定
-
-
+        //?需要解除PM的绑定(通过磁盘系统绑定)
+//        deletePM(A);
         //?TR删除节点
+//        deleteTR(A);
+
+        if (A instanceof file file_temp) {
+            log.debug("正在往文件树删除文件索引{}", file_temp.fcb.getPathName());
+            deletePM(file_temp.fcb.getPathName());
+            deleteTR(file_temp.fcb);
+
+        } else if (A instanceof dir dir_temp) {
+            log.debug("正在往文件树删除文件夹索引{}", dir_temp.fcb.getPathName());
+            deletePM(dir_temp.fcb.getPathName());
+            deleteTR(dir_temp.fcb);
+
+        } else {
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
 
     }
 
@@ -144,7 +171,9 @@ public abstract class HandleFS {
      * @param B 修改后的对象
      */
     public static void alterContentFS(Object A, Object B) {
+
         //?需要修改PM的绑定内容
+
 
         //?TR修改节点信息
 
