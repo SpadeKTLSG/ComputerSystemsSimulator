@@ -1,5 +1,6 @@
 package css.out.file.handleB;
 
+import css.out.file.entity.FCB;
 import css.out.file.entity.dir;
 import css.out.file.entity.node;
 import css.out.file.enums.ROOT_PATH;
@@ -76,11 +77,37 @@ public abstract class HandlePATH {
         return sb.toString();
     }
 
+
+    //针对某一节点生成TR序列
+    public static String pathTR(node target) {
+        return null;
+    }
+
+
     //新增TR节点
+    public static void addTR(FCB fcb) {
+        //? 拿到FCB后, 通过String切分判断其位置, 然后组装为node, 挂载到孩子兄弟树TR上对应的位置
+        //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
+
+        String[] pathTemp = fcb.pathName.split(":");
+        //1.1切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
+        String[] dir = pathTemp[0].split("/");
+
+
+    }
+
 
     //删除TR节点
+    public static void deleteTR(FCB fcb) {
+
+    }
+
 
     //查询TR节点
+    public static String selectTR(FCB fcb) {
+        return null;
+    }
+
 
     //修改TR节点
 

@@ -115,17 +115,25 @@ public abstract class HandleFS {
      */
     public static void addContentFS(Object A) {
         //?自动绑定PM和EM, Path名字和扩展名都会在创建文件FCB字节对象时候自动绑定
-        //?那么文件系统剩下的工作就是加入
+        //?那么文件系统剩下的工作就是加入TR了
+        //? TR新增节点
+
 
 
     }
 
     /**
-     * 将对象赶出磁盘模块
+     * 将对象赶出文件模块
      *
      * @param A 文件/文件夹对象
      */
     public static void deleteContentFS(Object A) {
+
+
+        //?需要解除PM的绑定
+
+
+        //?TR删除节点
 
     }
 
@@ -136,15 +144,23 @@ public abstract class HandleFS {
      * @param B 修改后的对象
      */
     public static void alterContentFS(Object A, Object B) {
+        //?需要修改PM的绑定内容
+
+        //?TR修改节点信息
+
 
     }
 
     /**
-     * 查找文件模块的一个对象信息
+     * 查找文件模块的一个对象信息,这里直接返回路径
      *
      * @param A 文件/文件夹对象
+     * @return 文件模块的TR生成的pathTR路径
      */
-    public static Object selectContentFS(Object A) {
+    public static String selectContentFS(Object A) {
+
+        //?直接查找TR即可, 返回路径
+
         return null;
     }
 
