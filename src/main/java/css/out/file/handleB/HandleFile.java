@@ -13,6 +13,7 @@ import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandlePATH.*;
 import static css.out.file.utils.ByteUtil.*;
+import static java.util.Arrays.stream;
 
 /**
  * II级 文件/文件夹工具类
@@ -101,7 +102,36 @@ public abstract class HandleFile {
     }
 
 
-    //! 2. 文件内容操作
+    //! 2. 文件/文件夹名称操作
+
+
+    /**
+     * 获取文件/文件夹对象单独真名
+     *
+     * @param fcb 文件/文件夹对象的fcb
+     * @return 文件/文件夹对象单独真名
+     */
+    public static String getName(FCB fcb) {
+        return fcb.getPathName().split(":")[1];
+    }
+
+    
+    /**
+     * 获取文件/文件夹对象单独真名
+     *
+     * @param fcb 文件/文件夹对象的fcb
+     * @return 文件/文件夹对象单独真名
+     */
+    public static String[] getPathArray(FCB fcb) {
+        //切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
+        String[] dir = fcb.pathName.split(":")[0].split("/");  //1.1切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
+
+        dir = stream(dir) //重构: 流法删除""项
+                .filter(s -> !s.isEmpty())
+                .toArray(String[]::new);
+
+        return dir;
+    }
 
 
     //! 3. 文件路径操作

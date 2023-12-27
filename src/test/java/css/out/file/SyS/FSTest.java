@@ -10,6 +10,7 @@ import static css.out.file.entiset.GF.*;
 import static css.out.file.entiset.GF.DIR_EXTEND;
 import static css.out.file.handleB.HandleDISK.fullFill1FAT;
 import static css.out.file.handleB.HandleFile.str2Path;
+import static css.out.file.handleB.HandlePATH.addTR;
 
 public class FSTest {
 
@@ -28,7 +29,11 @@ public class FSTest {
         dir temp_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + DIR_NAME_DEFAULT, DIR_EXTEND.get(0));
         dir temp_dirAltered = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Notebooks of SpadeK", DIR_EXTEND.get(0));
 
+        //! CRUD
 
+        addTR(temp_file.fcb);
+
+        app.stateFile();
     }
 
 

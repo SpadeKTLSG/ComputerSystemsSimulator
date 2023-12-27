@@ -99,7 +99,7 @@ public class FileApp {
 
 
     /**
-     * 展示系统状态
+     * 完整展示系统状态
      */
     public void state() {
         log.info("磁盘模块-文件模块状态展示");
@@ -107,6 +107,24 @@ public class FileApp {
         //1. 磁盘系统
         System.out.println(diskSyS);
         //2. 文件系统
+        System.out.println(fileSyS);
+    }
+
+    /**
+     * 展示磁盘模块状态
+     */
+    public void stateDisk() {
+        log.info("磁盘模块状态展示");
+        //TODO 性能指标
+        System.out.println(diskSyS);
+    }
+
+    /**
+     * 展示文件模块状态
+     */
+    public void stateFile() {
+        log.info("文件模块状态展示");
+        //TODO 性能指标
         System.out.println(fileSyS);
     }
 

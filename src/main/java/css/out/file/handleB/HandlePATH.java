@@ -13,7 +13,7 @@ import java.util.Map;
 import static css.out.file.FileApp.fileSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entiset.IF.AddedEXTEND;
-import static css.out.file.handleB.HandleFile.str2Path;
+import static css.out.file.handleB.HandleFile.*;
 import static css.out.file.handleS.HandleFS.initialEM;
 import static css.out.file.handleS.HandleFS.initialPM;
 
@@ -78,20 +78,62 @@ public abstract class HandlePATH {
     }
 
 
-
-
     //新增TR节点
-    public static void addTR(FCB fcb) {
-        //? 拿到FCB后, 通过String切分判断其位置, 然后组装为node, 挂载到孩子兄弟树TR上对应的位置
+    public static void addTR(FCB fcb) { //fcb或者是node皆可
+        //? 拿到FCB后, 通过String切分判断其上级已存在node的位置
         //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
 
         String[] pathTemp = fcb.pathName.split(":");
-        //1.1切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
-        String[] dir = pathTemp[0].split("/");
+        //1.1
 
+        String[] dir = getPathArray(fcb);
+        String name = getName(fcb);
+        node temp_node = fileSyS.tree.root.left;            //创建游标指针tempnode去TR中跟踪序列, 指向根节点的左子树, 也就是第一个挂载到/的节点
+        StringBuilder sb = new StringBuilder();     //创建SB存储目录序列
+
+
+        //2. 遍历目录数组, 每次遍历到一个目录, 就判断其是否是tempnode的左子树, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
+        node dir_temp = searchNode(temp_node, dir, 0, sb); //得到要新增的节点的父节点
+        System.out.println(sb); //展示目录序列
+
+
+        //?新增逻辑: fcb/node组装为node, 挂载到孩子兄弟树TR上父节点的左孩子或者是左孩子的右兄弟上
 
     }
 
+    /**
+     * 递归搜索TR节点
+     *
+     * @param root  根节点
+     * @param dir   目录数组
+     * @param index 目录数组的索引
+     * @param sb    目录序列
+     * @return 返回定位到的节点
+     */
+    static node searchNode(node root, String[] dir, int index, StringBuilder sb) {
+        //从根节点的左子树开始遍历, 每次遍历到一个节点, 就判断其是否是目录数组中的目录, 如果是, 就将tempnode指向其左子树, 如果不是, 就将tempnode指向其右子树
+        //如果遍历到最后一个目录, 就将tempnode指向其左子树, 然后将其右子树指向新节点
+        if (root == null) {
+            return null;
+        }
+
+        if (root.fcb.pathName.equals(dir[index])) { //比对当前节点的fcb的pathName切分后提取出的文件名和目录数组中的目录是否相同
+            // 如果这是目录数组的最后一个元素, 定位到了, 则返回当前节点
+            if (index == dir.length - 1) {
+                sb.append(root.fcb.pathName.split(":")[1]).append("/"); //将当前root指向的fcb的文件名拼接到sb中
+                return root;
+            }
+
+            // 否则，还得继续在左子树中搜索下一个目录
+            else {
+                sb.append(root.fcb.pathName.split(":")[1]).append("/"); //将当前root指向的fcb的文件名拼接到sb中
+                return searchNode(root.left, dir, index + 1, sb);
+            }
+        }
+
+        // 在右子树中搜索
+        return searchNode(root.right, dir, index, sb);
+    }
 
     //删除TR节点
     public static void deleteTR(FCB fcb) {
