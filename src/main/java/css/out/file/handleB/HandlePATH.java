@@ -78,10 +78,6 @@ public abstract class HandlePATH {
     }
 
 
-    //针对某一节点生成TR序列
-    public static String pathTR(node target) {
-        return null;
-    }
 
 
     //新增TR节点
@@ -99,17 +95,34 @@ public abstract class HandlePATH {
 
     //删除TR节点
     public static void deleteTR(FCB fcb) {
+        //? 拿到FCB后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的删除节点操作
 
     }
 
 
     //查询TR节点
     public static String selectTR(FCB fcb) {
+        //? 拿到FCB后, 通过String切分判断其位置(树上意义无意义),因此暂时直接调用pathTR返回类似order的路径
+//        pathTR(new node(fcb));
+        return null;
+    }
+
+
+    //针对某一节点生成TR序列
+    public static String pathTR(node target) {
+        //? 使用StringBuilder拼接从根目录root节点到target节点的路径
+
+
         return null;
     }
 
 
     //修改TR节点
+    public static void alterTR(FCB fcb1, FCB fcb2) {
+        //? 拿到FCB1后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的修改节点操作
+        //? 直接替换内容也可
+
+    }
 
 
     //! 2. 路径管理器PM
