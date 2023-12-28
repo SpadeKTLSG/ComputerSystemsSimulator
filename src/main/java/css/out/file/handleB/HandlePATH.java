@@ -95,6 +95,8 @@ public abstract class HandlePATH {
 
         //?新增逻辑: fcb/node组装为node, 挂载到孩子兄弟树TR上父节点的左孩子或者是左孩子的右兄弟上
 
+        //FIXME 判定当前父节点下有没有和它重名的对象?
+
         node input = new node(fcb); //直接将fcb封装为node, 左右子节点均为null
 
         if (dir_temp.left == null) {
@@ -151,6 +153,27 @@ public abstract class HandlePATH {
         targetNode.right = null; // 清除要删除节点的右兄弟指针
 
     }
+
+
+    //修改TR节点
+    public static void alterTR(FCB fcb1, FCB fcb2) {
+        //? 拿到FCB1后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的修改节点操作
+        //? 直接替换内容也可
+        //! 不能删除根目录下的8个节点!
+
+
+    }
+
+
+    //针对某一节点生成TR序列
+    public static String pathTR(node target) {
+        //? 使用StringBuilder拼接从根目录root节点到target节点的路径
+
+
+        return null;
+    }
+
+
 
     /**
      * 递归搜索TR节点
@@ -217,7 +240,12 @@ public abstract class HandlePATH {
     }
 
 
-    //查询TR节点 -> 得到node
+    /**
+     * 查询TR节点 -> 得到对应node
+     *
+     * @param fcb 给定的fcb
+     * @return 返回对应的node
+     */
     public static node selectTR(FCB fcb) {
         //? 拿到FCB后, 通过String切分判断其位置(树上意义无意义),因此暂时直接调用pathTR返回类似order的路径
 
@@ -248,23 +276,7 @@ public abstract class HandlePATH {
     }
 
 
-    //针对某一节点生成TR序列
-    public static String pathTR(node target) {
-        //? 使用StringBuilder拼接从根目录root节点到target节点的路径
 
-
-        return null;
-    }
-
-
-    //修改TR节点
-    public static void alterTR(FCB fcb1, FCB fcb2) {
-        //? 拿到FCB1后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的修改节点操作
-        //? 直接替换内容也可
-        //! 不能删除根目录下的8个节点!
-
-
-    }
 
 
     //! 2. 路径管理器PM
@@ -321,6 +333,7 @@ public abstract class HandlePATH {
         return keys.get(0);
     }
 
+
     /**
      * PM删除PathName
      *
@@ -355,6 +368,9 @@ public abstract class HandlePATH {
         fileSyS.pathManager.put(keys.get(0), "");
         return keys.get(0);
     }
+
+    //TODO ALter
+
 
     /**
      * PM定位PathName

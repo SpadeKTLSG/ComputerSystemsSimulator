@@ -23,6 +23,7 @@ public abstract class HandleFS {
 
     //! 0. 文件系统/
 
+
     /**
      * ?正常模式
      * <p>正常从磁盘完全刷新文件系统</p>
@@ -41,6 +42,7 @@ public abstract class HandleFS {
         log.debug("文件模块重读完成");
     }
 
+
     /**
      * ?覆盖模式
      * <p>直接用当前JAVA文件对象结构重建系统</p>
@@ -51,6 +53,7 @@ public abstract class HandleFS {
 
         log.debug("文件模块覆盖完成");
     }
+
 
     /**
      * ?格式化模式
@@ -135,6 +138,7 @@ public abstract class HandleFS {
 
     }
 
+
     /**
      * 将对象赶出文件模块
      *
@@ -164,6 +168,7 @@ public abstract class HandleFS {
 
     }
 
+
     /**
      * 修改文件模块的一个对象
      *
@@ -172,10 +177,48 @@ public abstract class HandleFS {
      */
     public static void alterContentFS(Object A, Object B) {
 
+        //?鉴权 * 2
+        if (!(A instanceof file) & !(A instanceof dir)) {
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
+        if (!(B instanceof file) & !(B instanceof dir)) {
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", B);
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
+
         //?需要修改PM的绑定内容
 
 
         //?TR修改节点信息
+
+//        if (A instanceof file file_temp) {
+//            if (B instanceof file file_temp) {
+//                log.debug("正在往文件树查询文件索引{}", file_temp.fcb.getPathName());
+//                deletePM(file_temp.fcb.getPathName());
+//                deleteTR(file_temp.fcb);
+//
+//            } else if (A instanceof dir dir_temp) {
+//                log.debug("正在往文件树查询文件夹索引{}", dir_temp.fcb.getPathName());
+//                deletePM(dir_temp.fcb.getPathName());
+//                deleteTR(dir_temp.fcb);
+//
+//            } else {
+//                log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+//                throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+//            }
+//
+//
+//
+//        } else if (A instanceof dir dir_temp) {
+//            log.debug("正在往文件树修改文件夹索引{}", dir_temp.fcb.getPathName());
+//            deletePM(dir_temp.fcb.getPathName());
+//            deleteTR(dir_temp.fcb);
+//
+//        } else {
+//            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+//            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+//        }
 
 
     }
@@ -189,6 +232,22 @@ public abstract class HandleFS {
     public static String selectContentFS(Object A) {
 
         //?直接查找TR即可, 返回路径
+
+        if (A instanceof file file_temp) {
+            log.debug("正在往文件树查询文件索引{}", file_temp.fcb.getPathName());
+            deletePM(file_temp.fcb.getPathName());
+            deleteTR(file_temp.fcb);
+
+        } else if (A instanceof dir dir_temp) {
+            log.debug("正在往文件树查询文件夹索引{}", dir_temp.fcb.getPathName());
+            deletePM(dir_temp.fcb.getPathName());
+            deleteTR(dir_temp.fcb);
+
+        } else {
+            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
+            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
+        }
+
 
         return null;
     }
