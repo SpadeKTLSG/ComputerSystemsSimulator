@@ -39,6 +39,7 @@ public class AppTest {
     @Test
     public void CRUDTest() {
         FileApp app = new FileApp(); //开机
+        app.coverDiskRoboot();
         
 
         //Objects - 按照顺序创建

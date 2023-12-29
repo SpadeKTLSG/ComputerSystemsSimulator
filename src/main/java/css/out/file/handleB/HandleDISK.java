@@ -1,6 +1,7 @@
 package css.out.file.handleB;
 
 import css.out.file.entity.block;
+import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.*;
@@ -398,5 +399,22 @@ public abstract class HandleDISK {
 
     }
 
+    //! 3. 初始目录
+
+    /**
+     * 将根目录下的根目录集合一并挂载到磁盘系统中(Blocks + TXT), 默认是位于FAT后面
+     * <p>需要创建temp_fcb封装每一个目录, 最后还得只写一次TXT</p>
+     */
+    public static void mountDefaultDir2BLOCKS() {
+        int pos = FAT2_DIR + 1; //pos = 3, 从4号块就是自己的内容了
+
+
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+
+
+//            setBytes21Block_TXT(str2Byte(root_path.name), pos); //可不能这么写哦! 是把这8个B直接合并FCB
+            //简化: 由于没有对这些根目录操作的可能, 因此采用直接注入磁盘Blocks与TXT的方法
+        }
+    }
 
 }
