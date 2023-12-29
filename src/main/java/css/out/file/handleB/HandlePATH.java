@@ -43,16 +43,16 @@ public abstract class HandlePATH {
 
             if (isFirst) {
                 isFirst = false;
-                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
-                root.left = new node(tempfile.fcb); //挂载到根节点的左子树上
+                dir tempdir = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                root.left = new node(tempdir.fcb); //挂载到根节点的左子树上
 
             } else {
-                dir tempfile = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                dir tempdir = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
                 node tempnode = root.left;
                 while (tempnode.right != null) {
                     tempnode = tempnode.right; //递归查找根节点的左子树的最后一个右孩子节点
                 }
-                tempnode.right = new node(tempfile.fcb);
+                tempnode.right = new node(tempdir.fcb);
             }
         }
     }
@@ -285,6 +285,7 @@ public abstract class HandlePATH {
     /**
      * 初始化PM
      * <p>挂载根目录</p>
+     * @deprecated 已经通过磁盘模块初始化完成
      */
     public static void setDefaultPM() {
         fileSyS.pathManager = initialPM();

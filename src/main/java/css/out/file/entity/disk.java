@@ -6,8 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.List;
 
 import static css.out.file.entiset.GF.DISK_NAME;
-import static css.out.file.handleB.HandleDISK.getVoidFAT1;
-import static css.out.file.handleB.HandleDISK.getVoidFAT2;
+import static css.out.file.handleB.HandleDISK.*;
 import static css.out.file.handleS.HandleDS.initialBLOCKS;
 
 /**

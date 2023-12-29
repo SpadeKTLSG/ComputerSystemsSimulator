@@ -1,6 +1,8 @@
 package css.out.file.handleB;
 
+import css.out.file.entity.FCB;
 import css.out.file.entity.block;
+import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
@@ -9,6 +11,7 @@ import java.util.*;
 import static css.out.file.FileApp.diskSyS;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handleB.HandleBlock.setBytes21Block;
+import static css.out.file.handleB.HandleFile.fcb2Bytes;
 import static css.out.file.handleB.HandleTXT.write1Str2TXT;
 import static css.out.file.utils.ByteUtil.byte2Str;
 import static css.out.file.utils.ByteUtil.str2Byte;
@@ -83,7 +86,7 @@ public abstract class HandleDISK {
 
         FAT.set(0, 1); //0号块指向1号块FAT1
         FAT.set(1, 2); //1号块指向2号块FAT2
-        FAT.set(2, 3); //2号块指向3号块(系统目录挂载块)
+//        FAT.set(2, 3); //2号块指向3号块(系统目录挂载块)
         //3号块指向空, 4号块为第一个空闲块
 
         return FAT;
@@ -181,7 +184,8 @@ public abstract class HandleDISK {
      *
      * @param type 1: FAT1 2: FAT2
      */
-    public static void fullFill1FAT(Integer type) {
+    public static void fullFillFAT(Integer type) {
+
         List<Integer> FAT1 = new ArrayList<>(FAT_SIZE);
         int i = 0;
         for (; i < FAT_SIZE; i++)
@@ -275,6 +279,7 @@ public abstract class HandleDISK {
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
     public static Integer get1FreeFAT() {
+//        FIXME 这边分配策略错了
         List<Integer> allFAT = mergeFATs();
         Map<Integer, Integer> allFATMap = new HashMap<>();
 
@@ -294,7 +299,7 @@ public abstract class HandleDISK {
         allFATMap.remove(pre);
 
         List<Integer> keys = allFATMap.entrySet().stream()
-                .filter(entry -> entry.getValue().equals(Null_Pointer))
+                .filter(entry -> entry.getValue().equals(Null_Pointer)) //需要找到空置节点序列, 在序列中取第一项
                 .map(Map.Entry::getKey)
                 .toList();
 
@@ -406,15 +411,24 @@ public abstract class HandleDISK {
      * <p>需要创建temp_fcb封装每一个目录, 最后还得只写一次TXT</p>
      */
     public static void mountDefaultDir2BLOCKS() {
+        //setBytes21Block_TXT(str2Byte(root_path.name), pos); //可不能这么写哦! 是把这8个B直接合并FCB
+        //简化: 由于没有对这些根目录操作的可能, 因此采用直接注入磁盘Blocks与TXT的方法
+
+
         int pos = FAT2_DIR + 1; //pos = 3, 从4号块就是自己的内容了
+        FCB temp_fcb = new FCB();
+        byte[] bytes = new byte[64]; //byteBuilder - 8 * 8
+        int count = 0; //当前插入字符byteBuilder末尾指针
 
 
         for (ROOT_PATH root_path : ROOT_PATH.values()) {
 
-
-//            setBytes21Block_TXT(str2Byte(root_path.name), pos); //可不能这么写哦! 是把这8个B直接合并FCB
-            //简化: 由于没有对这些根目录操作的可能, 因此采用直接注入磁盘Blocks与TXT的方法
+            temp_fcb = new FCB("/:" + root_path.getName(), pos, FileDirTYPE.DIR);
+            System.arraycopy(fcb2Bytes(temp_fcb), 0, bytes, count, 8);
+            count += FCB_BYTE_LENGTH;
         }
+
+        setBytes21Block_TXT(bytes, pos);
     }
 
 }

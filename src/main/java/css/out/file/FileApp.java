@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import static css.out.file.entiset.GF.ROOT_AUTH;
 import static css.out.file.entiset.SFA.initialDiskSyS;
 import static css.out.file.entiset.SFA.initialFileSys;
+import static css.out.file.handleB.HandleDISK.mountDefaultDir2BLOCKS;
 import static css.out.file.handleS.HandleDS.*;
 import static css.out.file.handleS.HandleFS.*;
 
@@ -44,6 +45,8 @@ public class FileApp {
         log.debug("文件模块成员初始化完成");
         normalRebootFile();
         log.debug("文件模块重读完成");
+        mountDefaultDir2BLOCKS();
+        log.debug("系统默认目录挂载完成");
         reload();
         log.info("文件系统开机完成 -by SpadeKTLSG-");
     }
@@ -135,6 +138,9 @@ public class FileApp {
     public void coverDiskRoboot() {
         coverRebootDisk();
         coverRebootFile();
+        //这边必须要重建索引, 否则文件系统就真的"DOWN"了
+        normalRebootFile();
+        mountDefaultDir2BLOCKS();
     }
 
 
@@ -144,6 +150,9 @@ public class FileApp {
     public void kickDiskRoboot() {
         cleanRebootDisk();
         cleanRebootFile();
+        //这边必须要重建索引, 否则文件系统就真的"DOWN"了
+        normalRebootFile();
+        mountDefaultDir2BLOCKS();
     }
 
     //! 2. 系统功能接口实现 - CRUD

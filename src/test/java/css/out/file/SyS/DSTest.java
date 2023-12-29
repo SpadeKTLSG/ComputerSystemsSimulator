@@ -22,8 +22,8 @@ public class DSTest {
 
 //        app.kickDiskRoboot();
         //上上强度
-        fullFill1FAT(1); //FAT1满
-//        fullFill1FAT(2); //全满
+        fullFillFAT(1); //FAT1满
+//        fullFillFAT(2); //全满
 
         Map<Integer, Integer> map = Map.of(
                 3, 80,

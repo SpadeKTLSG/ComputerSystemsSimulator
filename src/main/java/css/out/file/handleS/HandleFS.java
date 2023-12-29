@@ -34,8 +34,7 @@ public abstract class HandleFS {
 
         //TODO
         //使用order序列遍历查找对应文件/文件夹的内容, 逐个添加到树上, 同时加到PM上
-
-        setDefaultPM();
+//        setDefaultPM();
         setDefaultEM();
 
 

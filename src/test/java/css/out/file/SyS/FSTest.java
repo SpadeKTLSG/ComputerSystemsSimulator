@@ -7,7 +7,7 @@ import css.out.file.enums.ROOT_PATH;
 import org.junit.Test;
 
 import static css.out.file.entiset.GF.*;
-import static css.out.file.handleB.HandleDISK.fullFill1FAT;
+import static css.out.file.handleB.HandleDISK.fullFillFAT;
 import static css.out.file.handleB.HandleFile.str2Path;
 import static css.out.file.handleB.HandlePATH.bindPM;
 import static css.out.file.handleS.HandleFS.addContentFS;
@@ -21,7 +21,7 @@ public class FSTest {
 
 //        app.kickDiskRoboot();
         //上上强度
-        fullFill1FAT(1); //FAT1满
+        fullFillFAT(1); //FAT1满
 
         //TODO 封装
         //temp文件 手动构造写入磁盘
