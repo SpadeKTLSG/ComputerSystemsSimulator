@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import static css.out.file.FileApp.*;
 import static css.out.file.entiset.GF.*;
+import static css.out.file.handleB.HandleDISK.fullFillFAT;
 import static css.out.file.handleB.HandleFile.str2Path;
 
 public class AppTest {
@@ -42,7 +43,7 @@ public class AppTest {
 //        app.kickDiskRoboot();
 //        app.coverDiskRoboot();
 
-//        fullFillFAT(1); //FAT1满
+        fullFillFAT(1); //FAT1满
 
         //Objects - 按照顺序创建
         //?Dirs
@@ -59,17 +60,23 @@ public class AppTest {
         //add
         System.out.println("\n\n\n女娲造人!\n\n\n");
         addContent(temp_dir_head1);
-//        addContent(temp_dir_head2);
-//        addContent(temp_dir_head3);
-//        addContent(temp_file_head2);
-//        addContent(temp_fileAltered);
-//        addContent(temp_file);
+        addContent(temp_dir_head2);
+        addContent(temp_dir_head3);
+        addContent(temp_file_head2);
+        addContent(temp_fileAltered);
+        addContent(temp_file);
+        addContent(temp_dir_head1);
+        addContent(temp_dir_head2);
+        addContent(temp_dir_head3);
+        addContent(temp_file_head2);
+        addContent(temp_fileAltered);
+        addContent(temp_file);
         app.state();
 
         //delete
         System.out.println("\n\n\n天启之火!\n\n\n");
-//        deleteContent(temp_fileAltered);
-        app.state();
+        deleteContent(temp_file_head2);
+//        app.state();
 
         //alter
 

@@ -249,7 +249,6 @@ public abstract class HandleDISK {
         int pos = 0;
         List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
 
-        //需要将两个FAT合并为逻辑上的一个整个FAT
         List<Integer> allFAT = mergeFATs();
 
         order.add(pos); //第一个肯定是在队列中的
@@ -274,12 +273,11 @@ public abstract class HandleDISK {
     /**
      * FAT查找第一个空闲块: 找NP
      * <p>直接在FAT1 -> FAT2 中找值为NULL_POINTER的键</p>
-     * 要删除掉虽然是NULL_Pointer但是事实上已经被指向的占用块: 从路径序列中找
+     * 要删除掉虽然是NULL_Pointer但是事实上已经被指向的占用块: 从路径序列中去重取差集
      *
      * @return FAT序列的综合下标; if -1: 没有找到空闲块
      */
     public static Integer get1FreeFAT() {
-//        FIXME 这边分配策略错了
         List<Integer> allFAT = mergeFATs();
         Map<Integer, Integer> allFATMap = new HashMap<>();
 
@@ -296,8 +294,18 @@ public abstract class HandleDISK {
             return -1;
         }
 
-        allFATMap.remove(pre);
 
+        //从FATmap中去除已经被占用的块, 并去除0号块, 因为0和1号块是分派给FAT的, 2号块是分派给目录的
+        for (Integer i : order)
+            allFATMap.remove(i);
+        allFATMap.remove(0);
+        allFATMap.remove(1);
+        allFATMap.remove(2);
+
+
+        System.out.println(allFATMap);
+
+        //不需要再去找为空值的块了, 因为没有被引用的空置节点也算是空闲块
         List<Integer> keys = allFATMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(Null_Pointer)) //需要找到空置节点序列, 在序列中取第一项
                 .map(Map.Entry::getKey)
@@ -305,8 +313,18 @@ public abstract class HandleDISK {
 
         Integer pos = keys.get(0);
 
+        //直接找到第一个allFATMap的值
+
+
         if (pos != null && !pos.equals(FAT_SIZE * 2 - 1))
             return pos;
+
+        //如果正常的空置队列里找不到, 就去探索没有被占用的悬空队列作为保底
+
+        //从allFATMAP中获取一个任意值
+        pos = allFATMap.values().stream()
+                .toList().get(0);
+
 
         log.warn("咩有空闲块咯");
         //throw new RuntimeException("没有找到空闲块!");
