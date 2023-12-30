@@ -269,22 +269,26 @@ public abstract class HandleDISK {
         for (int i = 0; i < FAT_SIZE * 2; i++) {
 
             if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
-                order.add(pos); //第一个肯定是在队列中的
 
+                order.add(pos); //第一个肯定是在队列中的
+                int pre = pos; //保存一份
                 pos = allFAT.get(pos); //更新pos
 
                 if (order.contains(pos)) {//如果新的pos仍然在队列中, 默认后来的覆盖之前的, 之前的被删除释放指针为空; 给予最后的对象最高控制
-                    System.out.println("内部重建FAT脏指针");
+                    log.warn("系统遇到FAT问题, 正在内部重建FAT脏指针");
+
+                    //! 干掉pos, 取消被引用, 取消order, 并且在FAT中指向空
+
+                    order.remove(pos);
 
                     //order内已有的对象直接指向当前这个
-                    int index = order.indexOf(allFAT.get(pos)); //已有对象的位置
-                    order.set(index, pos); //已有对象指向当前这个
+//                    int index = order.indexOf(allFAT.get(pos));
+//                    order.set(index, pos);
 
-                    allFAT.set(pos, Null_Pointer); //手动内部重建FAT脏指针, 并刷新到FAT
+                    allFAT.set(pos, Null_Pointer);
                     breakFAT(allFAT);
                 }
 
-//                order.add(pos);
 
 
             } else { //查找链断裂, 代表找到了全部的Order
@@ -293,8 +297,6 @@ public abstract class HandleDISK {
                 System.out.println(allFAT);
 
                 return order;
-
-
             }
         }
 
