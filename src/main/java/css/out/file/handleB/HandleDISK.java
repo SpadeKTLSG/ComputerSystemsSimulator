@@ -251,9 +251,11 @@ public abstract class HandleDISK {
 
         List<Integer> allFAT = mergeFATs();
 
-        order.add(pos); //第一个肯定是在队列中的
 
-        for (int i = 0; i < FAT_SIZE * 2; i++) {
+        //以下版本1只能适用于线性堆砌FAT内容的情况, 不适合交叉FAT, 不能线性遍历..!
+        //因为被引用的pos可能是带有指向当前队列中其他节点的脏pointer, 会导致死循环
+        //需要判断pos指向的地方是否已经在队列中, 如果在队列中, 就不再按照其内容添加了, 而是直接退出
+/*        for (int i = 0; i < FAT_SIZE * 2; i++) {
 
             if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
                 pos = allFAT.get(pos);
@@ -261,8 +263,40 @@ public abstract class HandleDISK {
 
             } else //查找链断裂, 代表找到了全部的Order
                 return order;
-        }
+        }*/
 
+        //Fixed SK 12.30
+        for (int i = 0; i < FAT_SIZE * 2; i++) {
+
+            if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
+                order.add(pos); //第一个肯定是在队列中的
+
+                pos = allFAT.get(pos); //更新pos
+
+                if (order.contains(pos)) {//如果新的pos仍然在队列中, 默认后来的覆盖之前的, 之前的被删除释放指针为空; 给予最后的对象最高控制
+                    System.out.println("内部重建FAT脏指针");
+
+                    //order内已有的对象直接指向当前这个
+                    int index = order.indexOf(allFAT.get(pos)); //已有对象的位置
+                    order.set(index, pos); //已有对象指向当前这个
+
+                    allFAT.set(pos, Null_Pointer); //手动内部重建FAT脏指针, 并刷新到FAT
+                    breakFAT(allFAT);
+                }
+
+//                order.add(pos);
+
+
+            } else { //查找链断裂, 代表找到了全部的Order
+
+                //TODO 打印
+                System.out.println(allFAT);
+
+                return order;
+
+
+            }
+        }
 
         //还是找不到退出?
         log.debug("FATorder序列不能正常使用了");
@@ -303,8 +337,6 @@ public abstract class HandleDISK {
         allFATMap.remove(2);
 
 
-        System.out.println(allFATMap);
-
         //不需要再去找为空值的块了, 因为没有被引用的空置节点也算是空闲块
         List<Integer> keys = allFATMap.entrySet().stream()
                 .filter(entry -> entry.getValue().equals(Null_Pointer)) //需要找到空置节点序列, 在序列中取第一项
@@ -325,6 +357,8 @@ public abstract class HandleDISK {
         pos = allFATMap.values().stream()
                 .toList().get(0);
 
+        if (pos != null && !pos.equals(FAT_SIZE * 2 - 1))
+            return pos;
 
         log.warn("咩有空闲块咯");
         //throw new RuntimeException("没有找到空闲块!");
@@ -339,14 +373,14 @@ public abstract class HandleDISK {
      */
     public static Integer set1FATUse() {
 
-        Integer pos = get1FreeFAT(); //先看看FAT序列中有没有空闲块
+        Integer pos = get1FreeFAT(); //FAT序列中有没有空闲块
 
         if (pos == -1) {
             log.warn("FAT序列中没有空闲块");
             return -1;
         }
 
-        List<Integer> order = getFATOrder(); //获取FAT序列,获得其最后一项的位置
+        List<Integer> order = getFATOrder(); //构造FAT序列,获得其最后一项的位置
 
         Integer pre;
 

@@ -74,8 +74,8 @@ public class AppTest {
         app.state();
 
         //delete
-        System.out.println("\n\n\n天启之火!\n\n\n");
-        deleteContent(temp_file_head2);
+//        System.out.println("\n\n\n天启之火!\n\n\n");
+//        deleteContent(temp_file_head2);
 //        app.state();
 
         //alter
