@@ -31,8 +31,7 @@
 NEED
 
 
-1. ?文件的树形结构路径传递
-传递pathName -> DTO pathname : 1.去掉第一个"/" 2.合并path和Name(替换冒号为/) 3.带上扩展名 4. return String
+
 
 
 

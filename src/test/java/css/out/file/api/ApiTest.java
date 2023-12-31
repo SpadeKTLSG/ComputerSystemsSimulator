@@ -3,9 +3,12 @@ package css.out.file.api;
 import css.out.file.FileApp;
 import org.junit.Test;
 
+import java.util.Arrays;
+
 import static css.out.file.api.MonitorApiList.diskUsageAmount_All;
 import static css.out.file.api.MonitorApiList.diskUsageAmount_SyS;
 import static css.out.file.api.PowerApiList.startFile;
+import static css.out.file.api.TranApiList.givePath2Front;
 
 public class ApiTest {
 
@@ -25,7 +28,8 @@ public class ApiTest {
     @Test
     public void handleTest() {
         FileApp app = new FileApp();
-        app.kickDiskRoboot();
-        app.coverDiskRoboot();
+//        app.kickDiskRoboot();
+//        app.coverDiskRoboot();
+        System.out.println(Arrays.toString(givePath2Front()));
     }
 }

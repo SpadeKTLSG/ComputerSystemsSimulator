@@ -2,13 +2,12 @@
 <module version="4">
   <component name="AdditionalModuleElements">
     <content url="file://$MODULE_DIR$" dumb="true">
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/css/core" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/java/css/front" />
       <excludeFolder url="file://$MODULE_DIR$/.idea" />
       <excludeFolder url="file://$MODULE_DIR$/public" />
-      <excludeFolder url="file://$MODULE_DIR$/src/main/java/css/core/memory" />
       <excludeFolder url="file://$MODULE_DIR$/src/main/java/css/out/device" />
       <excludeFolder url="file://$MODULE_DIR$/src/test/resources" />
+      <excludeFolder url="file://$MODULE_DIR$/src/main/java/css/core" />
     </content>
   </component>
 </module>
