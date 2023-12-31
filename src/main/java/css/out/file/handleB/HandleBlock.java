@@ -22,4 +22,16 @@ public abstract class HandleBlock {
     public static void setBytes21Block(byte[] bytes, int blockNum) {
         diskSyS.disk.BLOCKS.set(blockNum, new block(bytes));
     }
+
+
+    /**
+     * 从磁盘读取一个块的bytes内容
+     *
+     * @param sit 块号
+     * @return 返回一个块的bytes内容
+     */
+    public static byte[] read1Block2Bytes(int sit) {
+        block tempBlock = diskSyS.disk.BLOCKS.get(sit);
+        return tempBlock.bytes;
+    }
 }

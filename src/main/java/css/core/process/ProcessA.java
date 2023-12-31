@@ -1,16 +1,18 @@
 package css.core.process;
 
 
+import css.core.memory.MemoryManager;
 import css.out.device.DeviceManagement;
 import css.out.device.ProcessDeviceUse;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
 
-public class Process extends Thread {
+public class ProcessA extends Thread {
     ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
@@ -21,7 +23,8 @@ public class Process extends Thread {
     public FileReader file;
     public BufferedReader bufferedReader;
 
-    Process(String fileName) throws IOException {
+
+    public ProcessA(String fileName) throws IOException {
         pcb = new Pcb();
         file = new FileReader(fileName);
         bufferedReader = new BufferedReader(file);
@@ -30,8 +33,11 @@ public class Process extends Thread {
     @Override
     public void run() {
         try {
-            this.wait();
-            processScheduling.readyQueues.add(this);
+            System.out.println(processScheduling);
+            synchronized (this){
+                ProcessScheduling.readyQueues.add(this);
+                this.wait();
+            }
             while (!stop) {
                 CPU();
             }
@@ -40,9 +46,10 @@ public class Process extends Thread {
         }
     }
 
+    @Transactional
     public void wirth() throws IOException {
         Iterator<Map.Entry<String, Integer>> iterator = pcb.register.entrySet().iterator();
-        FileWriter fileWriter = new FileWriter("out.txt");
+        FileWriter fileWriter = new FileWriter("src/main/resources/common/file/out.txt"); //File
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> next = iterator.next();
@@ -52,9 +59,14 @@ public class Process extends Thread {
         fileWriter.close();
     }
 
+    @Transactional
     public void CPU() throws IOException, InterruptedException {
+        synchronized (this){
         if (pcb.state == 1) {
             String s = bufferedReader.readLine();
+            System.out.println(s);
+            MemoryManager.allocateMemory(pcb.pcbId,s);
+            MemoryManager.displayMemory();
             pcb.lines = s;
             if (s == null) {
                 pcb.state = 3;
@@ -76,22 +88,24 @@ public class Process extends Thread {
                 char c = s.charAt(2);
                 //放入设备的等待队列中
                 deviceManagement.devices.get(c).arrayBlockingQueue.put(new ProcessDeviceUse(this, s.charAt(2) - '0'));
+
                 //将其设为阻塞状态
                 pcb.state = 2;
-                processScheduling.runing = null;
                 //从就绪队列中选一个进程运行
-                processScheduling.getReadyToRun();
                 processScheduling.blocking.add(this);
+                processScheduling.runing = null;
                 this.wait();
-                //开始使用设备了
-                this.wait(s.charAt(2) - '0');
             } else if (s.equals("end")) {
                 bufferedReader.close();
                 file.close();
                 wirth();
+                stop = true;
             }
+            pcb.state = 0;
+            processScheduling.readyQueues.add(processScheduling.runing);
+            processScheduling.runing = null;
+        }
         }
     }
-
 
 }

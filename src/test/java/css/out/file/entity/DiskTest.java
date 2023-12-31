@@ -94,8 +94,8 @@ public class DiskTest {
 
         //尝试设置一个文件
         //处理FAT磁盘逻辑
-//        fullFill1FAT(1); //FAT1满
-//        fullFill1FAT(2); //全满
+//        fullFillFAT(1); //FAT1满
+//        fullFillFAT(2); //全满
 //        Integer pos = get1FreeFAT();
 //
 //
@@ -144,8 +144,8 @@ public class DiskTest {
         specifyFAT(map);
         //模拟具体环境FAT操作, 开始FAT的表演吧
 
-//        fullFill1FAT(1); //FAT1满
-//        fullFill1FAT(2); //全满
+//        fullFillFAT(1); //FAT1满
+//        fullFillFAT(2); //全满
 
 //        System.out.println(getFATOrder());
         System.out.println(get1FreeFAT());

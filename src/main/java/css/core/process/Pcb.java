@@ -16,7 +16,7 @@ public class Pcb {
     /**
      * 进程标识符
      */
-    private int pcbId;
+    public int pcbId;
 
     /**
      * 进程状态：
@@ -41,4 +41,6 @@ public class Pcb {
      * 阻塞原因
      */
     public String blockageCause;
+
+
 }

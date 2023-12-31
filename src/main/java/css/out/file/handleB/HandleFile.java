@@ -7,12 +7,16 @@ import css.out.file.enums.FCB_FIELD;
 import css.out.file.enums.FileDirTYPE;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.entiset.GF.FCB_BYTE_LENGTH;
-import static css.out.file.entiset.GF.FCB_LENGTH;
+import java.util.Objects;
+
+import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandlePATH.*;
+import static css.out.file.handleS.HandleFS.bindPM;
+import static css.out.file.handleS.HandleFS.selectPM;
 import static css.out.file.utils.ByteUtil.*;
+import static java.util.Arrays.stream;
 
 /**
  * II级 文件/文件夹工具类
@@ -101,10 +105,44 @@ public abstract class HandleFile {
     }
 
 
-    //! 2. 文件内容操作
+    //! 2. 文件/文件夹名称操作
+
+
+    /**
+     * 获取文件/文件夹对象单独真名
+     *
+     * @param fcb 文件/文件夹对象的fcb
+     * @return 文件/文件夹对象单独真名
+     */
+    public static String getName(FCB fcb) {
+        if (!Objects.equals(fcb.getPathName(), "/" + ":")) {
+            return fcb.getPathName().split(":")[1];
+        } else { //根目录
+            return "-> /";
+        }
+    }
+
+
+    /**
+     * 获取文件/文件夹对象单独真名
+     *
+     * @param fcb 文件/文件夹对象的fcb
+     * @return 文件/文件夹对象单独真名
+     */
+    public static String[] getPathArray(FCB fcb) {
+        //切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
+        String[] dir = fcb.pathName.split(":")[0].split("/");  //1.1切分目录部分, 将其按照"/"切分为数组, 每一项都是对应的目录结构(利用删除时候的鉴权保证一定存在)
+
+        dir = stream(dir) //重构: 流法删除""项
+                .filter(s -> !s.isEmpty())
+                .toArray(String[]::new);
+
+        return dir;
+    }
 
 
     //! 3. 文件路径操作
+
 
     /**
      * Str转Path
@@ -140,6 +178,7 @@ public abstract class HandleFile {
     public static Integer setFileContextLength(String content) {
         return content.length();
     }
+
 
     //! 5. FCB操作
 
@@ -211,5 +250,42 @@ public abstract class HandleFile {
         return fcb;
     }
 
+
+    /**
+     * Bytes转换为FCB, 增添PM绑定模式
+     *
+     * @param bytes Bytes
+     * @return FCB
+     */
+    public static FCB bytes2Fcb_AppendPM(byte[] bytes) {
+
+        int index = 0;
+
+        FCB fcb = new FCB();
+
+        for (FCB_FIELD field : FCB_FIELD.values()) {
+
+            int length = FCB_LENGTH.get(field.getName());
+            byte[] valueBytes = new byte[length];
+
+            System.arraycopy(bytes, index, valueBytes, 0, length);
+
+            Integer temp = byte2Int(valueBytes);
+
+            switch (field) {
+//                case PATH_NAME -> fcb.pathName = selectPM(temp);
+                // 重大bug: 无法修复, 如果没有额外的存储名字的磁盘的话, 这将导致重启后文件名丢失; 因此只能调到boot目录下了
+                case PATH_NAME -> fcb.pathName = TRASH_DIR_PATHNAME;
+                case START_BLOCK -> fcb.startBlock = temp;
+                case EXTEND_NAME -> fcb.extendName = selectEM(temp);
+                case TYPE_FLAG -> fcb.typeFlag = Int2FileorDir(temp);
+                case FILE_LENGTH -> fcb.fileLength = temp;
+            }
+
+            index += length;
+        }
+
+        return fcb;
+    }
 
 }

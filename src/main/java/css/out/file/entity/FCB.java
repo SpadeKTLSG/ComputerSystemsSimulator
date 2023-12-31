@@ -3,6 +3,7 @@ package css.out.file.entity;
 import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
@@ -19,6 +20,7 @@ import static css.out.file.handleB.HandleFile.str2Path;
 @Slf4j
 @Data
 @AllArgsConstructor
+@Builder
 public class FCB {
 
     /**
@@ -29,6 +31,7 @@ public class FCB {
      * <p>/home/114514:     小本本.txt</p>
      * <p>/home/114514:     上课文件夹</p>
      * <p>/home:            114514</p>
+     *
      */
     public String pathName;
 

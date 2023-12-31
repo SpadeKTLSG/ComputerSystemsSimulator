@@ -37,9 +37,6 @@ public abstract class HandleTXT {
             String line;
             while ((line = br.readLine()) != null) {
                 if (pos_temp.equals(pos)) {
-                    //FIXME
-                    // 在这里要把msg处理长度: 默认是不会超过一行的最大长度, 因为上级调用会进行判断;
-                    //这里先完成补长度操作: 补位到BLOCK_SIZE
                     if (msg.length() < BLOCK_SIZE) {
                         msg = msg + " ".repeat(BLOCK_SIZE - msg.length());
                     }
@@ -75,21 +72,13 @@ public abstract class HandleTXT {
      * @param pos  行号(位置)
      * @return String化的内容对象(还是byte)
      */
-    public String read1BlockiTXT(String path, Integer pos) {
+    public static String read1BlockiTXT(String path, Integer pos) {
 
-        File diskFile = new File(path);
         String res = "";
-        if (!diskFile.exists()) {
-            try {
-                throw new FileNotFoundException();
-            } catch (FileNotFoundException e) {
-                log.error("创建磁盘映射文件失败, 错误日志: {}", e.getMessage());
-            }
-        }
 
         try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
 
-            for (int i = 0; i < pos - 1; i++)  //跳过前面的pos-1行, 读取pos行的内容到s
+            for (int i = 0; i < pos; i++)  //跳过前面的pos行, 读取pos行的内容到s
                 br.readLine();
 
             res = br.readLine();

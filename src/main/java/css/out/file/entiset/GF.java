@@ -70,6 +70,8 @@ public abstract class GF {
 
     //!目录DIR
 
+    public static final String TRASH_DIR_PATHNAME = "/boot:trash";
+
     /**
      * FCB占用的字节数 = 8B
      */

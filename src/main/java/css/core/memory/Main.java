@@ -1,18 +1,26 @@
 package css.core.memory;
 
 
-import static css.core.memory.MemoryManager.threadMemoryMap;
+
+import css.core.process.ProcessA;
+import css.core.process.ProcessScheduling;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
+
+import java.io.IOException;
+
 
 public class Main {
-    public static void main(String[] args) {
+
+    public static void main(String[] args) throws IOException {
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("spring-config.xml");
+        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
         // Test MemoryManager functionality
         MemoryManager memoryManager = new MemoryManager();
 
         // Allocate memory for Process 1
         memoryManager.allocateMemory(1, "X=1");
-//        for(int i=0;i<64;i++){
-//
-//        }
 
         // Display memory status after allocation
         memoryManager.displayMemory();
@@ -28,21 +36,9 @@ public class Main {
 
         // Display memory status after allocation
         memoryManager.displayMemory();
+      new ProcessA("src\\main\\java\\css\\core\\memory\\api\\info.txt").start();
+      new ProcessA("src\\main\\java\\css\\core\\process\\api\\info.txt").start();
+        processScheduling.use();
 
-
-
-
-
-
-
-
-        memoryManager.releaseMemory(2);
-
-        memoryManager.displayMemory();
-
-        memoryManager.allocateMemory(2, "Y++");
-
-        // Display memory status after allocation
-        memoryManager.displayMemory();
     }
 }
