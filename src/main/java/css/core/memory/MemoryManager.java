@@ -21,6 +21,7 @@ public class  MemoryManager {
                 memory[i][j] = new MemoryBlock();
             }
 
+
         }
     }
 

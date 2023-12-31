@@ -35,6 +35,7 @@ public class Main {
 
 
 
+
         memoryManager.releaseMemory(2);
 
         memoryManager.displayMemory();
