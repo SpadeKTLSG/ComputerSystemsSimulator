@@ -20,6 +20,7 @@ public class  MemoryManager {
             for (int j = 0; j < 8; j++) {
                 memory[i][j] = new MemoryBlock();
             }
+
         }
     }
 
