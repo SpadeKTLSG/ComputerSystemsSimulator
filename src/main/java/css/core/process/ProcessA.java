@@ -49,7 +49,7 @@ public class ProcessA extends Thread {
     @Transactional
     public void wirth() throws IOException {
         Iterator<Map.Entry<String, Integer>> iterator = pcb.register.entrySet().iterator();
-        FileWriter fileWriter = new FileWriter("out.txt");
+        FileWriter fileWriter = new FileWriter("src/main/resources/common/file/out.txt"); //File
         BufferedWriter bufferedWriter = new BufferedWriter(fileWriter);
         while (iterator.hasNext()) {
             Map.Entry<String, Integer> next = iterator.next();

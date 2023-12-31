@@ -63,9 +63,11 @@ public class FileApp {
             if (type.equals(1)) {
                 log.info("///格式化磁盘 + 重建索引///");
                 kickDiskRoboot();
+                reboot();
             } else if (type.equals(2)) {
                 log.info("///覆盖磁盘 + 重建索引///");
                 coverDiskRoboot();
+                reboot();
             } else if (type.equals(3)) {
                 log.info("///摧毁系统, 世界毁灭吧///");
                 fileSyS = null;
@@ -106,7 +108,6 @@ public class FileApp {
      */
     public void state() {
         log.info("磁盘模块-文件模块状态展示");
-        //打印两个系统的主要成员信息
         //1. 磁盘系统
         System.out.println(diskSyS);
         //2. 文件系统
