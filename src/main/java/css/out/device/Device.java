@@ -2,7 +2,7 @@ package css.out.device;
 
 
 import css.core.process.Pcb;
-import css.core.process.Process;
+import css.core.process.ProcessA;
 import css.core.process.ProcessScheduling;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -17,7 +17,6 @@ public class Device {
 
     public String name;
     public Pcb nowProcessPcb = null;
-    public int lock = 0;
     public ArrayBlockingQueue<ProcessDeviceUse> arrayBlockingQueue = new ArrayBlockingQueue<ProcessDeviceUse>(10);
 
     Device(String name) {
@@ -28,17 +27,14 @@ public class Device {
         new Thread(() -> {
             while (true) {
                 try {
-                    ProcessDeviceUse remove = arrayBlockingQueue.remove();
-                    lock = 1;
+                    ProcessDeviceUse remove = arrayBlockingQueue.take();
                     nowProcessPcb = remove.process.pcb;
+                    synchronized (this){
+                        this.wait(remove.longTime);
+                    }
                     processScheduling.blocking.remove(remove.process);
-                    Process runing = processScheduling.runing;
-                    runing.pcb.state = 0;
-                    processScheduling.readyQueues.add(runing);
-                    processScheduling.runing = remove.process;
-                    remove.process.pcb.state = 1;
-                    remove.process.notify();
-                    this.wait(remove.longTime);
+                    processScheduling.readyQueues.add(remove.process);
+                    remove.process.pcb.state = 0;
                 } catch (InterruptedException e) {
                     e.printStackTrace();
                 }

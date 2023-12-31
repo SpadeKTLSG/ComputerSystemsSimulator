@@ -7,7 +7,7 @@ import java.util.Scanner;
 
 @Slf4j
 public class MemoryManager {
-    private MemoryBlock[][] memory;
+    private static MemoryBlock[][] memory;
 
     public MemoryManager() {
         //用64个块初始化内存，每个块可存储3个字符
@@ -20,7 +20,7 @@ public class MemoryManager {
     }
 
     //分配内存
-    public void allocateMemory(int processId, String data) {
+    public static void allocateMemory(int processId, String data) {
         //查找要分配的连续块
         int consecutiveBlocks = calculateConsecutiveBlocks(data.length());
 
@@ -33,7 +33,6 @@ public class MemoryManager {
             for (int i = startingBlock[0]; i < startingBlock[0] + consecutiveBlocks; i++) {
                 for (int j = startingBlock[1]; j < 8; j++) {
                     if (blockIndex < data.length()) {
-                       System.out.println(data.length());
                         memory[i][j].setContent(data.substring(blockIndex, blockIndex + 3));
                         blockIndex += 3;
                     }
@@ -45,12 +44,12 @@ public class MemoryManager {
             System.out.println("进程的内存分配失败 " + processId);
         }
     }
-    private int calculateConsecutiveBlocks(int dataSize) {
+    private static int calculateConsecutiveBlocks(int dataSize) {
         return dataSize / 3 + (dataSize % 3 == 0 ? 0 : 1);
     }
 
     //查找连续块
-    private int[] findConsecutiveBlocks(int consecutiveBlocks) {
+    private static int[] findConsecutiveBlocks(int consecutiveBlocks) {
         //查找并返回连续分配的起始块索引
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j <= 8 - consecutiveBlocks; j++) {
@@ -62,7 +61,7 @@ public class MemoryManager {
         return null;
     }
 
-    private boolean isConsecutiveBlocksAvailable(int row, int col, int consecutiveBlocks) {
+    private static boolean isConsecutiveBlocksAvailable(int row, int col, int consecutiveBlocks) {
         //检查从给定索引开始的连续块是否可用
         for (int j = col; j < col + consecutiveBlocks; j++) {
             if (!memory[row][j].getContent().equals("---")) {
@@ -72,7 +71,7 @@ public class MemoryManager {
         return true;
     }
 
-    public void displayMemory() {
+    public static void displayMemory() {
         //显示内存的当前状态
         System.out.println("Memory Status:");
         for (int i = 0; i < 8; i++) {
