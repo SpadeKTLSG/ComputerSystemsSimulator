@@ -292,10 +292,6 @@ public abstract class HandleDISK {
 
 
             } else { //查找链断裂, 代表找到了全部的Order
-
-                //TODO 打印
-                System.out.println(allFAT);
-
                 return order;
             }
         }*/

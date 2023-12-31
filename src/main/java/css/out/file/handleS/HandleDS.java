@@ -299,8 +299,6 @@ public abstract class HandleDS {
         if (A instanceof file file_temp) {
             file_temp = bytes2File(str2Byte(str));
 
-            //FIXME 这里是因为文件系统问题, 没法绑定Name和PathName
-
             //4. 打印信息
             System.out.println(file_temp);
             log.info("找到了文件对象实体: {}", file_temp.fcb.getPathName());

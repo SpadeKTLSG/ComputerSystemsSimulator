@@ -14,6 +14,8 @@ import static css.out.file.entiset.GF.FCB_LENGTH;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandlePATH.*;
+import static css.out.file.handleS.HandleFS.bindPM;
+import static css.out.file.handleS.HandleFS.selectPM;
 import static css.out.file.utils.ByteUtil.*;
 import static java.util.Arrays.stream;
 
@@ -142,6 +144,7 @@ public abstract class HandleFile {
 
     //! 3. 文件路径操作
 
+
     /**
      * Str转Path
      *
@@ -176,6 +179,7 @@ public abstract class HandleFile {
     public static Integer setFileContextLength(String content) {
         return content.length();
     }
+
 
     //! 5. FCB操作
 

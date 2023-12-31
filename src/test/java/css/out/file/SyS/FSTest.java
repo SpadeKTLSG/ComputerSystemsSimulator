@@ -9,9 +9,7 @@ import org.junit.Test;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handleB.HandleDISK.fullFillFAT;
 import static css.out.file.handleB.HandleFile.str2Path;
-import static css.out.file.handleB.HandlePATH.bindPM;
-import static css.out.file.handleS.HandleFS.addContentFS;
-import static css.out.file.handleS.HandleFS.deleteContentFS;
+import static css.out.file.handleS.HandleFS.*;
 
 public class FSTest {
 
@@ -23,7 +21,6 @@ public class FSTest {
         //上上强度
         fullFillFAT(1); //FAT1满
 
-        //TODO 封装
         //temp文件 手动构造写入磁盘
         file temp_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + FILE_NAME_DEFAULT, FILE_EXTEND.get(1), "correct input");
         file temp_fileAltered = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + "狂人日记", FILE_EXTEND.get(1), "I want to surpass humanity, with your blood!");

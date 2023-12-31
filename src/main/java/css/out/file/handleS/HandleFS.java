@@ -1,18 +1,22 @@
 package css.out.file.handleS;
 
 import css.out.file.FileApp;
-import css.out.file.entity.TREE;
-import css.out.file.entity.dir;
-import css.out.file.entity.file;
-import css.out.file.entity.node;
+import css.out.file.entity.*;
+import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Objects;
 
-import static css.out.file.entiset.GF.FILE_TREE_NAME;
-import static css.out.file.entiset.GF.ROOT_AUTH;
+import static css.out.file.FileApp.fileSyS;
+import static css.out.file.api.CommonApiList.alertUser;
+import static css.out.file.entiset.GF.*;
+import static css.out.file.entiset.GF.ROOT_DIR_BLOCK;
+import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.entiset.SFA.initialFileSys;
+import static css.out.file.handleB.HandleFile.str2Path;
 import static css.out.file.handleB.HandlePATH.*;
 
 /**
@@ -32,7 +36,6 @@ public abstract class HandleFS {
         //需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建
         //因为设置了一个块里只能有一个文件(整个/部分), 因此需要按照FAT的顺序遍历磁盘, 读取每个文件对象(file/dir)的字节流, 转换为对象, 挂载到树上
 
-        //TODO
         //使用order序列遍历查找对应文件/文件夹的内容, 逐个添加到树上, 同时加到PM上
 //        setDefaultPM();
         setDefaultEM();
@@ -81,6 +84,133 @@ public abstract class HandleFS {
         return tree;
     }
 
+    /**
+     * 初始化TR
+     * <p>挂载根目录到TR</p>
+     *
+     * @param root 根节点
+     */
+    public static void setDefaultTR(node root) {
+
+        boolean isFirst = true;
+
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+
+            if (isFirst) {
+                isFirst = false;
+                dir tempdir = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                root.left = new node(tempdir.fcb); //挂载到根节点的左子树上
+
+            } else {
+                dir tempdir = new dir("/:" + root_path.getName(), ROOT_DIR_BLOCK);
+                node tempnode = root.left;
+                while (tempnode.right != null) {
+                    tempnode = tempnode.right; //递归查找根节点的左子树的最后一个右孩子节点
+                }
+                tempnode.right = new node(tempdir.fcb);
+            }
+        }
+    }
+
+
+    /**
+     * 新增TR节点
+     *
+     * @param fcb 新增对象的FCB
+     */
+    public static void addTR(FCB fcb) { //fcb或者是node皆可
+        //? 拿到FCB后, 通过String切分判断其上级已存在node的位置, 封装到searchUpperNode方法中
+        node dir_temp = searchUpperNode(fcb);
+
+        if (dir_temp == null) {
+            return;
+        }
+
+        //?新增逻辑: fcb/node组装为node, 挂载到孩子兄弟树TR上父节点的左孩子或者是左孩子的右兄弟上
+
+        node input = new node(fcb); //直接将fcb封装为node, 左右子节点均为null
+
+        if (dir_temp.left == null) {
+            dir_temp.left = input; //如果父节点的左孩子为空, 直接挂载到左孩子上
+        } else {
+            node tempnode = dir_temp.left;
+            while (tempnode.right != null) {
+                tempnode = tempnode.right; //递归查找根节点的左子树的最后一个右孩子节点
+            }
+            tempnode.right = input;//将新节点挂载到最后一个右孩子节点的右兄弟上
+        }
+
+    }
+
+
+    /**
+     * 删除TR节点
+     *
+     * @param fcb 删除对象的FCB
+     */
+    public static void deleteTR(FCB fcb) {
+        node parentNode = searchUpperNode(fcb); //得到要删除的节点的父节点(一定是目录)
+        node targetNode = selectTR2Node(fcb);//得到要删除的节点本身
+
+        if (parentNode == null) {
+            return;
+        }
+
+        if (targetNode == null) {
+            return;
+        }
+
+        if (Objects.equals(parentNode.fcb.getPathName(), "/:")) { //安全判断
+            log.warn("根目录下的8个节点不能删除!");
+            alertUser("小子, 你在玩火!");
+            return;
+        }
+
+        // 如果要删除的节点是其父节点的左孩子
+        if (parentNode.left == targetNode) {
+            parentNode.left = targetNode.right; // 将父节点的左孩子指针指向要删除节点的右兄弟
+        } else {
+            // 如果要删除的节点是其兄弟节点的右兄弟
+            node siblingNode = parentNode.left;
+            while (siblingNode != null && siblingNode.right != targetNode) {
+                siblingNode = siblingNode.right; // 找到要删除节点的左兄弟
+            }
+            if (siblingNode != null) {
+                siblingNode.right = targetNode.right; // 将其兄弟节点的右兄弟指针指向要删除节点的右兄弟
+            }
+        }
+
+        targetNode.left = null; // 清除要删除节点的左孩子指针
+        targetNode.right = null; // 清除要删除节点的右兄弟指针
+
+    }
+
+
+    //修改TR节点
+    public static void alterTR(FCB fcb1, FCB fcb2) {
+        //? 拿到FCB1后, 通过String切分判断其位置, 定位到地点后执行孩子兄弟树的修改节点操作
+
+        if (Objects.equals(fcb1.getPathName(), "/:")) { //安全判断
+            log.warn("根目录下的8个节点不能删除!");
+            alertUser("小子, 你在玩火!");
+            return;
+        }
+
+        Objects.requireNonNull(selectTR2Node(fcb1)).fcb = fcb2;//直接替换内容
+
+    }
+
+
+    /**
+     * 查询TR节点 -> 得到对应路径
+     *
+     * @param fcb 给定的fcb
+     * @return 返回对应的路径
+     */
+    public static String selectTR(FCB fcb) {
+        return pathTR(selectTR2Node(fcb));
+    }
+
 
     //! 2. 路径管理器PM/
 
@@ -93,6 +223,99 @@ public abstract class HandleFS {
         for (int i = 0; i < 1000; i++) pm.put(i, "");
         pm.put(0, "/"); //根节点
         return pm;
+    }
+
+
+    /**
+     * 初始化PM
+     * <p>挂载根目录</p>
+     *
+     * @deprecated 已经通过磁盘模块初始化完成
+     */
+    public static void setDefaultPM() {
+        fileSyS.pathManager = initialPM();
+        for (ROOT_PATH root_path : ROOT_PATH.values())
+            bindPM(str2Path(String.valueOf(root_path)));
+    }
+
+
+    /**
+     * PM新增PathName
+     *
+     * @param pathName FCB的PathName
+     * @comment 这样硬盘只需要存储对应的键即可
+     */
+    public static Integer bindPM(String pathName) {
+
+        List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
+                .filter(entry -> entry.getValue().isEmpty())
+                .map(Map.Entry::getKey)
+                .toList();
+
+        //log.debug("当前路径映射器中的空白位置: {}", keys.size());
+        fileSyS.pathManager.put(keys.get(0), pathName);
+        return keys.get(0);
+    }
+
+
+    /**
+     * PM删除PathName
+     *
+     * @param pathName FCB的PathName
+     * @return 路径管理器中的键
+     */
+    public static Integer deletePM(String pathName) {
+        //!合法性校验: 禁止删除根目录和根目录下的节点
+
+        if (pathName.equals("/")) {
+            log.warn("根目录不能删除!");
+            return null;
+        }
+
+        for (ROOT_PATH root_path : ROOT_PATH.values()) {
+            if (pathName.equals("/" + root_path.getName())) {
+                log.warn("根目录下的8个节点不能删除!");
+                return null;
+            }
+        }
+
+        List<Integer> keys = fileSyS.pathManager.entrySet().stream() //将Map转换为Stream，过滤出值等于目标值的键值对，映射为键，收集为集合
+                .filter(entry -> entry.getValue().equals(pathName))
+                .map(Map.Entry::getKey)
+                .toList();
+
+        if (keys.isEmpty()) {
+            log.warn("路径管理器中找不到对应的路径{}?!", pathName);
+            return null;
+        }
+
+        fileSyS.pathManager.put(keys.get(0), "");
+        return keys.get(0);
+    }
+
+
+    /**
+     * PM修改PathName
+     * <p>先删除再新增</p>
+     *
+     * @param pathName_or  原PathName
+     * @param pathName_new 新PathName
+     * @return 路径管理器中的键
+     */
+    public static Integer alterPM(String pathName_or, String pathName_new) {
+        deletePM(pathName_or);
+        return bindPM(pathName_new);
+    }
+
+
+    /**
+     * PM定位PathName
+     *
+     * @param key 路径管理器中的键
+     * @return FCB的PathName
+     */
+    public static String selectPM(Integer key) {
+        return fileSyS.pathManager.get(key);
     }
 
 
@@ -109,6 +332,29 @@ public abstract class HandleFS {
         return em;
     }
 
+
+    /**
+     * 初始化EM
+     * <p>按照文档和文件的扩展名进行设置</p>
+     */
+    public static void setDefaultEM() {
+        fileSyS.extendManager = initialEM();
+        try {//系统自带的直接指定提高效率
+            int i = 0;
+            for (; i < DIR_EXTEND.size(); i++) {
+                fileSyS.extendManager.put(i, DIR_EXTEND.get(i));
+            }
+            for (int k = 0; k < FILE_EXTEND.size(); k++) {
+                fileSyS.extendManager.put(i + k, FILE_EXTEND.get(k));
+            }
+            for (String s : AddedEXTEND) {
+                bindEM(s); //同步用户添加的扩展名
+            }
+        } catch (Exception e) {
+            log.warn("装不下了, extendManager被撑爆咯! {}", e.getMessage());
+        }
+
+    }
 
     //! 4.CRUD FS
 
