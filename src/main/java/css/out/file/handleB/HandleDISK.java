@@ -265,7 +265,7 @@ public abstract class HandleDISK {
                 return order;
         }
 
-        //Fixed Faild SK 12.30
+        //Fixed Faild by SK 12.30
 /*
         int pos = 0;
         List<Integer> order = new ArrayList<>(); //顺序访问的盘块号

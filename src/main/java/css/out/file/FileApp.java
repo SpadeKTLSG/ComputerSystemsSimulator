@@ -155,6 +155,7 @@ public class FileApp {
         mountDefaultDir2BLOCKS();
     }
 
+
     //! 2. 系统功能接口实现 - CRUD
     //API传递使用Object充当DTO, 只赋值PathName
 
@@ -201,5 +202,12 @@ public class FileApp {
         //selectContentDS(A); //无需关注底层磁盘实现
     }
 
+
+    //! 3. 实用工具
+    //清理回收站
+    public static void cleanRecycleBin() {
+        //删除/boot下的所有树节点文件, 但是不回收盘块(模拟电脑被垃圾堆满的效果)
+        cleanRebootFile();
+    }
 
 }

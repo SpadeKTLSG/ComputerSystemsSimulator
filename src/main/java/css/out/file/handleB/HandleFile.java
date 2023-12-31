@@ -9,8 +9,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Objects;
 
-import static css.out.file.entiset.GF.FCB_BYTE_LENGTH;
-import static css.out.file.entiset.GF.FCB_LENGTH;
+import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
 import static css.out.file.handleB.HandlePATH.*;
@@ -251,5 +250,42 @@ public abstract class HandleFile {
         return fcb;
     }
 
+
+    /**
+     * Bytes转换为FCB, 增添PM绑定模式
+     *
+     * @param bytes Bytes
+     * @return FCB
+     */
+    public static FCB bytes2Fcb_AppendPM(byte[] bytes) {
+
+        int index = 0;
+
+        FCB fcb = new FCB();
+
+        for (FCB_FIELD field : FCB_FIELD.values()) {
+
+            int length = FCB_LENGTH.get(field.getName());
+            byte[] valueBytes = new byte[length];
+
+            System.arraycopy(bytes, index, valueBytes, 0, length);
+
+            Integer temp = byte2Int(valueBytes);
+
+            switch (field) {
+//                case PATH_NAME -> fcb.pathName = selectPM(temp);
+                // 重大bug: 无法修复, 如果没有额外的存储名字的磁盘的话, 这将导致重启后文件名丢失; 因此只能调到boot目录下了
+                case PATH_NAME -> fcb.pathName = TRASH_DIR_PATHNAME;
+                case START_BLOCK -> fcb.startBlock = temp;
+                case EXTEND_NAME -> fcb.extendName = selectEM(temp);
+                case TYPE_FLAG -> fcb.typeFlag = Int2FileorDir(temp);
+                case FILE_LENGTH -> fcb.fileLength = temp;
+            }
+
+            index += length;
+        }
+
+        return fcb;
+    }
 
 }

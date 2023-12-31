@@ -13,11 +13,14 @@ import java.util.Objects;
 import static css.out.file.FileApp.fileSyS;
 import static css.out.file.api.CommonApiList.alertUser;
 import static css.out.file.entiset.GF.*;
-import static css.out.file.entiset.GF.ROOT_DIR_BLOCK;
 import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.entiset.SFA.initialFileSys;
+import static css.out.file.handleB.HandleBlock.read1Block2Bytes;
+import static css.out.file.handleB.HandleDISK.getFATOrder;
+import static css.out.file.handleB.HandleFile.bytes2Fcb_AppendPM;
 import static css.out.file.handleB.HandleFile.str2Path;
 import static css.out.file.handleB.HandlePATH.*;
+import static css.out.file.utils.ByteUtil.byte2Str;
 
 /**
  * 0级 文件系统管理工具类
@@ -36,10 +39,38 @@ public abstract class HandleFS {
         //需要从磁盘读取当前文件树信息, 在基础索引树的基础上重建
         //因为设置了一个块里只能有一个文件(整个/部分), 因此需要按照FAT的顺序遍历磁盘, 读取每个文件对象(file/dir)的字节流, 转换为对象, 挂载到树上
 
-        //使用order序列遍历查找对应文件/文件夹的内容, 逐个添加到树上, 同时加到PM上
+
 //        setDefaultPM();
         setDefaultEM();
 
+        //?使用order序列遍历查找对应文件/文件夹的内容, 逐个添加到树上, 同时加到PM上
+        List<Integer> orderList = getFATOrder();
+
+        if (orderList != null && orderList.isEmpty()) {
+            return;
+        }
+
+        for (Integer single : orderList) {
+
+            //去除FAT和DEFAULT位置盘块
+            if (Objects.equals(single, FAT1_DIR) || Objects.equals(single, FAT2_DIR) || Objects.equals(single, ROOT_DIR_BLOCK))
+                continue;
+
+            //读取出块切分为FCB_LENGTH和余下部分
+            byte[] tempBytes = read1Block2Bytes(single);
+            byte[] fcbBytes = new byte[FCB_BYTE_LENGTH];
+            byte[] contentBytes = new byte[BLOCK_SIZE - FCB_BYTE_LENGTH];
+            System.arraycopy(tempBytes, 0, fcbBytes, 0, FCB_BYTE_LENGTH);
+            System.arraycopy(tempBytes, FCB_BYTE_LENGTH, contentBytes, 0, BLOCK_SIZE - FCB_BYTE_LENGTH);
+
+            //提取出fcb和Contents
+            FCB tempFCB = bytes2Fcb_AppendPM(fcbBytes); //这里有当前无法实现的重大BUG: 文件系统始终是JAVA对象,重启后无法复原. 只能进行转移
+            String tempContent = byte2Str(contentBytes);
+
+            //添加封装的对象到TR(FS)
+            addTR(tempFCB);
+
+        }
 
         log.debug("文件模块重读完成");
     }

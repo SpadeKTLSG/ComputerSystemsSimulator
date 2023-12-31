@@ -85,8 +85,8 @@ public class AppTest {
     @Test
     public void AppendTest() {
         FileApp app = new FileApp(); //开机
-        app.kickDiskRoboot();
-        app.coverDiskRoboot();
+//        app.kickDiskRoboot();
+//        app.coverDiskRoboot();
 
 
         //Objects - 按照顺序创建
@@ -100,6 +100,11 @@ public class AppTest {
         file temp_file_head2 = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + FILE_NAME_DEFAULT, FILE_EXTEND.get(2), "correct input");
         file temp_fileAltered = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + "狂人日记", FILE_EXTEND.get(1), "I want to surpass humanity, with your blood!");
         file temp_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + FILE_NAME_DEFAULT, FILE_EXTEND.get(1), "correct input");
+
+
+        app.state();
+
+        cleanRecycleBin();
 
         app.state();
     }
