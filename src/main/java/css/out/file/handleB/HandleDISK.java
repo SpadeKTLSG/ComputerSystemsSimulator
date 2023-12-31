@@ -255,7 +255,7 @@ public abstract class HandleDISK {
         //以下版本1只能适用于线性堆砌FAT内容的情况, 不适合交叉FAT, 不能线性遍历..!
         //因为被引用的pos可能是带有指向当前队列中其他节点的脏pointer, 会导致死循环
         //需要判断pos指向的地方是否已经在队列中, 如果在队列中, 就不再按照其内容添加了, 而是直接退出
-/*        for (int i = 0; i < FAT_SIZE * 2; i++) {
+        for (int i = 0; i < FAT_SIZE * 2; i++) {
 
             if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
                 pos = allFAT.get(pos);
@@ -263,29 +263,29 @@ public abstract class HandleDISK {
 
             } else //查找链断裂, 代表找到了全部的Order
                 return order;
-        }*/
+        }
 
-        //Fixed SK 12.30
+        //Fixed Faild SK 12.30
+/*
+        int pos = 0;
+        List<Integer> order = new ArrayList<>(); //顺序访问的盘块号
+
+        List<Integer> allFAT = mergeFATs();
+
         for (int i = 0; i < FAT_SIZE * 2; i++) {
 
-            if (!Objects.equals(allFAT.get(pos), Null_Pointer)) {
+            if (!Objects.equals(pos, Null_Pointer)) {
 
                 order.add(pos); //第一个肯定是在队列中的
                 int pre = pos; //保存一份
                 pos = allFAT.get(pos); //更新pos
 
                 if (order.contains(pos)) {//如果新的pos仍然在队列中, 默认后来的覆盖之前的, 之前的被删除释放指针为空; 给予最后的对象最高控制
-                    log.warn("系统遇到FAT问题, 正在内部重建FAT脏指针");
-
-                    //! 干掉pos, 取消被引用, 取消order, 并且在FAT中指向空
-
+                    log.warn("系统遇到FAT问题, 正在自动重建FAT脏指针");
+                    //干掉pos:取消被引用(删除逻辑已经实现), 取消order, 并且在FAT中指向空
                     order.remove(pos);
-
-                    //order内已有的对象直接指向当前这个
-//                    int index = order.indexOf(allFAT.get(pos));
-//                    order.set(index, pos);
-
                     allFAT.set(pos, Null_Pointer);
+
                     breakFAT(allFAT);
                 }
 
@@ -298,7 +298,7 @@ public abstract class HandleDISK {
 
                 return order;
             }
-        }
+        }*/
 
         //还是找不到退出?
         log.debug("FATorder序列不能正常使用了");
@@ -426,31 +426,39 @@ public abstract class HandleDISK {
             return -1;
         }
 
-        //LinkedList思维 : 在allFAT中定位值为pre和pos的sit
+        //LinkedList思维 : 在allFAT中定位值为pre和pos的sit, 将当前posSitFAT指向空
 
         int pre = pos - 1;
 
         if (pos == order.size() - 1) { //pos是序列中的最后者
+
             List<Integer> allFAT = mergeFATs();
 
             int posSit = allFAT.indexOf(order.get(pos));
-            int preSit = allFAT.indexOf(order.get(pos));
+            int preSit = allFAT.indexOf(order.get(pre));
 
+            //pre指向空, pos指向空
             allFAT.set(preSit, Null_Pointer);
+            allFAT.set(posSit, Null_Pointer);
+
             breakFAT(allFAT);
             return posSit;
 
-        } else {
+        } else { //pos不是序列中的最后者
 
             Integer post = order.get(pos + 1);
 
             List<Integer> allFAT = mergeFATs();
 
-            int posSit = allFAT.indexOf(pos);
             int preSit = allFAT.indexOf(pre);
+            int posSit = allFAT.indexOf(pos);
             int postSit = allFAT.indexOf(post);
 
+            //pre指向post
             allFAT.set(preSit, postSit);
+            allFAT.set(posSit, Null_Pointer);
+//            allFAT.set(postSit, Null_Pointer);
+
             breakFAT(allFAT);
             return posSit;
         }

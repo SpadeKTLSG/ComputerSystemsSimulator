@@ -5,7 +5,8 @@ import css.out.file.entity.file;
 import css.out.file.enums.ROOT_PATH;
 import org.junit.Test;
 
-import static css.out.file.FileApp.*;
+import static css.out.file.FileApp.addContent;
+import static css.out.file.FileApp.deleteContent;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.handleB.HandleDISK.fullFillFAT;
 import static css.out.file.handleB.HandleFile.str2Path;
@@ -58,7 +59,7 @@ public class AppTest {
         file temp_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + str2Path(DIR_NAME_DEFAULT) + ':' + FILE_NAME_DEFAULT, FILE_EXTEND.get(1), "correct input");
 
         //add
-        System.out.println("\n\n\n女娲造人!\n\n\n");
+//        System.out.println("\n\n\n女娲造人!\n\n\n");
         addContent(temp_dir_head1);
         addContent(temp_dir_head2);
         addContent(temp_dir_head3);
@@ -74,9 +75,9 @@ public class AppTest {
         app.state();
 
         //delete
-//        System.out.println("\n\n\n天启之火!\n\n\n");
-//        deleteContent(temp_file_head2);
-//        app.state();
+        System.out.println("\n\n\n天启之火!\n\n\n");
+        deleteContent(temp_file_head2);
+        app.state();
 
         //alter
 
