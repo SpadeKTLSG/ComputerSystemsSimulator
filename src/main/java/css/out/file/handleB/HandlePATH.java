@@ -119,7 +119,7 @@ public abstract class HandlePATH {
      */
     public static void deleteTR(FCB fcb) {
         node parentNode = searchUpperNode(fcb); //得到要删除的节点的父节点(一定是目录)
-        node targetNode = selectTR(fcb);//得到要删除的节点本身
+        node targetNode = selectTR2Node(fcb);//得到要删除的节点本身
 
         if (parentNode == null) {
             return;
@@ -165,6 +165,12 @@ public abstract class HandlePATH {
     }
 
 
+    public static String selectTR(FCB fcb) {
+        return pathTR(selectTR2Node(fcb));
+    }
+
+
+
     //针对某一节点生成TR序列
     public static String pathTR(node target) {
         //? 使用StringBuilder拼接从根目录root节点到target节点的路径
@@ -172,7 +178,6 @@ public abstract class HandlePATH {
 
         return null;
     }
-
 
 
     /**
@@ -246,7 +251,7 @@ public abstract class HandlePATH {
      * @param fcb 给定的fcb
      * @return 返回对应的node
      */
-    public static node selectTR(FCB fcb) {
+    public static node selectTR2Node(FCB fcb) {
         //? 拿到FCB后, 通过String切分判断其位置(树上意义无意义),因此暂时直接调用pathTR返回类似order的路径
 
         //1. 拿到FCB按照"目录 : 名称"切分为两块: 目录和名称
@@ -275,16 +280,13 @@ public abstract class HandlePATH {
         return dir_temp;
     }
 
-
-
-
-
     //! 2. 路径管理器PM
 
 
     /**
      * 初始化PM
      * <p>挂载根目录</p>
+     *
      * @deprecated 已经通过磁盘模块初始化完成
      */
     public static void setDefaultPM() {
@@ -370,7 +372,18 @@ public abstract class HandlePATH {
         return keys.get(0);
     }
 
-    //TODO ALter
+    /**
+     * PM修改PathName
+     * <p>先删除再新增</p>
+     *
+     * @param pathName_or  原PathName
+     * @param pathName_new 新PathName
+     * @return 路径管理器中的键
+     */
+    public static Integer alterPM(String pathName_or, String pathName_new) {
+        deletePM(pathName_or);
+        return bindPM(pathName_new);
+    }
 
 
     /**

@@ -191,36 +191,30 @@ public abstract class HandleFS {
 
         //?TR修改节点信息
 
-//        if (A instanceof file file_temp) {
-//            if (B instanceof file file_temp) {
-//                log.debug("正在往文件树查询文件索引{}", file_temp.fcb.getPathName());
-//                deletePM(file_temp.fcb.getPathName());
-//                deleteTR(file_temp.fcb);
-//
-//            } else if (A instanceof dir dir_temp) {
-//                log.debug("正在往文件树查询文件夹索引{}", dir_temp.fcb.getPathName());
-//                deletePM(dir_temp.fcb.getPathName());
-//                deleteTR(dir_temp.fcb);
-//
-//            } else {
-//                log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
-//                throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
-//            }
-//
-//
-//
-//        } else if (A instanceof dir dir_temp) {
-//            log.debug("正在往文件树修改文件夹索引{}", dir_temp.fcb.getPathName());
-//            deletePM(dir_temp.fcb.getPathName());
-//            deleteTR(dir_temp.fcb);
-//
-//        } else {
-//            log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
-//            throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
-//        }
+        if (A instanceof file file_temp_A) {
 
+            if (B instanceof file file_temp_B) {
+                log.debug("正在往文件树修改文件索引{}", file_temp_A.fcb.getPathName());
+                alterPM(file_temp_A.fcb.getPathName(), file_temp_B.fcb.getPathName());
+                alterTR(file_temp_A.fcb, file_temp_B.fcb);
 
+            } else {
+                log.warn("文件/文件夹类型不匹配, 你是来干什么的?");
+            }
+
+        } else {
+            if (B instanceof dir dir_temp_B) {
+                dir dir_temp_A = (dir) A;
+                log.debug("正在往文件树修改文件夹索引{}", dir_temp_A.fcb.getPathName());
+                alterPM(dir_temp_A.fcb.getPathName(), dir_temp_B.fcb.getPathName());
+                alterTR(dir_temp_A.fcb, dir_temp_B.fcb);
+
+            } else {
+                log.warn("文件/文件夹类型不匹配, 你是来干什么的?");
+            }
+        }
     }
+
 
     /**
      * 查找文件模块的一个对象信息,这里直接返回路径
@@ -234,21 +228,16 @@ public abstract class HandleFS {
 
         if (A instanceof file file_temp) {
             log.debug("正在往文件树查询文件索引{}", file_temp.fcb.getPathName());
-            deletePM(file_temp.fcb.getPathName());
-            deleteTR(file_temp.fcb);
+            return selectTR(file_temp.fcb);
 
         } else if (A instanceof dir dir_temp) {
             log.debug("正在往文件树查询文件夹索引{}", dir_temp.fcb.getPathName());
-            deletePM(dir_temp.fcb.getPathName());
-            deleteTR(dir_temp.fcb);
+            return selectTR(dir_temp.fcb);
 
         } else {
             log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);
             throw new RuntimeException("被投喂了奇怪的东西, 我当场趋势: " + A);
         }
-
-
-        return null;
     }
 
 }

@@ -41,8 +41,8 @@ public class AppTest {
     public void CRUDTest() {
         FileApp app = new FileApp(); //开机
 
-//        app.kickDiskRoboot();
-//        app.coverDiskRoboot();
+        app.kickDiskRoboot();
+        app.coverDiskRoboot();
 
         fullFillFAT(1); //FAT1满
 
