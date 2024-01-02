@@ -6,7 +6,7 @@ import lombok.extern.slf4j.Slf4j;
  * 通用api
  */
 @Slf4j
-public class CommonApiList {
+public class InteractApiList {
 
     /**
      * 发送用户警告
