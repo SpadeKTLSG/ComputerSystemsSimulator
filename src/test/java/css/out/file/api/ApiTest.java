@@ -8,6 +8,7 @@ import java.util.Arrays;
 import static css.out.file.api.MonitorApiList.diskUsageAmount_All;
 import static css.out.file.api.MonitorApiList.diskUsageAmount_SyS;
 import static css.out.file.api.PowerApiList.startFile;
+import static css.out.file.api.TranApiList.giveBlockStatus2Front;
 import static css.out.file.api.TranApiList.givePath2Front;
 
 public class ApiTest {
@@ -31,5 +32,6 @@ public class ApiTest {
 //        app.kickDiskRoboot();
 //        app.coverDiskRoboot();
         System.out.println(Arrays.toString(givePath2Front()));
+        System.out.println(giveBlockStatus2Front());
     }
 }

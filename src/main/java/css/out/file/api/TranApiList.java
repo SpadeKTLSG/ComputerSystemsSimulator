@@ -1,14 +1,23 @@
 package css.out.file.api;
 
+import lombok.extern.slf4j.Slf4j;
+
 import java.util.Arrays;
+import java.util.List;
 
 import static css.out.file.FileApp.fileSyS;
+import static css.out.file.entiset.GF.Null_Pointer;
+import static css.out.file.handleB.HandleDISK.mergeFATs;
 
+/**
+ * 模块间信息通讯api
+ */
+@Slf4j
 public class TranApiList {
 
 
     public static void getTargetPathfromFront() {
-
+//和下面一样需要刷洗转换
 
     }
 
@@ -57,5 +66,25 @@ public class TranApiList {
         return pathList;
     }
 
+
+    /**
+     * 传递磁盘占用情况给前端
+     *
+     * @return DTO FAT
+     */
+    public static List<Integer> giveBlockStatus2Front() {
+        List<Integer> greatFAT = mergeFATs();
+        //刷洗greatFAT, 0: 空闲 1:占用 -> DTO FAT
+        //?刷洗符合要求
+        for (int i = 0; i < greatFAT.size(); i++) {
+            Integer e = greatFAT.get(i);
+            if (e.equals(Null_Pointer)) {
+                greatFAT.set(i, 0);
+            } else {
+                greatFAT.set(i, 1);
+            }
+        }
+        return greatFAT;
+    }
 
 }

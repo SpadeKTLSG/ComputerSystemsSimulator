@@ -20,7 +20,4 @@ public class CommonApiList {
         return msg;
     }
 
-    public static void operateFile() { //类型
-
-    }
 }
