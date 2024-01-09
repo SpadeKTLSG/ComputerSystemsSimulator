@@ -9,7 +9,7 @@ import java.util.List;
 import java.util.Map;
 
 import static css.out.file.FileApp.fileSyS;
-import static css.out.file.api.CommonApiList.alertUser;
+import static css.out.file.api.InteractApiList.alertUser;
 import static css.out.file.handleB.HandleFile.getName;
 import static css.out.file.handleB.HandleFile.getPathArray;
 

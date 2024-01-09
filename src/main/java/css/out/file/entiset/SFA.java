@@ -7,6 +7,7 @@ import static css.out.file.handleS.HandleFS.*;
 
 /**
  * 单例模式工厂
+ * Single Factory
  */
 @Slf4j
 public abstract class SFA {

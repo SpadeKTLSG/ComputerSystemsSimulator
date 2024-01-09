@@ -9,7 +9,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static css.out.file.FileApp.diskSyS;
-import static css.out.file.api.CommonApiList.alertUser;
+import static css.out.file.api.InteractApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entity.disk.initialDisk;
 import static css.out.file.handleB.HandleBlock.setBytes21Block;

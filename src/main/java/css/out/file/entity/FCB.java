@@ -7,7 +7,8 @@ import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.api.CommonApiList.alertUser;
+
+import static css.out.file.api.InteractApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;

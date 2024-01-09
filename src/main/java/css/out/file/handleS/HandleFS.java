@@ -11,7 +11,7 @@ import java.util.Map;
 import java.util.Objects;
 
 import static css.out.file.FileApp.fileSyS;
-import static css.out.file.api.CommonApiList.alertUser;
+import static css.out.file.api.InteractApiList.alertUser;
 import static css.out.file.entiset.GF.*;
 import static css.out.file.entiset.IF.AddedEXTEND;
 import static css.out.file.entiset.SFA.initialFileSys;
