@@ -3,7 +3,6 @@ package css.out.file.api;
 import css.out.file.enums.FileDirTYPE;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.api.FunctionTest.notifyProcessSyS;
 import static css.out.file.api.InteractApiList.alertUser;
 
 /**
@@ -66,7 +65,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void createOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -80,7 +79,7 @@ public class OrderApiList {
     public static void copyOrder(Object object, String subPath) {
 
 
-        notifyProcessSyS(object);        //开启进程
+//        handleCommon(null, null);        //开启进程
     }
 
 
@@ -91,7 +90,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void deleteOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+
     }
 
 
@@ -103,8 +102,8 @@ public class OrderApiList {
      */
     public static void moveOrder(Object object, String subPath) {
 
-
-        notifyProcessSyS(object);        //开启进程
+//
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -115,7 +114,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void typeOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -128,7 +127,7 @@ public class OrderApiList {
      */
     public static void changeOrder(Object object, String newName) {
 
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -139,7 +138,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void makdirOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -150,7 +149,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void chadirOrder(Object object, String newName) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -161,7 +160,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void deldirOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -173,7 +172,7 @@ public class OrderApiList {
      * @deprecated DLC内容 这里不建议使用嵌套回收, 因为我仍然使用的是普通的删除逻辑, 但是加上了一个类似GC的玩意在我的FAT Manager里面
      */
     public static void rmallOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 
@@ -184,7 +183,7 @@ public class OrderApiList {
      * @param object 文件对象
      */
     public static void exefileOrder(Object object) {
-        notifyProcessSyS(object);        //开启进程
+//        notifyProcessSyS(object);        //开启进程
     }
 
 

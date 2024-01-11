@@ -20,4 +20,15 @@ public class InteractApiList {
         return msg;
     }
 
+    //发送前端msg
+    public static void msg(String msg) {
+        String toFront = switch (msg) {
+            case "0" -> "失败的请求调用";
+            case "1" -> "失败的请求调用2";
+            default -> "失败";
+        };
+
+        //发送
+        //TODO
+    }
 }
