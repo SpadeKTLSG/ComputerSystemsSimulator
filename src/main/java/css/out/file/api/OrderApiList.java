@@ -38,7 +38,6 @@ public class OrderApiList {
                 order = orderList[0];
                 allName = orderList[1];
                 path1 = orderList[2];
-
             }
             case 4 -> { //标准四个参数 -> order | 文件全名 | path1 | path2(ELSE)
                 order = orderList[0];
@@ -47,7 +46,7 @@ public class OrderApiList {
                 path2 = orderList[3];
             }
             default -> {
-                log.error("命令错误");
+                log.warn("命令错误");
                 alertUser("找不到对应的命令");
             }
         }
@@ -58,15 +57,59 @@ public class OrderApiList {
             return null;
         }
 
-        Object fileObjects = mkObjectfrFront(order, allName, path1);
-        if (fileObjects == null) return null; //如果构建的中间对象为空, 说明用户输入错误, 直接返回null
 
-        doFunction(order, fileObjects, path2);      //执行命令, 还要加一个path2, 如果没有用的话就特定标志
-        return fileObjects;        //?返回传递进程对象信息
+        //执行命令, 还要加一个path2, 如果没有用的话就特定标志
+        return doFunction(order, allName, path1, path2);          //?返回传递进程对象信息
     }
 
 
-    public static Object mkObjectfrFront(String order, String allName, String path) {//制作对象, 需要根据操作order判断文件还是文件夹
+    public static Object doFunction(String order, String allName, String path, String subPath) {   //因为这些命令至多用到两个对象(文件.文件夹), 因此直接用Object接收
+
+        switch (order) { //根据order调用对应的方法, 根据命令的不同传递参数
+            case "create" -> {
+                return createOrder(allName, path);
+            }
+          /*  case "copy" -> {
+                return copyOrder(target, subPath);
+            }
+            case "delete" -> {
+                return deleteOrder(target);
+            }
+            case "move" -> {
+                return moveOrder(target, subPath);
+            }
+            case "type" -> {
+                return typeOrder(target);
+            }
+            case "change" -> {
+                return changeOrder(target, subPath);
+            }
+            case "makdir" -> {
+                return makdirOrder(target);
+            }
+            case "chadir" -> {
+                return chadirOrder(target, subPath);
+            }
+            case "deldir" -> {
+                return deldirOrder(target);
+            }
+            case "exefile" -> {
+                return runOrder(target);
+            }
+            case "edit" -> {
+                return editOrder(target, subPath);    //真正的用户修改内容指令
+            }*/
+            default -> {
+                log.error("命令错误");
+                alertUser("找不到对应的命令");
+                return null;
+            }
+
+        }
+
+    }
+
+    public static Object selectObjectfrFront(String order, String allName, String path) {//定位到现有对象, 需要根据操作order判断文件还是文件夹
         if (order.equals("create") | order.equals("copy") | order.equals("delete") | order.equals("move") | order.equals("type") | order.equals("change") | order.equals("run") | order.equals("edit")) {
             String pathName = path + ':' + allName.split("\\.")[0];
             String extendName = '.' + allName.split("\\.")[1];
@@ -86,29 +129,8 @@ public class OrderApiList {
 
     }
 
-
-    public static void doFunction(String order, Object target, String subPath) {   //因为这些命令至多用到两个对象(文件.文件夹), 因此直接用Object接收
-
-        switch (order) { //根据order调用对应的方法, 根据命令的不同传递参数
-            case "create" -> createOrder(target);
-            case "copy" -> copyOrder(target, subPath);
-            case "delete" -> deleteOrder(target);
-            case "move" -> moveOrder(target, subPath);
-            case "type" -> typeOrder(target);
-            case "change" -> changeOrder(target, subPath);
-            case "makdir" -> makdirOrder(target);
-            case "chadir" -> chadirOrder(target, subPath);
-            case "deldir" -> deldirOrder(target);
-            case "exefile" -> runOrder(target);
-            case "edit" -> editOrder(target, subPath);    //真正的用户修改内容指令
-//            case "rmall" -> rmallOrder(target);
-            default -> {
-                log.error("命令错误");
-                alertUser("找不到对应的命令");
-            }
-
-        }
-
+    public static Object packageObjectfrFront(String order, String allName, String path) {//制作新对象对象, 需要根据操作order判断文件还是文件夹
+        return null;
     }
 
     //! 以下是具体的命令实现, 每个方法注释后面标记了前端传递参数的数量 - 3 / 4, 以及对应的参数类型
@@ -117,26 +139,31 @@ public class OrderApiList {
      * 创建文件
      * <p>create XXX.XXX /tmp</p>
      *
-     * @param object 文件对象
+     * @return
      */
-    public static void createOrder(Object object) {
+    public static Object createOrder(String allName, String path) {
+//        packageObjectfrFront();
 //        notifyProcessSyS(object);        //开启进程
+        return null;
     }
 
 
-    /**
+    /* *//**
      * 复制文件 - 4
      * <p>copy XXXA.XXX /tmp /home</p>
      *
      * @param object  源文件对象
      * @param subPath 目标位置
-     */
+     *//*
     public static void copyOrder(Object object, String subPath) {
+        Object fileObjects = selectObjectfrFront(order, allName, path1);
+        if (fileObjects == null) return null; //如果构建的中间对象为空, 说明用户输入错误, 直接返回null
 
 
 //        handleCommon(null, null);        //开启进程
     }
 
+*/
 
     /**
      * 删除文件

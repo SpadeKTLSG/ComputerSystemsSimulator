@@ -29,6 +29,5 @@ public class InteractApiList {
         };
 
         //发送
-        //TODO
     }
 }

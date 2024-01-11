@@ -17,23 +17,13 @@ import static css.out.file.handleB.HandleDISK.mergeFATs;
 @Slf4j
 public class TranApiList {
 
-    //从前端接收请求, 一般是指令内容 / 重载有指令内容信息的类型
+    /**
+     * 从前端接收完整请求
+     *
+     * @param order 前端完整请求
+     */
     public static void getFrontRequest(String order) {
-        //TODO
-//        //根据order调用对应的方法, 根据命令的不同传递参数
-//        handleOrder();
-//        //通用操作处理
-//        handleCommon();
-    }
-
-    public static void getFrontRequest(String order, String content) {
-        //TODO
-    }
-
-    
-    public static void getmFrontTargetPath() {
-//和下面一样需要刷洗转换
-
+        handleCommon(handleOrder(order));
     }
 
 

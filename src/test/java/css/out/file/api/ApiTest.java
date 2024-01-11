@@ -44,14 +44,12 @@ public class ApiTest {
     public void CommonApiTest1() {
         System.out.println("test交互式文件-进程传递");
         FileApp app = new FileApp();
-        app.kickDiskRoboot();
-        app.coverDiskRoboot();
         //使用自己的Java文件对象完成一次Common交互流程
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
         addContent(test_dir);
-        app.state();
+//        app.state();
 
         //模拟前端请求
         getFrontRequest("create Crazy.txt /tmp");
