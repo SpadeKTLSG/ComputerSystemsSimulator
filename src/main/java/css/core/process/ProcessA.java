@@ -18,7 +18,7 @@ public class ProcessA extends Thread {
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
     DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
 
-    public boolean stop = false;
+    volatile public boolean stop = false;
     public Pcb pcb;
     public FileReader file;
     public BufferedReader bufferedReader;
@@ -38,9 +38,12 @@ public class ProcessA extends Thread {
                 ProcessScheduling.readyQueues.add(this);
                 this.wait();
             }
+            int i =1;
             while (!stop) {
                 CPU();
             }
+            MemoryManager.releaseMemory(pcb.pcbId);
+            MemoryManager.displayMemory();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
