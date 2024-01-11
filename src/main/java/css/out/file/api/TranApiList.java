@@ -6,8 +6,6 @@ import java.util.Arrays;
 import java.util.List;
 
 import static css.out.file.FileApp.fileSyS;
-import static css.out.file.api.FunctionApiList.handleCommon;
-import static css.out.file.api.OrderApiList.handleOrder;
 import static css.out.file.entiset.GF.Null_Pointer;
 import static css.out.file.handleB.HandleDISK.mergeFATs;
 
@@ -21,9 +19,9 @@ public class TranApiList {
     public static void getFrontRequest(String order) {
         //TODO
         //根据order调用对应的方法, 根据命令的不同传递参数
-        handleOrder();
+//        handleOrder();
         //通用操作处理
-        handleCommon();
+//        handleCommon();
     }
 
     public static void getFrontRequest(String order, String content) {
