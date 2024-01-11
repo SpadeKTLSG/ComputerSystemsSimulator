@@ -1,19 +1,18 @@
 package css.out.file.entity;
 
-import css.out.file.enums.FCB_FIELD;
 import css.out.file.enums.FileDirTYPE;
+import css.out.file.enums.ROOT_PATH;
 import lombok.AllArgsConstructor;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.api.CommonApiList.alertUser;
+
+import static css.out.file.api.InteractApiList.alertUser;
+import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.DIR;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handle.HandleFile.fromFixedLengthBytes;
-import static css.out.file.handle.HandleFile.toFixedLengthBytes;
-import static css.out.file.handle.HandlePath.*;
-import static css.out.file.utils.ByteUtil.Int2Byte;
-import static css.out.file.entiset.GF.*;
+import static css.out.file.handleB.HandleFile.str2Path;
 
 /**
  * FCB 文件控制块
@@ -22,6 +21,7 @@ import static css.out.file.entiset.GF.*;
 @Slf4j
 @Data
 @AllArgsConstructor
+@Builder
 public class FCB {
 
     /**
@@ -32,11 +32,13 @@ public class FCB {
      * <p>/home/114514:     小本本.txt</p>
      * <p>/home/114514:     上课文件夹</p>
      * <p>/home:            114514</p>
+     *
      */
     public String pathName;
 
     /**
-     * 起始盘块号
+     * 起始盘块号(对应块号)
+     * <p>很抱歉, 为了项目进度锁定了一个文件只能占一个块</p>
      * <p>3 <= startBlock <= 127</p>
      */
     public Integer startBlock;
@@ -64,20 +66,21 @@ public class FCB {
 
 
     /**
-     * 指定目录和磁盘块快速新建文件/文件夹构造
+     * 指定目录和磁盘块手动新建文件/文件夹构造
+     * <p>还需要处理的属性: 扩展名 + 长度</p>
      *
-     * @param pathName   目录名+文件名
+     * @param pathName   目录名:文件名
      * @param startBlock 起始盘块号
      * @param typeFlag   文件or目录标识
      */
-    public FCB(String pathName, int startBlock, FileDirTYPE typeFlag) {
+    public FCB(String pathName, Integer startBlock, FileDirTYPE typeFlag) {
         if (typeFlag == DIR) { //目录
 
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
+            this.typeFlag = DIR;
             this.extendName = DIR_EXTEND.get(0);
-            this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
@@ -85,7 +88,41 @@ public class FCB {
             this.pathName = pathName;
             this.startBlock = startBlock;
             //autofill
+            this.typeFlag = FILE;
             this.extendName = FILE_EXTEND.get(0);
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
+
+        } else { //出错
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
+        }
+
+    }
+
+    /**
+     * DTO类型FCB构造, 前端传递使用
+     * <p>还需要处理的属性: 盘块位置 + 长度</p>
+     *
+     * @param pathName   目录名:文件名
+     * @param extendName 扩展名
+     * @param typeFlag   文件or目录标识
+     */
+    public FCB(String pathName, String extendName, FileDirTYPE typeFlag) {
+        if (typeFlag == DIR) { //目录
+
+            this.pathName = pathName;
+            this.extendName = extendName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.typeFlag = DIR;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
+
+        } else if (typeFlag == FILE) { //文件
+
+            this.pathName = pathName;
+            this.extendName = extendName;
+            //autofill
+            this.startBlock = Null_Pointer;
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
 
@@ -97,7 +134,39 @@ public class FCB {
     }
 
     /**
-     * 指定FCB类型快速构建无挂载的对象(禁止)
+     * 指定目录(用户友好型)新建文件/文件夹构造
+     *
+     * @param pathName 目录名:文件名
+     * @param typeFlag 文件or目录标识
+     */
+    public FCB(String pathName, FileDirTYPE typeFlag) {
+
+        if (typeFlag == DIR) { //目录
+
+            this.pathName = pathName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.extendName = DIR_EXTEND.get(0);
+            this.typeFlag = DIR;
+            this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
+
+        } else if (typeFlag == FILE) { //文件
+
+            this.pathName = pathName;
+            //autofill
+            this.startBlock = Null_Pointer;
+            this.extendName = FILE_EXTEND.get(0);
+            this.typeFlag = FILE;
+            this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
+
+        } else { //出错
+            alertUser("FCB构造失败, 传递flag: " + typeFlag + " 错误");
+            log.error("FCB构造失败, 传递flag: {} 错误", typeFlag);
+        }
+    }
+
+    /**
+     * 指定FCB类型快速构建无挂载的对象(中间操作)
      *
      * @param typeFlag 文件or目录标识
      */
@@ -106,13 +175,17 @@ public class FCB {
         if (typeFlag == DIR) { //目录
 
             //autofill
+            this.pathName = str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + DIR_NAME_DEFAULT;
+            this.startBlock = Null_Pointer;
             this.extendName = DIR_EXTEND.get(0);
-            this.typeFlag = FILE;
+            this.typeFlag = DIR;
             this.fileLength = FCB_BYTE_LENGTH + DIR_LENGTH_DEFAULT;
 
         } else if (typeFlag == FILE) { //文件
 
             //autofill
+            this.pathName = str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + FILE_NAME_DEFAULT;
+            this.startBlock = Null_Pointer;
             this.extendName = FILE_EXTEND.get(0);
             this.typeFlag = FILE;
             this.fileLength = FCB_BYTE_LENGTH + FILE_LENGTH_DEFAULT;
@@ -123,11 +196,12 @@ public class FCB {
         }
     }
 
+
     /**
-     * 空白FCB构造(禁止)
+     * 空白FCB构造(中间操作)
      */
     public FCB() {
-        log.debug("正在构建一个空白FCB");
+//        log.debug("正在构建一个空白FCB");
     }
 
 
@@ -155,66 +229,6 @@ public class FCB {
                     '}';
         }
     }
-
-
-    /**
-     * FCB转换为Bytes
-     *
-     * @return Bytes
-     */
-    public byte[] toBytes() {
-        byte[] bytes = new byte[FCB_BYTE_LENGTH];
-        int index = 0;
-
-        for (FCB_FIELD field : FCB_FIELD.values()) {
-
-            int length = FCB_LENGTH.get(field.getName());
-
-            byte[] value = switch (field) { //不能使用任何简单的toString, 需要自己转换为对应映射表
-                case PATH_NAME -> Int2Byte(bindPathManager(this));
-                case START_BLOCK -> Int2Byte(this.startBlock);
-                case EXTEND_NAME -> Int2Byte(selectExtendManager(this));
-                case TYPE_FLAG -> Int2Byte(FileorDir2Int(this));
-                case FILE_LENGTH -> Int2Byte(this.fileLength);
-            };
-
-            byte[] valueBytes = toFixedLengthBytes(value, length);
-            System.arraycopy(valueBytes, 0, bytes, index, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-            // 更新index的值，加上复制的长度
-            index += length;
-        }
-
-        return bytes;
-    }
-
-
-    /**
-     * Bytes转换为FCB
-     * <p>通过new FCB.调用</p>
-     */
-    public FCB fromBytes(byte[] bytes) {
-
-        int index = 0;
-        for (FCB_FIELD field : FCB_FIELD.values()) {//按照相同的逻辑, 从bytes中截取对应的字节, 然后转换为对应的类型对象
-
-            int length = FCB_LENGTH.get(field.getName());
-
-            byte[] valueBytes = new byte[length];
-            System.arraycopy(bytes, index, valueBytes, 0, length);//arraycopy(源数组, 源数组起始位置, 目标数组, 目标数组起始位置, 复制长度)
-
-
-            switch (field) {
-                case PATH_NAME -> this.pathName = fromPathManager(fromFixedLengthBytes(valueBytes, length));
-                case START_BLOCK -> this.startBlock = fromFixedLengthBytes(valueBytes, length);
-                case EXTEND_NAME -> this.extendName = fromExtendManager(fromFixedLengthBytes(valueBytes, length));
-                case TYPE_FLAG -> this.typeFlag = Int2FileorDir(fromFixedLengthBytes(valueBytes, length));
-                case FILE_LENGTH -> this.fileLength = fromFixedLengthBytes(valueBytes, length);
-            }
-            index += length;
-        }
-        return this;
-    }
-
 
 
 }

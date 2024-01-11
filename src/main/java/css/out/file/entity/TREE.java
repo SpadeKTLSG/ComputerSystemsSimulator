@@ -2,7 +2,7 @@ package css.out.file.entity;
 
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.utils.TreeUtil.showGreatTree;
+import static css.out.file.utils.TreeUtil.printTree;
 
 /**
  * 二叉树树形文件结构, 用于存储文件系统结构
@@ -33,8 +33,8 @@ public class TREE {
 
     @Override
     public String toString() {
-        //直接调用方法把树形结构打印出来
-        //printTree(root);
-        return showGreatTree(root);
+
+        return name + "树形结构如下\n" + printTree(root, "");
+//        return showGreatTree(root);//直接调用方法把树形结构打印出来
     }
 }

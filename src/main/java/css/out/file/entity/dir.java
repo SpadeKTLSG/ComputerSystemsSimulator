@@ -1,17 +1,14 @@
 package css.out.file.entity;
 
-import css.out.file.enums.ROOT_PATH;
+import lombok.Builder;
 import lombok.Data;
 import lombok.extern.slf4j.Slf4j;
 
 import static css.out.file.enums.FileDirTYPE.DIR;
-import static css.out.file.handle.HandleBlock.getFreeBlock;
-import static css.out.file.handle.HandlePath.getROOT_DIRPath;
-import static css.out.file.utils.ByteUtil.byteMerger;
-import static css.out.file.entiset.GF.DIR_NAME_DEFAULT;
 
 @Slf4j
 @Data
+@Builder
 public class dir {
 
     /**
@@ -24,7 +21,8 @@ public class dir {
      * 文件内容
      * <p>锁定为"" - 维持通用性</p>
      */
-    private final String content = "";
+    public final String content = "";
+
 
     /**
      * 默认取消打印空内容
@@ -38,42 +36,55 @@ public class dir {
                 '}';
     }
 
+    /**
+     * 文件夹FCB式直接构建
+     *
+     * @param fcb 对应绑定的文件控制块
+     */
     public dir(FCB fcb) {
         this.fcb = fcb;
     }
 
     /**
-     * 文件夹完全指定构造
+     * 文件夹DTO构造
      *
-     * @param pathName   目录名+文件夹名
+     * @param pathName   目录名+文件名
+     * @param extendName 扩展名
+     */
+    public dir(String pathName, String extendName) {
+        this.fcb = new FCB(pathName, extendName, DIR);
+
+    }
+
+
+    /**
+     * 文件夹基本指定构造
+     *
+     * @param pathName 目录名+文件名
+     */
+    public dir(String pathName) {
+        this.fcb = new FCB(pathName, DIR);
+
+    }
+
+    /**
+     * 文件夹指定块号构造
+     *
+     * @param pathName   目录名+文件名
      * @param startBlock 起始盘块号
      */
     public dir(String pathName, int startBlock) {
         this.fcb = new FCB(pathName, startBlock, DIR);
-        //TODO 标记磁盘块为已使用
     }
 
 
     /**
-     * 文件夹临时生成
+     * 文件夹临时生成(不挂载)
      * <p>默认走/tmp目录</p>
      */
     public dir() {
-        this.fcb = new FCB(getROOT_DIRPath(ROOT_PATH.tmp) + ':' + DIR_NAME_DEFAULT, getFreeBlock(), DIR);
-        //TODO 标记磁盘块为已使用
+        this.fcb = new FCB(DIR);
     }
 
-    /**
-     * dir转换为Bytes, 直接FCB转Bytes + 内容转Bytes(空)
-     *
-     * @return Bytes
-     */
-    public byte[] toBytes() {
-        return byteMerger(fcb.toBytes(), content.getBytes());
-    }
-
-    public void fromBytes(byte[] bytes) {
-        this.fcb = this.fcb.fromBytes(bytes);
-    }
 
 }

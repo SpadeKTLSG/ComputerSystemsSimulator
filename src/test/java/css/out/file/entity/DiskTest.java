@@ -1,18 +1,23 @@
 package css.out.file.entity;
 
 import css.out.file.FileApp;
+import lombok.extern.slf4j.Slf4j;
 import org.junit.Test;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
+import java.util.List;
+import java.util.Map;
 
 import static css.out.file.entiset.GF.*;
 import static css.out.file.enums.FileDirTYPE.FILE;
-import static css.out.file.handle.HandleFile.setFileContextLength;
+import static css.out.file.handleB.HandleDISK.*;
+import static css.out.file.handleB.HandleFile.*;
 
 /**
  * 文件&文件夹测试
  */
+@Slf4j
 public class DiskTest {
 
 
@@ -26,7 +31,7 @@ public class DiskTest {
         file file1 = new file(new FCB("/home", 89, FILE_EXTEND.get(1), FILE, FILE_LENGTH_DEFAULT + FCB_BYTE_LENGTH + setFileContextLength("114514")), "114514");
         System.out.println(file1);
         //转换操作
-        byte[] byte_temp = file1.toBytes();
+        byte[] byte_temp = file2Bytes(file1);
 
         //!用StringBuffer收集byte_temp中的每个元素,最后打印SB
         StringBuilder sb = new StringBuilder();
@@ -76,8 +81,7 @@ public class DiskTest {
         }
         //3. 将byte[]转换为file对象
 
-        file temp_file = new file();
-        temp_file.fromBytes(bytes);
+        file temp_file = bytes2File(bytes);
         System.out.println(temp_file);
     }
 
@@ -87,7 +91,26 @@ public class DiskTest {
     @Test
     public void Disk_function1() throws IOException {
         FileApp app = new FileApp();
-        //System.out.println(readAllDISK(FileApp.diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE));
+
+        //尝试设置一个文件
+        //处理FAT磁盘逻辑
+//        fullFillFAT(1); //FAT1满
+//        fullFillFAT(2); //全满
+//        Integer pos = get1FreeFAT();
+//
+//
+//        if (pos != -1) {
+//            System.out.println(pos + "是被找到的第一个空闲块");
+//            //写入磁盘
+//            writeAllDISK2TXT(diskSyS.disk.BLOCKS, WORKSHOP_PATH + DISK_FILE);
+//        }
+        List<Integer> order = getFATOrder();
+        System.out.println(order);
+
+//        app.kickDiskRoboot();
+        app.state();
+
+        //设置一个盘块占用了
 
     }
 
@@ -97,6 +120,85 @@ public class DiskTest {
      */
     @Test
     public void Disk_reload() throws IOException {
+        FileApp app = new FileApp();
+
+        app.state();
+    }
+
+    @Test
+    public void FAT() throws IOException {
+        FileApp app = new FileApp();
+
+        //        specifyFAT(1, 120);
+//        specifyFAT(120, 2);
+
+        Map<Integer, Integer> map = Map.of( //逻辑FAT -> 手动指定FAT
+                3, 80,
+                80, 50,
+                50, 70,
+                70, 40,
+                40, 90,
+                90, 60,
+                60, Null_Pointer
+        );
+        specifyFAT(map);
+        //模拟具体环境FAT操作, 开始FAT的表演吧
+
+//        fullFillFAT(1); //FAT1满
+//        fullFillFAT(2); //全满
+
+//        System.out.println(getFATOrder());
+        System.out.println(get1FreeFAT());
+        System.out.println(set1FATUse());
+        System.out.println(getFATOrder());
+        System.out.println(get1FreeFAT());
+        System.out.println(set1FATUse());
+        System.out.println(getFATOrder());
+        System.out.println(set1FATUse());
+
+        System.out.println(getFATOrder());
+        System.out.println(set1FATUse());
+        System.out.println(get1FreeFAT());
+        System.out.println(getFATOrder());
+
+
+        app.state();
+    }
+
+    @Test
+    public void FileMount() throws IOException {
+        FileApp app = new FileApp();
+
+        Map<Integer, Integer> map = Map.of(
+                3, 80,
+                80, 50,
+                50, 70,
+                70, 40,
+                40, 90,
+                90, 60,
+                60, Null_Pointer
+        );
+        specifyFAT(map);
+
+        //占用盘块流程:
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
+        System.out.println(set1FATUse());
+
+        //查看盘块状态
+        System.out.println(getFATOrder());
+
+        //测试: 获得一个空块
+        System.out.println(get1FreeFAT());
+        System.out.println(get1FreeFAT());
+
+
+//        writeContext();
+
+        //还原为初始状态
+        app.kickDiskRoboot();//格式化磁盘
+        app.state();
 
     }
 }

@@ -1,17 +1,16 @@
-package css.out.file.system;
+package css.out.file.entiset;
 
-import css.out.file.FileApp;
 import lombok.extern.slf4j.Slf4j;
 
-import static css.out.file.handle.HandleBlock.mountFAT;
-import static css.out.file.handle.HandleDISK.initialDisk;
-import static css.out.file.handle.HandlePath.*;
+import static css.out.file.entity.disk.initialDisk;
+import static css.out.file.handleS.HandleFS.*;
 
 /**
  * 单例模式工厂
+ * Single Factory
  */
 @Slf4j
-public class SinFactory {
+public abstract class SFA {
 
     /**
      * DiskSyS磁盘系统: 唯一
@@ -28,25 +27,26 @@ public class SinFactory {
      * private构造
      * 保证外部无法实例化
      */
-    private SinFactory() {
+    private SFA() {
     }
+
 
     /**
      * 获取磁盘系统
      */
     public static DiskSyS initialDiskSyS() {
-        initialDisk(DISK_SYS.disk);
-
+        DISK_SYS.disk = initialDisk();
         return DISK_SYS;
     }
+
 
     /**
      * 获取文件系统
      */
     public static FileSyS initialFileSys() {
-        FILE_SYS.tree = initialTree();
-        FILE_SYS.pathManager = initialPathManager();
-        FILE_SYS.extendManager = initialExtendManager();
+        FILE_SYS.tree = initialTR();
+        FILE_SYS.pathManager = initialPM();
+        FILE_SYS.extendManager = initialEM();
         return FILE_SYS;
     }
 

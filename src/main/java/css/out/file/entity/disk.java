@@ -5,6 +5,10 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.List;
 
+import static css.out.file.entiset.GF.DISK_NAME;
+import static css.out.file.handleB.HandleDISK.*;
+import static css.out.file.handleS.HandleDS.initialBLOCKS;
+
 /**
  * 磁盘
  */
@@ -44,7 +48,6 @@ public class disk {
      * <p>只允许初始化构造, 不允许自定义</p>
      */
     public disk() {
-
     }
 
     @Override
@@ -56,4 +59,18 @@ public class disk {
                 "\nBLOCKS=" + BLOCKS +
                 '}';
     }
+
+
+    /**
+     * diskJava对象初始化
+     */
+    public static disk initialDisk() {
+        disk disk = new disk();
+        disk.name = DISK_NAME;
+        disk.BLOCKS = initialBLOCKS(); //获得初始磁盘空间(全0)
+        disk.FAT1 = getVoidFAT1(); //获得FAT1对象
+        disk.FAT2 = getVoidFAT2(); //获得FAT2对象
+        return disk;
+    }
+
 }

@@ -15,14 +15,12 @@ public class block {
     public byte[] bytes;
 
     /**
-     * 新磁盘块构造
+     * 新磁盘块构造,全初始化为0
      */
     public block() {
         this.bytes = new byte[BLOCK_SIZE];
-        //将每一个字节项都初始化为0
-        for (int i = 0; i < BLOCK_SIZE; i++) {
+        for (int i = 0; i < BLOCK_SIZE; i++)
             this.bytes[i] = Byte.parseByte("0");
-        }
     }
 
     /**
@@ -31,7 +29,19 @@ public class block {
      * @param blockBytes 字节数组
      */
     public block(byte[] blockBytes) {
-        this.bytes = blockBytes;
+
+        if (blockBytes.length < BLOCK_SIZE) { //字节数组长度不足BLOCK_SIZE,则补空格
+            this.bytes = new byte[BLOCK_SIZE];
+            System.arraycopy(blockBytes, 0, this.bytes, 0, blockBytes.length);
+
+        } else if (blockBytes.length == BLOCK_SIZE) {
+            this.bytes = blockBytes;
+
+        } else { //字节数组长度大于BLOCK_SIZE,则截取
+            this.bytes = new byte[BLOCK_SIZE];
+            System.arraycopy(blockBytes, 0, this.bytes, 0, BLOCK_SIZE);
+            
+        }
     }
 
     @Override

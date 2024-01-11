@@ -36,8 +36,7 @@ public class node {
      * @param fcb 对应文件/文件夹的FCB
      */
     public node(FCB fcb) {
-        this.fcb = fcb; //获取到对应对象的FCB后进行判断
-
+        this.fcb = fcb;
         this.left = null;
         this.right = null;
     }
@@ -55,4 +54,6 @@ public class node {
             log.error("非法的根目录创建!");
         }
     }
+
+
 }

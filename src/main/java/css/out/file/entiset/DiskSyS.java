@@ -1,4 +1,4 @@
-package css.out.file.system;
+package css.out.file.entiset;
 
 import css.out.file.entity.disk;
 import lombok.Data;
@@ -20,16 +20,11 @@ public class DiskSyS {
      * 单例实现
      */
     public DiskSyS() {
-        this.disk = new disk(); //赋值成员变量空间
-    }
-
-    public void reloadDiskSyS() {
-
     }
 
     @Override
     public String toString() {
-        return "DiskSyS{" +
+        return "DiskSyS\n{" +
                 "disk=" + disk +
                 '}';
     }
