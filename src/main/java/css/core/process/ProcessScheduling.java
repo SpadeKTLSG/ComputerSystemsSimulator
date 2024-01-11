@@ -59,7 +59,7 @@ public class ProcessScheduling {
         process.pcb.state = 0;
     }
 
-    public   void use() {
+    public void use() {
         Thread thread = new Thread(() -> {
             while (true) {
                 if (runing == null) {

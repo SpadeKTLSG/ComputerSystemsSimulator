@@ -12,10 +12,10 @@ public class MemoryManager {
     private static int[][] cleanblock;
 
 
-    public MemoryManager() {
+static {
         //用64个块初始化内存，每个块可存储3个字符
-        this.memory = new MemoryBlock[8][8];
-        this.cleanblock = new int[8][8];
+        memory = new MemoryBlock[8][8];
+        cleanblock = new int[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 memory[i][j] = new MemoryBlock();
@@ -82,7 +82,7 @@ public class MemoryManager {
     }
 
     // 线程结束时清理内存
-    public void releaseMemory(int processId) {
+    public static void releaseMemory(int processId) {
 
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {

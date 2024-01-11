@@ -11,44 +11,15 @@ import java.io.IOException;
 public class Main {
 
     public static void main(String[] args) throws IOException {
-//        ApplicationContext context =
-//                new ClassPathXmlApplicationContext("spring-config.xml");
-//        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
-//        // Test MemoryManager functionality
-        MemoryManager memoryManager = new MemoryManager();
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("spring-config.xml");
+        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
+        // Test MemoryManager functionality
+        new ProcessA("src/main/java/css/core/memory/api/info.txt").start();
+        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
 
 
-        // Allocate memory for Process 1
-        memoryManager.allocateMemory(1, "X=1");
-
-
-
-        // Display memory status after allocation
-        memoryManager.displayMemory();
-
-        // Allocate memory for Process 2
-        memoryManager.allocateMemory(2, "Y++");
-
-        // Display memory status after allocation
-        memoryManager.displayMemory();
-
-        // Allocate memory for Process 3 (should fail)
-        memoryManager.allocateMemory(1, "Z=3");
-
-        // Display memory status after allocation
-        memoryManager.displayMemory();
-
-//      new ProcessA("src\\main\\java\\css\\core\\memory\\api\\info.txt").start();
-//      new ProcessA("src\\main\\java\\css\\core\\process\\api\\info.txt").start();
-//       processScheduling.use();
-       memoryManager.releaseMemory(1);
-       memoryManager.releaseMemory(2);
-        memoryManager.displayMemory();
-
-        memoryManager.allocateMemory(1, "X=1");
-        memoryManager.allocateMemory(1, "Y--");
-        memoryManager.releaseMemory(1);
-        memoryManager.displayMemory();
+        processScheduling.use();
 
     }
 }

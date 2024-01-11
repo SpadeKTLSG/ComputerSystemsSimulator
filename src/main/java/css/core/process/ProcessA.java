@@ -41,8 +41,8 @@ public class ProcessA extends Thread {
             int i =1;
             while (!stop) {
                 CPU();
-                System.out.println(i++);
             }
+            MemoryManager.releaseMemory(pcb.pcbId);
             MemoryManager.displayMemory();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
@@ -67,7 +67,7 @@ public class ProcessA extends Thread {
         synchronized (this){
         if (pcb.state == 1) {
             String s = bufferedReader.readLine();
-            System.out.println("ssadasdas"+s);
+            System.out.println(s);
             MemoryManager.allocateMemory(pcb.pcbId,s);
             MemoryManager.displayMemory();
             pcb.lines = s;
