@@ -2,27 +2,24 @@ package css.core.memory;
 
 import lombok.extern.slf4j.Slf4j;
 
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Scanner;
 
 
 @Slf4j
 
 
-
-
 public class MemoryManager {
     private static MemoryBlock[][] memory;
-    public  Map<Integer, MemoryBlock[]> threadMemoryMap; // 用于跟踪线程所使用的内存块
+    private static int[][] cleanblock;
+
 
     public MemoryManager() {
         //用64个块初始化内存，每个块可存储3个字符
         this.memory = new MemoryBlock[8][8];
-        this.threadMemoryMap = new HashMap<>();
+        this.cleanblock = new int[8][8];
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 memory[i][j] = new MemoryBlock();
+                cleanblock[i][j] = -1;
             }
 
 
@@ -31,25 +28,31 @@ public class MemoryManager {
 
     //分配内存
     public static void allocateMemory(int processId, String data) {
-        // Find consecutive blocks for allocation
+        // 查找要分配的连续块
         int consecutiveBlocks = data.length() / 3 + (data.length() % 3 == 0 ? 0 : 1);
         int[] startingBlock = findConsecutiveBlocks(consecutiveBlocks);
 
-        // Allocate memory if consecutive blocks are found
+        // 如果找到连续块，则分配内存
         if (startingBlock != null) {
+            MemoryBlock[] allocatedBlocks = new MemoryBlock[consecutiveBlocks];
             int blockIndex = 0;
             for (int i = startingBlock[0]; i < startingBlock[0] + consecutiveBlocks; i++) {
                 for (int j = startingBlock[1]; j < 8; j++) {
+
                     if (blockIndex < data.length()) {
-                        memory[i][j].setContent(data.substring(blockIndex, blockIndex + 3));
-                        blockIndex += 3;
+                        int blockSize = Math.min(3, data.length() - blockIndex);
+                        memory[i][j].setContent(data.substring(blockIndex, blockIndex + blockSize));
+                        allocatedBlocks[blockIndex] = memory[i][j];
+                        blockIndex += blockSize;
                     }
+                    //跟踪内存被哪些进程所占用
+                    cleanblock[i][j]=processId;
                 }
             }
 
-            System.out.println("Memory allocated for Process " + processId);
+            System.out.println("为进程分配的内存 " + processId);
         } else {
-            System.out.println("Memory allocation failed for Process " + processId);
+            System.out.println("进程的内存分配失败 " + processId);
         }
     }
 
@@ -78,31 +81,19 @@ public class MemoryManager {
 
     }
 
-
     // 线程结束时清理内存
     public void releaseMemory(int processId) {
-        MemoryBlock[] blocksUsedByThread = threadMemoryMap.get(processId);
-        if (blocksUsedByThread != null) {
-            for (MemoryBlock block : blocksUsedByThread) {
-                if (block != null) {
-                    block.setContent("---"); // 清空线程使用的内存块
-                }
 
+        for (int i = 0; i < 8; i++) {
+            for (int j = 0; j < 8; j++) {
+                if (cleanblock[i][j] == processId) {
+                    memory[i][j].setContent("---");
+                    cleanblock[i][j] = -1;
+                }
             }
-            threadMemoryMap.remove(processId); // 清理线程与内存块的映射关系
-            System.out.println("Memory released for Process " + processId);
-        } else {
-            System.out.println("No memory allocated for Process " + processId);
         }
     }
 
-
-    private static int calculateConsecutiveBlocks(int dataSize) {
-
-        return dataSize / 3 + (dataSize % 3 == 0 ? 0 : 1);
-    }
-
-    //查找连续块
 
 
     public static void displayMemory() {
