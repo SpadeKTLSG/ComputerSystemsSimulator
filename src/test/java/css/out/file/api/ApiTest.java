@@ -53,6 +53,6 @@ public class ApiTest {
 
         //模拟前端请求
         getFrontRequest("create Crazy.txt /tmp");
-        getFrontRequest("makdir Guys /tmp");
+//        getFrontRequest("makdir Guys /tmp");
     }
 }

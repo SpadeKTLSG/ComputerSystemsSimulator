@@ -24,7 +24,6 @@ public class FunctionApiList {
         if (object == null) return; //判断是否为空, 空就是用户输入错误
 
         if (object instanceof file temp) {
-
             String allName = temp.fcb.pathName.split(":")[1] + temp.fcb.getExtendName();
             notifyProcessSyS(mkObject(allName, temp.getContent()));        //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
 

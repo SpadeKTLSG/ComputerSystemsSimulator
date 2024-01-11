@@ -4,6 +4,7 @@ import css.out.file.entity.dir;
 import css.out.file.entity.file;
 import lombok.extern.slf4j.Slf4j;
 
+import static css.out.file.FileApp.addContent;
 import static css.out.file.FileApp.selectContent;
 import static css.out.file.api.InteractApiList.alertUser;
 
@@ -67,12 +68,13 @@ public class OrderApiList {
 
         switch (order) { //根据order调用对应的方法, 根据命令的不同传递参数
             case "create" -> {
-                return createOrder(allName, path);
+
+                return createOrder(packageObjectfrFront(order, allName, path));
             }
-          /*  case "copy" -> {
-                return copyOrder(target, subPath);
-            }
-            case "delete" -> {
+//            case "copy" -> {
+//                return copyOrder(packageObjectfrFront(order, allName, path));
+//            }
+            /*case "delete" -> {
                 return deleteOrder(target);
             }
             case "move" -> {
@@ -109,6 +111,17 @@ public class OrderApiList {
 
     }
 
+
+    //? 两种不同的对象处理方式, 一种是定位到现有对象, 一种是制作新对象
+
+    /**
+     * 定位到现有对象完成DTO传递
+     *
+     * @param order   操作指令
+     * @param allName 文件全名
+     * @param path    文件路径
+     * @return 打包对象
+     */
     public static Object selectObjectfrFront(String order, String allName, String path) {//定位到现有对象, 需要根据操作order判断文件还是文件夹
         if (order.equals("create") | order.equals("copy") | order.equals("delete") | order.equals("move") | order.equals("type") | order.equals("change") | order.equals("run") | order.equals("edit")) {
             String pathName = path + ':' + allName.split("\\.")[0];
@@ -129,8 +142,29 @@ public class OrderApiList {
 
     }
 
+    /**
+     * 制作新对象完成DTO传递
+     *
+     * @param order   操作指令
+     * @param allName 文件全名
+     * @param path    文件路径
+     * @return 新对象
+     */
     public static Object packageObjectfrFront(String order, String allName, String path) {//制作新对象对象, 需要根据操作order判断文件还是文件夹
-        return null;
+        if (order.equals("create") | order.equals("copy") | order.equals("delete") | order.equals("move") | order.equals("type") | order.equals("change") | order.equals("run") | order.equals("edit")) {
+            file temp_file = new file(path + ':' + allName.split("\\.")[0], '.' + allName.split("\\.")[1], "");
+            addContent(temp_file);
+            return selectContent(temp_file);
+
+        } else if (order.equals("makdir") | order.equals("chadir") | order.equals("deldir")) {
+            dir temp_dir = new dir(path + ':' + allName.split("\\.")[0], ".");
+            addContent(temp_dir);
+            return selectContent(temp_dir);
+
+        } else {
+            alertUser("命令语法错误!");
+            return null;
+        }
     }
 
     //! 以下是具体的命令实现, 每个方法注释后面标记了前端传递参数的数量 - 3 / 4, 以及对应的参数类型
@@ -139,31 +173,27 @@ public class OrderApiList {
      * 创建文件
      * <p>create XXX.XXX /tmp</p>
      *
-     * @return
+     * @param object 源文件对象
+     * @return 返回工作对象给进程
      */
-    public static Object createOrder(String allName, String path) {
-//        packageObjectfrFront();
-//        notifyProcessSyS(object);        //开启进程
-        return null;
+    public static Object createOrder(Object object) {
+        return object;
     }
 
 
-    /* *//**
-     * 复制文件 - 4
-     * <p>copy XXXA.XXX /tmp /home</p>
-     *
-     * @param object  源文件对象
-     * @param subPath 目标位置
-     *//*
-    public static void copyOrder(Object object, String subPath) {
-        Object fileObjects = selectObjectfrFront(order, allName, path1);
-        if (fileObjects == null) return null; //如果构建的中间对象为空, 说明用户输入错误, 直接返回null
+//    /**
+//     * 复制文件 - 4
+//     * <p>copy XXXA.XXX /tmp /home</p>
+//     *
+//     * @param object  源文件对象
+//     * @param subPath 目标位置
+//   */
+//    public static void copyOrder(Object object, String subPath) {
+//        Object fileObjects = ;
+//
+//    }
+//
 
-
-//        handleCommon(null, null);        //开启进程
-    }
-
-*/
 
     /**
      * 删除文件
