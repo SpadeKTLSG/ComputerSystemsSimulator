@@ -196,6 +196,7 @@ public class FileApp {
      * 查找文件系统的一个对象
      *
      * @param A 文件/文件夹对象
+     * @return 拷贝的镜像对象
      */
     public static Object selectContent(Object A) {
 

@@ -1,5 +1,7 @@
 package css.out.file.api;
 
+import css.out.file.entity.dir;
+import css.out.file.entity.file;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -14,32 +16,26 @@ import java.nio.file.Path;
 @Slf4j
 public class FunctionApiList {
 
-    //! 文件 - 一次整体交互测试模块
-
-    //大致流程
-
-    //? 前端 ->  用户点击前端界面, 调用文件系统功能
-
-    //? 文件系统 -> 鉴权, 找到文件在文件系统中Java对象中的位置, 判断无问题后开始事务操作CRUD;
-    //?            同时通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
-
-    //? 进程系统 -> 拿到文件系统的文件路径, 读取文件/文件夹, 获得内容(如果是脚本可执行文件, 需要调用相关功能)
-    //?             同时通知内存占用内存空间, 而后启动进程
-
-
-    //? || 进程处理完了 || -> 通知前端刷新页面, 一次处理流程完成
 
     /**
-     * 通用前端 - > 文件 -> 进程 处理
-     *
-     * @param pathName 文件路径全名
-     * @param extend   扩展名
-     * @param content  文件内容
+     * 一般的文件 -> 进程处理
      */
-    public static void handleCommon(String pathName, String extend, String content) { //Controller
+    public static void handleCommon(Object object) { //Controller
+        if (object == null) return; //判断是否为空, 空就是用户输入错误
 
-        String allName = pathName.split(":")[1] + extend;
-        notifyProcessSyS(mkObject(allName, content));        //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
+        if (object instanceof file temp) {
+
+            String allName = temp.fcb.pathName.split(":")[1] + temp.fcb.getExtendName();
+            notifyProcessSyS(mkObject(allName, temp.getContent()));        //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
+
+        } else if (object instanceof dir temp) {
+            String allName = temp.fcb.pathName.split(":")[1]; //这个文件夹不能用空的扩展名, 不如会报错, 因此设置为空
+            notifyProcessSyS(mkObject(allName, temp.getContent()));
+
+        } else {
+            log.warn("传递对象类型错误");
+        }
+
     }
 
     /**
@@ -51,6 +47,7 @@ public class FunctionApiList {
      */
     @Transactional
     public static Path mkObject(String allName, String content) {
+        //comment: 由于目录和文件如果设计两套生成策略会很不友好, 因此我决定全部用文件来代替
 
         File resourcesDirectory = new File("src/main/resources/static/tmp");
         //首先清空与进程模块交互的缓冲区 : 清空tmp文件夹内容
