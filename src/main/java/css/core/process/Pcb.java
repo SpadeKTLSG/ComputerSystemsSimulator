@@ -25,7 +25,7 @@ public class Pcb {
      * 2：阻塞态
      * 3：终止
      */
-    public int state;
+    public volatile int state;
 
     /**
      * 寄存器

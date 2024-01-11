@@ -27,7 +27,7 @@ public class ProcessScheduling {
     volatile public static ProcessA runing = null;
 
     @Transactional
-    public void getReadyToRun() throws InterruptedException {
+    public  void getReadyToRun() throws InterruptedException {
         ProcessA first = readyQueues.take();
         runing = first;
         first.pcb.state = 1;
@@ -59,7 +59,7 @@ public class ProcessScheduling {
         process.pcb.state = 0;
     }
 
-    public void use() {
+    public   void use() {
         Thread thread = new Thread(() -> {
             while (true) {
                 if (runing == null) {

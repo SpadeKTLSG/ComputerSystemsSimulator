@@ -18,7 +18,7 @@ public class ProcessA extends Thread {
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
     DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
 
-    public boolean stop = false;
+    volatile public boolean stop = false;
     public Pcb pcb;
     public FileReader file;
     public BufferedReader bufferedReader;
@@ -38,9 +38,12 @@ public class ProcessA extends Thread {
                 ProcessScheduling.readyQueues.add(this);
                 this.wait();
             }
+            int i =1;
             while (!stop) {
                 CPU();
+                System.out.println(i++);
             }
+            MemoryManager.displayMemory();
         } catch (IOException | InterruptedException e) {
             e.printStackTrace();
         }
@@ -64,7 +67,7 @@ public class ProcessA extends Thread {
         synchronized (this){
         if (pcb.state == 1) {
             String s = bufferedReader.readLine();
-            System.out.println(s);
+            System.out.println("ssadasdas"+s);
             MemoryManager.allocateMemory(pcb.pcbId,s);
             MemoryManager.displayMemory();
             pcb.lines = s;
