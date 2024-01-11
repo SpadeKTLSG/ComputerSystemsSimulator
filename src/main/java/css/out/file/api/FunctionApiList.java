@@ -38,7 +38,6 @@ public class FunctionApiList {
      */
     public static void handleCommon(String pathName, String extend, String content) { //Controller
 
-
         String allName = pathName.split(":")[1] + extend;
         notifyProcessSyS(mkObject(allName, content));        //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
     }

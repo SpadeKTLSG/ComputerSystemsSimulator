@@ -11,15 +11,11 @@ import static css.out.file.api.InteractApiList.alertUser;
 @Slf4j
 public class OrderApiList {
 
-    //TODO 这里的设计是只操控文件/文件夹的位置和信息, 不改变内容, 改变内容需要 打开 - 修改 - 关闭 流程, 不放在这里
-
-
-    //处理命令接口信息(Service 对应 Mapper)  TODO 等待1.10号的会议, 看看怎么处理
 
     //TODO 接受参数确认
     public static void handleOrder(String order, String allName1, String allName2, String path1, String path2, FileDirTYPE type) {//Controller
 
-        Object fileObjects = new Object();
+        Object fileObjects;
         fileObjects = mkObjectfrFront(path1, allName1, type); //制作对象1 TODO
 
         doFunction(order, fileObjects, path2);//执行命令, 还要加一个path2, 如果没有用的话就特定标志
@@ -188,4 +184,5 @@ public class OrderApiList {
 
 
     //TODO 这里放真正的修改文件-保存文件的流程
+    //改变内容需要 打开 - 修改 - 关闭 流程, 不放在这里
 }
