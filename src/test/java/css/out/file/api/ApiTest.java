@@ -13,7 +13,8 @@ import static css.out.file.api.MonitorApiList.diskUsageAmount_All;
 import static css.out.file.api.MonitorApiList.diskUsageAmount_SyS;
 import static css.out.file.api.PowerApiList.startFile;
 import static css.out.file.api.TranApiList.*;
-import static css.out.file.entiset.GF.*;
+import static css.out.file.entiset.GF.DIR_EXTEND;
+import static css.out.file.entiset.GF.FILE_EXTEND;
 import static css.out.file.handleB.HandleFile.str2Path;
 
 public class ApiTest {
@@ -48,11 +49,12 @@ public class ApiTest {
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
-        addContent(test_dir);
+//        addContent(test_dir);
 //        app.state();
 
         //模拟前端请求
-        getFrontRequest("create Crazy.txt /tmp");
-//        getFrontRequest("makdir Guys /tmp");
+//        getFrontRequest("create Crazy.txt /tmp");
+        getFrontRequest("copy Crazy.txt /tmp /home");
+        app.state();
     }
 }

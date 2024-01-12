@@ -68,12 +68,11 @@ public class OrderApiList {
 
         switch (order) { //根据order调用对应的方法, 根据命令的不同传递参数
             case "create" -> {
-
                 return createOrder(packageObjectfrFront(order, allName, path));
             }
-//            case "copy" -> {
-//                return copyOrder(packageObjectfrFront(order, allName, path));
-//            }
+            case "copy" -> {
+                return copyOrder(selectObjectfrFront(order, allName, path), subPath);
+            }
             /*case "delete" -> {
                 return deleteOrder(target);
             }
@@ -181,18 +180,20 @@ public class OrderApiList {
     }
 
 
-//    /**
-//     * 复制文件 - 4
-//     * <p>copy XXXA.XXX /tmp /home</p>
-//     *
-//     * @param object  源文件对象
-//     * @param subPath 目标位置
-//   */
-//    public static void copyOrder(Object object, String subPath) {
-//        Object fileObjects = ;
-//
-//    }
-//
+    /**
+     * 复制文件 - 4
+     * <p>copy XXXA.XXX /tmp /home</p>
+     *
+     * @param A       源文件对象
+     * @param subPath 目标位置
+     */
+    public static Object copyOrder(Object A, String subPath) {
+        file or_file = (file) A;
+        file B = new file(subPath + ':' + or_file.fcb.pathName.split(":")[1], or_file.fcb.getExtendName(), or_file.getContent());
+        addContent(B);
+        return B;
+    }
+
 
 
     /**
