@@ -109,13 +109,9 @@ public class toFrontApiList {
      */
     public static Object handleOrder(String allOrder) {
 
-        //?拆分前端输入信息,使用空格
-        //e.g. create XXX.XXX /tmp , 需要判断对应数量分析指令参数个数
         String[] orderList = allOrder.split(" ");
-
         int order_size = orderList.length;
         String order = null, allName = null, path1 = null, path2 = null;
-
 
         switch (order_size) {
             case 1, 2 -> {
@@ -139,20 +135,25 @@ public class toFrontApiList {
             }
         }
 
-
         if (order == null | allName == null | path1 == null) {
             alertUser("找不到对应的命令");
             return null;
         }
 
-
-        //执行命令, 还要加一个path2, 如果没有用的话就特定标志
         return doFunction(order, allName, path1, path2);          //?返回传递进程对象信息
     }
 
 
-    public static Object doFunction(String order, String allName, String path, String subPath) {   //因为这些命令至多用到两个对象(文件.文件夹), 因此直接用Object接收
-
+    /**
+     * 执行对应命令, 动态赋值
+     *
+     * @param order   命令
+     * @param allName 文件全名
+     * @param path    文件路径
+     * @param subPath 子路径
+     * @return 返回工作对象给进程
+     */
+    public static Object doFunction(String order, String allName, String path, String subPath) {
         switch (order) { //根据order调用对应的方法, 根据命令的不同传递参数
             case "create" -> {
                 return createOrder(packageObjectfrFront(order, allName, path));
@@ -194,7 +195,6 @@ public class toFrontApiList {
             }
 
         }
-
     }
 
 
@@ -216,12 +216,14 @@ public class toFrontApiList {
 
                 file temp_file = new file(pathName, extendName, "");
                 return selectContent(temp_file);
+
             } else if (order.equals("makdir") | order.equals("chadir") | order.equals("deldir")) {
                 String pathName = path + ':' + allName.split("\\.")[0];
                 String extendName = ".";
 
                 dir temp_dir = new dir(pathName, extendName);
                 return selectContent(temp_dir);
+
             } else {
                 alertUser("命令语法错误!");
                 return null;
