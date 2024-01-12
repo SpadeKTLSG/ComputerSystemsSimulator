@@ -15,8 +15,8 @@ public class InteractApiList {
      * @return 警告信息
      */
     public static String alertUser(String msg) {
-        //提示前端 TODO
         log.warn("发送用户警告: " + msg);
+        //发送 TODO
         return msg;
     }
 
@@ -25,9 +25,9 @@ public class InteractApiList {
         String toFront = switch (msg) {
             case "0" -> "失败的请求调用";
             case "1" -> "失败的请求调用2";
-            default -> "失败";
+            default -> msg; //不是0/1就是直接打印一段信息
         };
-
-        //发送
+        log.debug("发送前端msg: " + toFront);
+        //发送 TODO
     }
 }

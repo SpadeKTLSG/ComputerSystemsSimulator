@@ -11,11 +11,15 @@ import java.nio.file.Files;
 import java.nio.file.Path;
 
 /**
- * 功能api
+ * 与进程的功能api
  */
 @Slf4j
-public class FunctionApiList {
+public class toProcessApiList {
 
+    /**
+     * 读取文件的标志位 0: No 1: Yes
+     */
+    public static int isExeFile = 0; //接下来读取的是否是可执行文件
 
     /**
      * 一般的文件 -> 进程处理
@@ -25,7 +29,7 @@ public class FunctionApiList {
 
         if (object instanceof file temp) {
             String allName = temp.fcb.pathName.split(":")[1] + temp.fcb.getExtendName();
-            notifyProcessSyS(mkObject(allName, temp.getContent()));        //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
+            notifyProcessSyS(mkObject(allName, temp.getContent())); //通知进程创建一个文件处理进程, 传递虚拟DTO文件/文件夹(目录)对象到工作文件夹
 
         } else if (object instanceof dir temp) {
             String allName = temp.fcb.pathName.split(":")[1]; //这个文件夹不能用空的扩展名, 不如会报错, 因此设置为空
@@ -94,6 +98,11 @@ public class FunctionApiList {
     public static void notifyProcessSyS(Path path) {
         log.info("正在通知进程系统创建进程读取path文件...");
         //TODO 传递path到进程
+        if (isExeFile == 0) {
+
+        } else {
+
+        }
     }
 
 }
