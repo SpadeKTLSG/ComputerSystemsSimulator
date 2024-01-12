@@ -228,7 +228,7 @@ public class toFrontApiList {
                 alertUser("命令语法错误!");
                 return null;
             }
-        } catch (ArrayIndexOutOfBoundsException e) {
+        } catch (ArrayIndexOutOfBoundsException | NullPointerException e) {
             alertUser("命令语法错误!");
             return null;
         } catch (Exception e) {
@@ -273,6 +273,7 @@ public class toFrontApiList {
      * @return 返回工作对象给进程
      */
     public static Object createOrder(Object object) {
+        if (object == null) return null;
         return object;
     }
 
@@ -283,6 +284,7 @@ public class toFrontApiList {
      * @param object 文件夹对象
      */
     public static Object makdirOrder(Object object) {
+        if (object == null) return null;
         return object;
     }
 
@@ -295,6 +297,7 @@ public class toFrontApiList {
      * @param subPath 目标位置
      */
     public static Object copyOrder(Object A, String subPath) {
+        if (A == null) return null;
         if (subPath == null) return null;
         file or_file = (file) A;
         file B = new file(subPath + ':' + or_file.fcb.pathName.split(":")[1], or_file.fcb.getExtendName(), or_file.getContent());
@@ -310,6 +313,7 @@ public class toFrontApiList {
      * @param object 文件对象
      */
     public static Object deleteOrder(Object object) {
+        if (object == null) return null;
         deleteContent(object);
         return object;
     }
@@ -322,6 +326,7 @@ public class toFrontApiList {
      * @param object 文件夹对象
      */
     public static Object deldirOrder(Object object) {
+        if (object == null) return null;
         deleteContent(object);
         return object;
     }
@@ -334,6 +339,7 @@ public class toFrontApiList {
      * @param A 源文件对象
      */
     public static Object moveOrder(Object A, String subPath) {
+        if (A == null) return null;
         if (subPath == null) return null;
         file or_file = (file) A;
         file B = new file(subPath + ':' + or_file.fcb.pathName.split(":")[1], or_file.fcb.getExtendName(), or_file.getContent());
@@ -349,6 +355,7 @@ public class toFrontApiList {
      * @param object 文件对象
      */
     public static Object typeOrder(Object object) {
+        if (object == null) return null;
         msg(((file) object).getContent());
         return object;
     }
@@ -362,6 +369,7 @@ public class toFrontApiList {
      * @param newName 新名称
      */
     public static Object changeOrder(Object A, String newName) {
+        if (A == null) return null;
         file or_file = (file) A;
         if (newName == null) newName = FILE_NAME_DEFAULT; //容错判定
         file B = new file(or_file.fcb.pathName.split(":")[0] + ':' + newName, or_file.fcb.getExtendName(), or_file.getContent());
@@ -375,6 +383,7 @@ public class toFrontApiList {
      * <p>chadir XXX.XXX /tmp YYY</p>
      */
     public static Object chadirOrder(Object A, String newName) {
+        if (A == null) return null;
         dir or_file = (dir) A;
         if (newName == null) newName = DIR_NAME_DEFAULT; //容错判定
         dir B = new dir(or_file.fcb.pathName.split(":")[0] + ':' + newName, or_file.fcb.getExtendName());
@@ -391,7 +400,13 @@ public class toFrontApiList {
      * @return 返回工作对象给进程
      */
     public static Object runOrder(Object object) {
-
+        if (object == null) return null;
+        //判断是否符合命名规范; #开头
+        file temp_file = (file) object;
+        if (!temp_file.getFcb().pathName.split(":")[1].startsWith("#")) {
+            alertUser("不是可执行文件");
+            return null;
+        }
         isExeFile = 1;//标记为可执行文件
         return object;
     }
@@ -404,15 +419,13 @@ public class toFrontApiList {
      * @return 返回工作对象给进程
      */
     public static Object editOrder(Object A, String newContent) {
-        file or_file = (file) A;
-
+        if (A == null) return null;
         if (newContent == null) newContent = ""; //容错判定
-
+        file or_file = (file) A;
         file B = new file(or_file.fcb.pathName.split(":")[0] + ':' + or_file.fcb.pathName.split(":")[1], or_file.fcb.getExtendName(), newContent);
         alterContent(A, B);
 
         return B;
-
     }
 
 
