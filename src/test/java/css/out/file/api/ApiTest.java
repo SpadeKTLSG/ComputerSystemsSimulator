@@ -47,10 +47,13 @@ public class ApiTest {
         FileApp app = new FileApp();
         //使用自己的Java文件对象完成一次Common交互流程
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
+        file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "EXE", FILE_EXTEND.get(5), "b=3\nb++\nb++\nend\n");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
-        addContent(test_file);
-        addContent(test_dir);
+//        addContent(test_file);
+        addContent(test_exe);
+//        addContent(test_dir);
 //        app.state();
+
 
         //模拟前端请求
 //        getFrontRequest("create Crazy.txt /tmp");
@@ -61,7 +64,7 @@ public class ApiTest {
 //        getFrontRequest("makdir Man /tmp");
 //        getFrontRequest("chadir Guys /tmp Cookie");
 //        getFrontRequest("deldir Guys /tmp");
-        getFrontRequest("run Crazy.txt /tmp");
+        getFrontRequest("run EXE.dll /tmp");
 //        getFrontRequest("edit Crazy.txt /tmp nut");
 //        app.state();
     }
