@@ -274,8 +274,7 @@ public abstract class HandleFile {
 
             switch (field) {
 //                case PATH_NAME -> fcb.pathName = selectPM(temp);
-                // 重大bug: 无法修复, 如果没有额外的存储名字的磁盘的话, 这将导致重启后文件名丢失; 因此只能调到boot目录下了
-                case PATH_NAME -> fcb.pathName = TRASH_DIR_PATHNAME;
+                case PATH_NAME -> fcb.pathName = TRASH_DIR_PATHNAME;// 重大bug: 无法修复, 如果没有额外的存储名字的磁盘的话, 这将导致重启后文件名丢失; 因此只能调到boot目录下了
                 case START_BLOCK -> fcb.startBlock = temp;
                 case EXTEND_NAME -> fcb.extendName = selectEM(temp);
                 case TYPE_FLAG -> fcb.typeFlag = Int2FileorDir(temp);

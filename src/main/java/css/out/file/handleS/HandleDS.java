@@ -294,7 +294,7 @@ public abstract class HandleDS {
         //1. 定位文件A, 获得盘块位置
         Integer pos = A instanceof file ? ((file) A).fcb.getStartBlock() : ((dir) A).fcb.getStartBlock();
         //2. 读取磁盘对应位置内容
-        String str = read1BlockiTXT(WORKSHOP_PATH + DISK_FILE, pos);
+        String str = read1BlockiTXT(pos);
         //3. 转换成对象
         if (A instanceof file file_temp) {
             file_temp = bytes2File(str2Byte(str));

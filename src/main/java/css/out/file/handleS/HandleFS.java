@@ -2,6 +2,7 @@ package css.out.file.handleS;
 
 import css.out.file.FileApp;
 import css.out.file.entity.*;
+import css.out.file.enums.FileDirTYPE;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
 
@@ -20,6 +21,7 @@ import static css.out.file.handleB.HandleDISK.getFATOrder;
 import static css.out.file.handleB.HandleFile.bytes2Fcb_AppendPM;
 import static css.out.file.handleB.HandleFile.str2Path;
 import static css.out.file.handleB.HandlePATH.*;
+import static css.out.file.handleB.HandleTXT.read1BlockiTXT;
 import static css.out.file.utils.ByteUtil.byte2Str;
 
 /**
@@ -237,11 +239,38 @@ public abstract class HandleFS {
      *
      * @param fcb 给定的fcb
      * @return 返回对应的路径
+     * @deprecated
      */
-    public static String selectTR(FCB fcb) {
+    public static String selectTR2Path(FCB fcb) {
         return pathTR(selectTR2Node(fcb));
     }
 
+
+    /**
+     * 查询TR节点 -> 得到对应对象
+     *
+     * @param fcb 给定的fcb
+     * @return 返回对应的文件/文件夹对象
+     */
+    public static Object selectTR2Content(FCB fcb) {
+        FCB originalFcb = Objects.requireNonNull(selectTR2Node(fcb)).fcb;
+        String allBlock = read1BlockiTXT(originalFcb.getStartBlock());
+        String[] temp = allBlock.split(" ");
+        StringBuilder sb = new StringBuilder();
+        int lastMeaningfulIndex = 0;
+
+        for (int i = 0; i < temp.length; i++)
+            if (!temp[i].equals("0"))
+                lastMeaningfulIndex = i;
+
+        for (int i = FCB_BYTE_LENGTH; i < lastMeaningfulIndex + 1; i++)
+            sb.append((char) Integer.parseInt(temp[i]));
+
+        if (originalFcb.getTypeFlag() == FileDirTYPE.FILE)
+            return new file(new FCB(originalFcb.getPathName(), originalFcb.getStartBlock(), originalFcb.getExtendName(), originalFcb.getTypeFlag(), originalFcb.getFileLength()), sb.toString());
+        else
+            return new dir(new FCB(originalFcb.getPathName(), originalFcb.getStartBlock(), originalFcb.getExtendName(), originalFcb.getTypeFlag(), originalFcb.getFileLength()));
+    }
 
     //! 2. 路径管理器PM/
 
@@ -494,22 +523,19 @@ public abstract class HandleFS {
 
 
     /**
-     * 查找文件模块的一个对象信息,这里直接返回路径
+     * 查找文件模块的一个对象信息, 返回具体new出来的对象
      *
      * @param A 文件/文件夹对象
-     * @return 文件模块的TR生成的pathTR路径
+     * @return 文件模块的TR生成的拷贝镜像对象
      */
-    public static String selectContentFS(Object A) {
-
-        //?直接查找TR即可, 返回路径
-
+    public static Object selectContentFS(Object A) {
         if (A instanceof file file_temp) {
             log.debug("正在往文件树查询文件索引{}", file_temp.fcb.getPathName());
-            return selectTR(file_temp.fcb);
+            return selectTR2Content(file_temp.fcb);
 
         } else if (A instanceof dir dir_temp) {
             log.debug("正在往文件树查询文件夹索引{}", dir_temp.fcb.getPathName());
-            return selectTR(dir_temp.fcb);
+            return selectTR2Content(dir_temp.fcb);
 
         } else {
             log.warn("不是文件也不是文件夹, 你是什么东西?{}", A);

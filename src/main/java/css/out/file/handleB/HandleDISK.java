@@ -86,7 +86,7 @@ public abstract class HandleDISK {
 
         FAT.set(0, 1); //0号块指向1号块FAT1
         FAT.set(1, 2); //1号块指向2号块FAT2
-//        FAT.set(2, 3); //2号块指向3号块(系统目录挂载块)
+        FAT.set(2, 3); //2号块指向3号块(系统目录挂载块)
         //3号块指向空, 4号块为第一个空闲块
 
         return FAT;
