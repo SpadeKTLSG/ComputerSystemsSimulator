@@ -19,7 +19,7 @@ public class Device {
     public Pcb nowProcessPcb = null;
     public ArrayBlockingQueue<ProcessDeviceUse> arrayBlockingQueue = new ArrayBlockingQueue<ProcessDeviceUse>(10);
 
-    Device(String name) {
+    public Device(String name) {
         this.name = name;
     }
 

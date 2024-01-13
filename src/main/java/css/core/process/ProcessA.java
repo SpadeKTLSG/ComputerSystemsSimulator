@@ -36,6 +36,7 @@ public class ProcessA extends Thread {
             System.out.println(processScheduling);
             synchronized (this){
                 ProcessScheduling.readyQueues.add(this);
+                ProcessScheduling.linkedList.put(this.pcb.pcbId,this);
                 this.wait();
             }
             int i =1;
