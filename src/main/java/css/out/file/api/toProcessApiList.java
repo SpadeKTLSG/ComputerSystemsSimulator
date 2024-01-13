@@ -98,13 +98,12 @@ public class toProcessApiList {
      * @param path 文件路径
      */
     public static void notifyProcessSyS(Path path) {
-        log.info("正在通知进程系统创建进程读取path文件...");
+        log.info("正在通知进程系统创建进程读取path文件...{}", path.getFileName());
 
         //* temp 注入进程系统
         ApplicationContext context =
                 new ClassPathXmlApplicationContext("spring-config.xml");
         ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
-
         if (isExeFile == 0) { //如果不是可执行文件, 就什么都不做
             log.debug("传递文件对象{}", path.getFileName());
         } else {    //如果是可执行文件, 就创建进程
@@ -113,7 +112,7 @@ public class toProcessApiList {
                 new ProcessA(path.toString()).start();
                 processScheduling.use();
             } catch (IOException e) {
-                throw new RuntimeException(e);
+                log.error(e.getMessage());
             }
         }
     }

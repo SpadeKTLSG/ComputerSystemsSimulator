@@ -36,6 +36,11 @@ public class ApiTest {
         FileApp app = new FileApp();
 //        app.kickDiskRoboot();
 //        app.coverDiskRoboot();
+        file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
+        file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "#EXE", FILE_EXTEND.get(5), "b=3\nb++\nb++\nb++\nend\n");
+        dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
+        addContent(test_file);
+        addContent(test_exe);
         System.out.println(Arrays.toString(givePath2Front()));
         System.out.println(giveBlockStatus2Front());
     }
@@ -77,6 +82,6 @@ public class ApiTest {
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
         addContent(test_dir);
-
+        getFrontRequest("create Crazy.txt /tmp");
     }
 }

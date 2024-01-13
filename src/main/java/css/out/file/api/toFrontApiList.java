@@ -6,6 +6,7 @@ import lombok.extern.slf4j.Slf4j;
 
 import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
 
 import static css.out.file.FileApp.*;
 import static css.out.file.api.InteractApiList.alertUser;
@@ -54,7 +55,11 @@ public class toFrontApiList {
                 pathList[i] = e.substring(1);
             }
             if (e.contains(":")) {
-                pathList[i] = e.replace(":", "");
+                if (Objects.equals(e.split((":"))[0], "/"))
+                    pathList[i] = e.replace(":", "");
+                else {
+                    pathList[i] = e.replace(":", "/");
+                }
             }
         }
 
@@ -75,7 +80,7 @@ public class toFrontApiList {
      */
     public static List<Integer> giveBlockStatus2Front() {
         List<Integer> greatFAT = mergeFATs();
-        //刷洗greatFAT, 0: 空闲 1:占用 -> DTO FAT
+        //刷洗greatFAT, 0: 空闲 1:占用 3: 系统-> DTO FAT
         //?刷洗符合要求
         for (int i = 0; i < greatFAT.size(); i++) {
             Integer e = greatFAT.get(i);
@@ -85,6 +90,10 @@ public class toFrontApiList {
                 greatFAT.set(i, 1);
             }
         }
+        //设置系统占用为3
+        greatFAT.set(0, 3);
+        greatFAT.set(1, 3);
+        greatFAT.set(2, 3);
         return greatFAT;
     }
 

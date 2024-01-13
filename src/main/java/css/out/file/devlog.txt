@@ -102,3 +102,5 @@ getFreeBlock - FAT 分配空闲盘块重大BUG, 具体见Hdisk
 现在检测FAT初始化和操作中还是会出现系统内容被覆盖的小问题, 算了没法改了
 
 1.12日中午4宣告文件系统开发结束, 之后就是联调和报告了
+
+放在测试的resources里面的那个spring-config.xml文件是用来放到target/classes里面的, 平常经常被系统忽略掉导致回回都要导入(烦得很
