@@ -1,6 +1,9 @@
 package css.front;
 
+import css.core.process.ProcessScheduling;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -137,15 +140,18 @@ public class MainGui {
         submit_text.addActionListener(e -> {
             String input = input_text.getText();
             log.info("前端用户输入{}", input);
+
+            //* temp 注入进程系统
+            ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
+            ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
+            processScheduling.commandExecution(input);
             input_text.setText("");       // 清空输入框
         });
 
         //? 创建一个按钮用来手动显示弹窗
         JButton showPopupButton = new JButton("弹框");
-
         showPopupButton.addActionListener(e -> {
             PopupDialog popup = new PopupDialog(Mframe);
-            //调用
             popup.setText("救火大队长SK");
             popup.setVisible(true);
         });
