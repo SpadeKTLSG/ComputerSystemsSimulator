@@ -4,6 +4,8 @@ import css.core.process.ProcessScheduling;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
+import java.util.Arrays;
+import java.util.List;
 
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
@@ -15,8 +17,11 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
+
+import static css.out.file.api.toFrontApiList.givePath2Front;
 
 @Slf4j
 public class MainGui {
@@ -49,9 +54,13 @@ public class MainGui {
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
 
-        JPanel ready = createWindow("就绪队列");
-        JPanel execute = createWindow("执行指令");
-        JPanel blocking = createWindow("阻塞队列");
+        List<String> dataList = List.of("Item 1", "Item 2", "Item 3", "Item 4", "Item 5");
+
+        JPanel ready = createWindow("就绪队列",dataList);
+
+
+        JPanel execute = createWindow("执行指令",dataList);
+        JPanel blocking = createWindow("阻塞队列",dataList);
         JLabel process = new JLabel("运行进程:");
         JTextField out_text = new JTextField();
         out_text.setEditable(false);
@@ -98,25 +107,31 @@ public class MainGui {
         treepanel.setBackground(Color.white);
         treepanel.setLayout(new FlowLayout(FlowLayout.LEADING));
         treepanel.setBorder(new TitledBorder(new EtchedBorder(), "目录结构"));
-        // 创建根节点
-        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
 
-        // 创建子节点
-        DefaultMutableTreeNode folderA = new DefaultMutableTreeNode("Folder A");
-        DefaultMutableTreeNode folderB = new DefaultMutableTreeNode("Folder B");
-        DefaultMutableTreeNode fileC = new DefaultMutableTreeNode("File C");
+        DynamicTreeExample treeExample = new DynamicTreeExample();
+//        // 创建根节点
+//        DefaultMutableTreeNode root = new DefaultMutableTreeNode("Root");
+//        String pathArray []=givePath2Front();
+//        // 动态添加节点
+//        DefaultMutableTreeNode currentNode = root;
+//        for (String pathPart : pathArray) {
+//            String[] subdirectories = pathPart.split("/");
+//            for (String subdirectory : subdirectories) {
+//                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(subdirectory);
+//                currentNode.add(newNode);
+//                currentNode = newNode; // 将当前节点更新为新添加的节点
+//            }
+//        }
+//
+//
+//
+//        // 创建树
 
-        // 将子节点添加到根节点
-        root.add(folderA);
-        root.add(folderB);
-        root.add(fileC);
 
-        // 创建树
-        pathTree = new JTree(root);
-        pathTree.setPreferredSize(new Dimension(560, 200));
+
 
         // 添加树的选择事件监听器
-        pathTree.addTreeSelectionListener(new TreeSelectionListener() {
+        treeExample.pathTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
             public void valueChanged(TreeSelectionEvent e) {
                 // 获取选择的路径
@@ -131,7 +146,7 @@ public class MainGui {
 
         //!SK 输入指令提交模块
         // 把pathtree添加到panel
-        treepanel.add(pathTree);
+        treepanel.add(treeExample.pathTree);
         JTextField input_text = new JTextField("");
         //? 创建一个按钮, 用来提交指令
         JButton submit_text = new JButton("ENTER");
@@ -261,6 +276,9 @@ public class MainGui {
             initializeram(disk); // 随机改变硬盘颜色
             updateDisk(); // 更新硬盘视图
             updateTime();
+            String path[]=givePath2Front();
+            treeExample.updateTree(path);
+
         });
         timer.start();
 
@@ -295,7 +313,7 @@ public class MainGui {
         timeLabel.setText(formattedDate);
     }
 
-    private static JPanel createWindow(String label) {
+    private static JPanel createWindow(String label,List<String> dataList) {
         JPanel window = new JPanel(new BorderLayout());
         window.setBackground(Color.white);
 
@@ -310,6 +328,12 @@ public class MainGui {
         contentPanel.setPreferredSize(new Dimension(170, 210));
         contentPanel.setBackground(Color.white);
         contentPanel.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
+        for (String item : dataList) {
+            JLabel xlabel = new JLabel(item);
+            xlabel.setPreferredSize(new Dimension(100, 30));
+            xlabel.setFont(new Font("Arial", Font.PLAIN, 14));
+            contentPanel.add(xlabel);
+        }
 
         // 将内容面板添加到窗口
         window.add(contentPanel, BorderLayout.CENTER);
@@ -380,7 +404,9 @@ public class MainGui {
         ramPanel.revalidate(); // 重新验证布局
         ramPanel.repaint(); // 重绘界面
     }
+    private void updatepathtree(){
 
+    }
 
     private void updateDisk() {
         diskPanel.removeAll(); // 移除之前颜色

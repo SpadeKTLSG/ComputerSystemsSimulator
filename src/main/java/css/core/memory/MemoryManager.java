@@ -96,16 +96,23 @@ static {
 
 
 
-    public static void displayMemory() {
+    public static int  displayMemory() {
+    int status=0;
         //显示内存的当前状态
         System.out.println("Memory Status:");
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
                 System.out.print(memory[i][j].getContent() + " ");
+                if (memory[i][j].getContent().equals("---"))
+                {
+                    status++;
+                }
             }
             System.out.println();
         }
         System.out.println();
+        System.out.println("空心啊空间:"+status);
+        return status;
     }
 
 }
