@@ -7,7 +7,6 @@ import css.out.file.entity.file;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import org.springframework.transaction.annotation.Transactional;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -52,7 +51,6 @@ public class toProcessApiList {
      * @param content 文件内容
      * @return 文件路径
      */
-    @Transactional
     public static Path mkObject(String allName, String content) {
         //comment: 由于目录和文件如果设计两套生成策略会很不友好, 因此我决定全部用文件来代替
 

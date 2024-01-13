@@ -68,4 +68,15 @@ public class ApiTest {
 //        getFrontRequest("edit Crazy.txt /tmp nut");
 //        app.state();
     }
+
+    @Test
+    public void frontApiTest1() {
+        System.out.println("test交互式文件-前端传递");
+        FileApp app = new FileApp();
+        file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
+        dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
+        addContent(test_file);
+        addContent(test_dir);
+
+    }
 }
