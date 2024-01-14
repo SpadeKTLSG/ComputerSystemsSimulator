@@ -71,6 +71,7 @@ public abstract class HandleTXT {
      * @param path 磁盘TXT映射文件路径
      * @param pos  行号(位置)
      * @return String化的内容对象(还是byte)
+     * @deprecated
      */
     public static String read1BlockiTXT(String path, Integer pos) {
 
@@ -90,6 +91,29 @@ public abstract class HandleTXT {
         return res;
     }
 
+    /**
+     * 在TXT中读取一个block
+     *
+     * @param pos 行号(位置)
+     * @return String化的内容对象(还是byte)
+     */
+    public static String read1BlockiTXT(Integer pos) {
+        String path = WORKSHOP_PATH + DISK_FILE;
+        String res = "";
+
+        try (BufferedReader br = new BufferedReader(new InputStreamReader(new FileInputStream(WORKSHOP_PATH + DISK_FILE), StandardCharsets.UTF_8))) {
+
+            for (int i = 0; i < pos; i++)  //跳过前面的pos行, 读取pos行的内容到s
+                br.readLine();
+
+            res = br.readLine();
+
+        } catch (Exception e) {
+            log.error("读取磁盘映射文件{}失败, 错误日志: {}", path, e.getMessage());
+        }
+
+        return res;
+    }
 
     //! 2.整体TXT操作
 

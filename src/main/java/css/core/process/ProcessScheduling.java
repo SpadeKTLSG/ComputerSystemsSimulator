@@ -1,16 +1,25 @@
 package css.core.process;
 
+import css.out.device.Device;
 import css.out.device.DeviceManagement;
+import css.out.file.api.toFrontApiList;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Arrays;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
 
 @Component
 public class ProcessScheduling {
+    ApplicationContext context =
+            new ClassPathXmlApplicationContext("spring-config.xml");
+    DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
+    public static HashMap<Integer,ProcessA> linkedList = new HashMap<Integer,ProcessA>();
     /**
      * 就绪队列
      */
@@ -27,7 +36,7 @@ public class ProcessScheduling {
     volatile public static ProcessA runing = null;
 
     @Transactional
-    public void getReadyToRun() throws InterruptedException {
+    public  void getReadyToRun() throws InterruptedException {
         ProcessA first = readyQueues.take();
         runing = first;
         first.pcb.state = 1;
@@ -72,27 +81,23 @@ public class ProcessScheduling {
             }
         });
         thread.start();
-//        Timer timer = new Timer();
-//        timer.schedule(new TimerTask() {
-//            @Override
-//            public void run() {
-//                if (readyQueues.size() != 0) {
-//                    if (runing != null) {
-//                        //现停止CPU正在运行的程序
-//                        try {
-//                            runing.pcb.state = 0;
-//                            readyQueues.add(runing);
-//                            runing.wait();
-//                        } catch (InterruptedException e) {
-//                            e.printStackTrace();
-//                        }
-//                    }
-//                    runing = readyQueues.remove(0);
-//                    runing.pcb.state = 1;
-//                    runing.notify();
-//                }
-//            }
-//        }, 200L, 100L);
+    }
+    public void commandExecution(String order){
+        String[] s = order.split(" ");
+        switch (s[0]){
+            case "$add"->{
+                deviceManagement.devices.put(s[1],new Device(s[1]));
+            }
+            case "$remove"->{
+                deviceManagement.devices.remove(s[1]);
+            }
+            case "stop"->{
+                linkedList.get(s[1]).stop = true;
+            }
+            default -> {
+                toFrontApiList.getFrontRequest(order);
+            }
+        }
     }
 
 }
