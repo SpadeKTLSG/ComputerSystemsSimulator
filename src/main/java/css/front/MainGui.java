@@ -388,11 +388,11 @@ public class MainGui {
         blocking = createWindow("阻塞队列", blockList);
         execute = createWindow("     ", List.of("     "));
         process = new JLabel("运行进程");
-        process.setText(runnning);
-        time_slice = new JLabel("时间片");
-        time_slice.setText(timeSlice);
-
-        //TODO 刷新后导致运行进程和时间片字样丢失
+        out_text.setText("");
+        out_text.setText(runnning);
+        time_slice = new JLabel("当前指令");
+        Ttime_slice.setText("");
+        Ttime_slice.setText(timeSlice);
 
         p1.add(ready);
         p1.add(blocking);
