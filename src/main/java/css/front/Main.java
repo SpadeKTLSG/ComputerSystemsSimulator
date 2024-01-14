@@ -1,12 +1,15 @@
 package css.front;
 
 import css.core.process.ProcessA;
+import css.core.process.ProcessScheduling;
 import css.out.device.Device;
 import css.out.file.FileApp;
 import css.out.file.entity.dir;
 import css.out.file.entity.file;
 import css.out.file.enums.ROOT_PATH;
 import lombok.extern.slf4j.Slf4j;
+import org.springframework.context.ApplicationContext;
+import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.IOException;
 
@@ -18,6 +21,10 @@ import static css.out.file.handleB.HandleFile.str2Path;
 @Slf4j
 public class Main {
     public static void main(String[] args) throws IOException {
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("spring-config.xml");
+        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
+        processScheduling.use();
         // 运行图形化主界面线程
         FileApp app = new FileApp();
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
