@@ -239,6 +239,8 @@ public class MainGui {
             devices.put(k, String.valueOf(v.nowProcessPcb.pcbId));
         });
 
+        //TODO 设备打印到界面 寄
+
         System.out.println(devices);
 
         JLabel A1 = new JLabel("A1:");

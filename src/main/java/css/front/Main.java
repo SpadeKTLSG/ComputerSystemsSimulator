@@ -27,6 +27,7 @@ public class Main {
         processScheduling.use();
         // 运行图形化主界面线程
         FileApp app = new FileApp();
+//        app.kickDiskRoboot();        //清空磁盘启动
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
         file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "#EXE", FILE_EXTEND.get(5), "!A1\nb=3\nb++\nb++\nend\n");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
@@ -38,14 +39,6 @@ public class Main {
         new ProcessA("src/main/java/css/core/process/api/info.txt").start();
         new ProcessA("src/main/java/css/core/process/api/info.txt").start();
 
-//        new ProcessA("src/main/java/css/core/memory/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/memory/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
-//        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
 
         javax.swing.SwingUtilities.invokeLater(() -> {
             // 创建图形化界面
