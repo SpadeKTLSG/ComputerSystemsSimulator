@@ -39,8 +39,8 @@ public class DynamicTreeExample {
         for (String pathPart : pathArray) {
             String[] subdirectories = pathPart.split("/");
             for (String subdirectory : subdirectories) {
-                //? SK fix bug : 删除空白节点
-                if (Objects.equals(subdirectory, ""))
+
+                if (Objects.equals(subdirectory, "")) //? SK fix bug : 删除节点产生的空白
                     continue;
 
                 //?智能判断是否需要更新层级

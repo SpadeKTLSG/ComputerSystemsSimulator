@@ -233,13 +233,13 @@ public class MainGui {
         ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
         DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
 
+        //TODO 设备打印到界面 寄
 
         //Stream拷贝devices 到 devices
         deviceManagement.devices.forEach((k, v) -> {
             devices.put(k, String.valueOf(v.nowProcessPcb.pcbId));
         });
 
-        //TODO 设备打印到界面 寄
 
         System.out.println(devices);
 
@@ -367,12 +367,12 @@ public class MainGui {
         String runnning = "";
         String timeSlice = "";
 
-        if (ProcessScheduling.runing != null) {
+        if (ProcessScheduling.runing != null) { //必须判断
             runnning = String.valueOf(ProcessScheduling.runing.pcb.pcbId);
             timeSlice = ProcessScheduling.runing.pcb.lines;
         }
 
-
+        //forEach赋值
         linkedList.forEach((k, v) -> {
             if (v.pcb.state == 2) {
                 blockList.add(String.valueOf(v.pcb.pcbId));
