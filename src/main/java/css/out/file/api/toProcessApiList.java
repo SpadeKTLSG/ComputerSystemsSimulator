@@ -1,12 +1,9 @@
 package css.out.file.api;
 
 import css.core.process.ProcessA;
-import css.core.process.ProcessScheduling;
 import css.out.file.entity.dir;
 import css.out.file.entity.file;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import java.io.*;
 import java.nio.charset.StandardCharsets;
@@ -100,17 +97,13 @@ public class toProcessApiList {
     public static void notifyProcessSyS(Path path) {
         log.info("正在通知进程系统创建进程读取path文件...{}", path.getFileName());
 
-        //* temp 注入进程系统
-        ApplicationContext context =
-                new ClassPathXmlApplicationContext("spring-config.xml");
-        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
         if (isExeFile == 0) { //如果不是可执行文件, 就什么都不做
             log.debug("传递文件对象{}", path.getFileName());
         } else {    //如果是可执行文件, 就创建进程
             try {
                 log.debug("传递文件对象{}", path.getFileName());
                 new ProcessA(path.toString()).start();
-                processScheduling.use();
+
             } catch (IOException e) {
                 log.error(e.getMessage());
             }

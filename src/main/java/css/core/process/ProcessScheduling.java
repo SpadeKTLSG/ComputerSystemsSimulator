@@ -1,25 +1,22 @@
 package css.core.process;
 
-import css.out.device.Device;
-import css.out.device.DeviceManagement;
-import css.out.file.api.toFrontApiList;
-import org.springframework.context.ApplicationContext;
-import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.util.Arrays;
-import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.concurrent.ArrayBlockingQueue;
+import java.util.concurrent.ConcurrentHashMap;
 
 @Component
 public class ProcessScheduling {
-    ApplicationContext context =
+    /*ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
-    DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
-    public static HashMap<Integer,ProcessA> linkedList = new HashMap<Integer,ProcessA>();
+    DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");*/
+
+    /**
+     * 进程链表
+     */
+    public static ConcurrentHashMap<Integer, ProcessA> linkedList = new ConcurrentHashMap<>();
     /**
      * 就绪队列
      */
@@ -36,26 +33,29 @@ public class ProcessScheduling {
     volatile public static ProcessA runing = null;
 
     @Transactional
-    public  void getReadyToRun() throws InterruptedException {
+    public void getReadyToRun() throws InterruptedException {
         ProcessA first = readyQueues.take();
         runing = first;
         first.pcb.state = 1;
-        synchronized (first){
+        synchronized (first) {
             first.notifyAll();
         }
     }
+
     @Transactional
     public void getRunToReady() throws InterruptedException {
         runing.pcb.state = 0;
         readyQueues.add(runing);
         runing.wait();
     }
+
     @Transactional
     public void changeProcess(String fileName) throws IOException {
         ProcessA process = new ProcessA(fileName);
         readyQueues.add(process);
         process.start();
     }
+
     @Transactional
     public void changeBlocking(ProcessA process) throws InterruptedException {
         runing = null;
@@ -82,22 +82,23 @@ public class ProcessScheduling {
         });
         thread.start();
     }
-    public void commandExecution(String order){
+
+/*    public void commandExecution(String order) {
         String[] s = order.split(" ");
-        switch (s[0]){
-            case "$add"->{
-                deviceManagement.devices.put(s[1],new Device(s[1]));
+        switch (s[0]) {
+            case "$add" -> {
+                deviceManagement.devices.put(s[1], new Device(s[1]));
             }
-            case "$remove"->{
+            case "$remove" -> {
                 deviceManagement.devices.remove(s[1]);
             }
-            case "stop"->{
+            case "stop" -> {
                 linkedList.get(s[1]).stop = true;
             }
             default -> {
                 toFrontApiList.getFrontRequest(order);
             }
         }
-    }
+    }*/
 
 }

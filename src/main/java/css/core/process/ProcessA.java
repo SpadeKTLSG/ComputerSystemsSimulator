@@ -4,6 +4,7 @@ package css.core.process;
 import css.core.memory.MemoryManager;
 import css.out.device.DeviceManagement;
 import css.out.device.ProcessDeviceUse;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 import org.springframework.transaction.annotation.Transactional;
@@ -12,11 +13,13 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class ProcessA extends Thread {
     ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
     DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
+
 
     volatile public boolean stop = false;
     public Pcb pcb;
@@ -89,7 +92,8 @@ public class ProcessA extends Thread {
                 Integer integer = pcb.register.get(split[0]);
                 pcb.register.put(split[0], integer - 1);
             } else if (s.startsWith("!")) {
-                char c = s.charAt(2);
+                String c = String.valueOf(s.charAt(1));
+                System.out.println(deviceManagement.devices.size());
                 //放入设备的等待队列中
                 deviceManagement.devices.get(c).arrayBlockingQueue.put(new ProcessDeviceUse(this, s.charAt(2) - '0'));
 
