@@ -5,6 +5,7 @@ import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
 import javax.swing.tree.TreePath;
 import java.awt.Dimension;
+import java.util.Objects;
 
 public class DynamicTreeExample {
     JTree pathTree;
@@ -38,14 +39,35 @@ public class DynamicTreeExample {
         for (String pathPart : pathArray) {
             String[] subdirectories = pathPart.split("/");
             for (String subdirectory : subdirectories) {
-                DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(subdirectory);
-                currentNode.add(newNode);
-                currentNode = newNode;
+                //? SK fix bug : 删除空白节点
+                if (Objects.equals(subdirectory, ""))
+                    continue;
+
+                //?智能判断是否需要更新层级
+                boolean isExist = false;
+                DefaultMutableTreeNode lastnode;
+                DefaultMutableTreeNode p = root;
+
+                for (int i = 0; i < p.getChildCount(); i++) {//树中查找当前节点
+                    DefaultMutableTreeNode node = (DefaultMutableTreeNode) p.getChildAt(i);
+                    if (Objects.equals(node.getUserObject(), subdirectory)) { //找到了
+                        currentNode = node;
+                        isExist = true;
+                        break;
+                    }
+                }
+
+                if (isExist) { //如果是, 那么不要创建新的对应节点, 而是把公有部分去掉后接到对应节点下面
+                    lastnode = currentNode;
+                } else { //如果不是, 那么创建新的对应节点
+                    DefaultMutableTreeNode newNode = new DefaultMutableTreeNode(subdirectory);
+                    currentNode.add(newNode);
+                }
+
             }
         }
 
-        // 刷新树
-        treeModel.reload();
+        treeModel.reload();        // 刷新树
     }
 
     // 获取选定节点的路径

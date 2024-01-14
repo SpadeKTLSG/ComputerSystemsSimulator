@@ -6,8 +6,6 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
-import java.util.List;
-
 import javax.swing.*;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
@@ -17,13 +15,11 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.Random;
+import java.util.List;
 
 import static css.out.file.api.toFrontApiList.giveBlockStatus2Front;
 import static css.out.file.api.toFrontApiList.givePath2Front;
-import static css.out.file.entiset.GF.Null_Pointer;
 
 @Slf4j
 public class MainGui {
@@ -37,7 +33,7 @@ public class MainGui {
     private JPanel diskPanel;
     private Color[] disk;
 
-    public  MainGui() {
+    public MainGui() {
         // 创建主界面
         Mframe = new JFrame("模拟操作系统");
         Mframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -55,22 +51,31 @@ public class MainGui {
         // 使用流式布局，左对齐，水平和垂直间隔均为20
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
-        //这里需要吴冰的list把相应的list放到对应区域就行
+
+        //TODO
+        //这里需要吴冰的list, 把相应的list放到对应区域就行
 
         List<String> dataList = List.of("Item 1", "Item 2", "Item 3", "Item 4", "Item 5");
+//        List<String> dataList =
 
-        JPanel ready = createWindow("就绪队列",dataList);
+        JPanel ready = createWindow("就绪队列", dataList);
+        JPanel execute = createWindow("执行指令", dataList);
+        JPanel blocking = createWindow("阻塞队列", dataList);
 
-
-        JPanel execute = createWindow("执行指令",dataList);
-        JPanel blocking = createWindow("阻塞队列",dataList);
+        //TODO
         JLabel process = new JLabel("运行进程:");
+//        process.setText(String.valueOf(ProcessScheduling.runing));
+
         JTextField out_text = new JTextField();
         out_text.setEditable(false);
         out_text.setFocusable(false);
         out_text.setPreferredSize(new Dimension(230, 30));
         out_text.setBackground(Color.white);
+
+        //TODO
         JLabel time_slice = new JLabel("时间片");
+//        process.setText(String.valueOf(ProcessScheduling.runing));
+
         JTextField Ttime_slice = new JTextField();
         Ttime_slice.setEditable(false);
         Ttime_slice.setFocusable(false);
@@ -131,8 +136,6 @@ public class MainGui {
 //        // 创建树
 
 
-
-
         // 添加树的选择事件监听器
         treeExample.pathTree.addTreeSelectionListener(new TreeSelectionListener() {
             @Override
@@ -174,6 +177,14 @@ public class MainGui {
             popup.setVisible(true);
         });
 
+        //? 创建一个按钮用来手动刷新树状结构
+        JButton showTreeButton = new JButton("刷新");
+        showTreeButton.addActionListener(e -> {
+            String[] path = givePath2Front();
+            treeExample.updateTree(path);
+
+        });
+
         input_text.setPreferredSize(new Dimension(360, 30));
         input_text.setBackground(Color.white);
         p2.add(treepanel);
@@ -181,6 +192,8 @@ public class MainGui {
         p2.add(submit_text);
         //这个是手动点击按钮展示弹出窗口, 默认隐藏
 //        p2.add(showPopupButton);
+        //这个是手动点击按钮刷新树状结构, 默认开启
+        p2.add(showTreeButton);
         Mframe.add(p2);
 
 
@@ -209,6 +222,7 @@ public class MainGui {
         p4.setLayout(new FlowLayout(FlowLayout.LEADING));
         p4.setBorder(new TitledBorder(new EtchedBorder(), "外围设备"));
 
+        //TODO 设备展示
         JLabel A1 = new JLabel("A1:");
         JPanel deviceA1 = device("");
         p4.add(A1);
@@ -267,30 +281,42 @@ public class MainGui {
 
         // 初始化硬盘颜色数组
         disk = new Color[128];
-        initializeram(disk,giveBlockStatus2Front());
+        initializeram(disk, giveBlockStatus2Front());
         updateDisk(); // 初始更新硬盘视图
         p6.add(diskPanel);
         Mframe.add(p6);
 
+        //! 定时事件
 
+        //T = 10s
         // 设置定时器，每隔一段时间更新视图
-        Timer timer = new Timer(1000, e -> {
-            initializeram(ram,MemoryManager.givememorystatus()); // 随机改变硬盘颜色
-            updateRam(); // 更新硬盘视图
-            initializeram(disk,giveBlockStatus2Front()); // 随机改变硬盘颜色
-            updateDisk(); // 更新硬盘视图
-            updateTime();
-            String path[]=givePath2Front();
-            treeExample.updateTree(path);
+        //? 由于刷新率太高不方便用户操作, 因此先改为手动刷新(快速) + 自动刷新(慢速)结合的方法
+        Timer timer_treeFlush = new Timer(10000, e -> {
+            //更新文件树
+            treeExample.updateTree(givePath2Front());
+        });
+        timer_treeFlush.start();
 
+        // T = 1s
+        Timer timer = new Timer(1000, e -> {
+            //刷新内存
+            initializeram(ram, MemoryManager.givememorystatus());
+            updateRam();
+
+            //刷新磁盘
+            initializeram(disk, giveBlockStatus2Front());
+            updateDisk();
+
+            //刷新时间
+            updateTime();
         });
         timer.start();
 
     }
 
     //需求：根据实参标颜色的方式表示磁盘使用情况，
-    private void initializeram(Color[] color,List<Integer>list) {
-        Random random = new Random();
+    private void initializeram(Color[] color, List<Integer> list) {
+//        Random random = new Random();
 
         for (int i = 0; i < color.length; i++) {
 
@@ -317,7 +343,7 @@ public class MainGui {
         timeLabel.setText(formattedDate);
     }
 
-    private static JPanel createWindow(String label,List<String> dataList) {
+    private static JPanel createWindow(String label, List<String> dataList) {
         JPanel window = new JPanel(new BorderLayout());
         window.setBackground(Color.white);
 
@@ -373,14 +399,13 @@ public class MainGui {
         devicepanel.setPreferredSize(new Dimension(40, 40));
         devicepanel.setBackground(Color.LIGHT_GRAY);
         devicepanel.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
-        System.out.println("已运行");
+        log.debug("设备" + s + "已运行");
         window.add(devicepanel, FlowLayout.LEFT);
 
         //创建显示框
         JTextField devicetext = new JTextField(s);
         devicetext.setPreferredSize(new Dimension(100, 40));
         devicetext.setBorder(new LineBorder(new LineBorder(Color.black, 10).getLineColor()));
-        System.out.println("已运行");
         devicetext.setEditable(false);
         devicetext.setFocusable(false);
         devicetext.setBackground(Color.white);
@@ -408,7 +433,8 @@ public class MainGui {
         ramPanel.revalidate(); // 重新验证布局
         ramPanel.repaint(); // 重绘界面
     }
-    private void updatepathtree(){
+
+    private void updatepathtree() {
 
     }
 

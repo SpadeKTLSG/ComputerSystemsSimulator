@@ -5,8 +5,6 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
-import static css.out.file.entiset.GF.Null_Pointer;
-
 
 @Slf4j
 
@@ -16,7 +14,7 @@ public class MemoryManager {
     private static int[][] cleanblock;
 
 
-static {
+    static {
         //用64个块初始化内存，每个块可存储3个字符
         memory = new MemoryBlock[8][8];
         cleanblock = new int[8][8];
@@ -50,7 +48,7 @@ static {
                         blockIndex += blockSize;
                     }
                     //跟踪内存被哪些进程所占用
-                    cleanblock[i][j]=processId;
+                    cleanblock[i][j] = processId;
                 }
             }
 
@@ -98,30 +96,35 @@ static {
         }
     }
 
+    // ? SK 暂时停止调用展示
+    public static int displayMemory() {
+        int status = 0;
 
-
-    public static int  displayMemory() {
-    int status=0;
         //显示内存的当前状态
-        System.out.println("Memory Status:");
+//        System.out.println("Memory Status:");
         for (int i = 0; i < 8; i++) {
             for (int j = 0; j < 8; j++) {
-                System.out.print(memory[i][j].getContent() + " ");
-                if (memory[i][j].getContent().equals("---"))
-                {
+//                System.out.print(memory[i][j].getContent() + " ");
+                if (memory[i][j].getContent().equals("---")) {
                     status++;
                 }
             }
-            System.out.println();
+//            System.out.println();
+
         }
-        System.out.println();
-        System.out.println("空闲空间:"+status);
+
+//        System.out.println("空闲空间:"+status);
         return status;
     }
+
     public static List<Integer> givememorystatus() {
-        List<Integer> greatmemory =new ArrayList<>();
+        List<Integer> greatmemory = new ArrayList<>();
         // 0: 空闲 1:占用 2:正在使用  3: 系统-> DTO FAT
 
+        //初始化
+        for (int i = 0; i < 64; i++) {
+            greatmemory.add(0);
+        }
         //设置系统占用为3
         greatmemory.set(0, 3);
         greatmemory.set(1, 3);
@@ -130,9 +133,11 @@ static {
         for (int i = 0; i < displayMemory(); i++) {
             greatmemory.add(1);
         }
+
         //这里需要吴冰的所有进程
-        if (displayMemory() !=0){
-            for (int i = 0; i < 64-displayMemory(); i++) {
+        //TODO
+        if (displayMemory() != 0) {
+            for (int i = 0; i < 64 - displayMemory(); i++) {
                 greatmemory.add(2);
             }
         }

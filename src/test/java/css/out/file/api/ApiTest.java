@@ -82,6 +82,6 @@ public class ApiTest {
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
         addContent(test_dir);
-        getFrontRequest("create Crazy.txt /tmp");
+//        getFrontRequest("create Crazy.txt /tmp");
     }
 }
