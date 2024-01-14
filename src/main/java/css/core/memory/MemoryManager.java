@@ -5,6 +5,8 @@ import lombok.extern.slf4j.Slf4j;
 import java.util.ArrayList;
 import java.util.List;
 
+import static css.core.process.ProcessScheduling.linkedList;
+
 
 @Slf4j
 
@@ -135,7 +137,19 @@ public class MemoryManager {
         }
 
         //这里需要吴冰的所有进程
-        //TODO
+        //TODO FIXME
+        //使用linkedList
+        List<String> blockList = new ArrayList<>(10);
+        List<String> readyList = new ArrayList<>(10);
+
+        linkedList.forEach((k, v) -> {
+            if (v.pcb.state == 2) {
+                blockList.add(String.valueOf(v.pcb.pcbId));
+            } else if (v.pcb.state == 0) {
+                readyList.add(String.valueOf(v.pcb.pcbId));
+            }
+        });
+
         if (displayMemory() != 0) {
             for (int i = 0; i < 64 - displayMemory(); i++) {
                 greatmemory.add(2);
@@ -144,7 +158,7 @@ public class MemoryManager {
 
 
         return greatmemory;
-    }
 
+    }
 }
 
