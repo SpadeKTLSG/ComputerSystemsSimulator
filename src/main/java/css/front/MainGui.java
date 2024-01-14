@@ -17,6 +17,7 @@ import java.awt.*;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
+import java.util.stream.Collectors;
 
 import static css.out.file.api.toFrontApiList.giveBlockStatus2Front;
 import static css.out.file.api.toFrontApiList.givePath2Front;
@@ -52,19 +53,22 @@ public class MainGui {
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
 
-        //TODO
-        //这里需要吴冰的list, 把相应的list放到对应区域就行
 
-        List<String> dataList = List.of("Item 1", "Item 2", "Item 3", "Item 4", "Item 5");
-//        List<String> dataList =
+        //将队列值封装到List<String> ProcessScheduling.runing
 
-        JPanel ready = createWindow("就绪队列", dataList);
-        JPanel execute = createWindow("执行指令", dataList);
-        JPanel blocking = createWindow("阻塞队列", dataList);
+        List<String> blockList = ProcessScheduling.blocking.stream().map(x -> String.valueOf(x.pcb.pcbId)).collect(Collectors.toList());
+        List<String> readyList = ProcessScheduling.readyQueues.stream().map(x -> String.valueOf(x.pcb.pcbId)).collect(Collectors.toList());
+        System.out.println(blockList);
+        System.out.println(readyList);
+
+        JPanel ready = createWindow("就绪队列", readyList);
+        JPanel blocking = createWindow("阻塞队列", blockList);
+        //@W 取消使用执行指令
+//        JPanel execute = createWindow("执行指令", dataList);
 
         //TODO
         JLabel process = new JLabel("运行进程:");
-//        process.setText(String.valueOf(ProcessScheduling.runing));
+        process.setText(String.valueOf(ProcessScheduling.runing));
 
         JTextField out_text = new JTextField();
         out_text.setEditable(false);
@@ -84,7 +88,8 @@ public class MainGui {
 
         p1.add(ready);
         p1.add(blocking);
-        p1.add(execute);
+        // ?
+//        p1.add(execute);
         p1.add(ready);
         p1.add(process);
         p1.add(out_text);
