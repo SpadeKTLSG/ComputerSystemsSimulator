@@ -15,10 +15,12 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.stream.Collectors;
 
+import static css.core.process.ProcessScheduling.linkedList;
+import static css.core.process.commandProcess.commandExecution;
 import static css.out.file.api.toFrontApiList.giveBlockStatus2Front;
 import static css.out.file.api.toFrontApiList.givePath2Front;
 
@@ -33,6 +35,13 @@ public class MainGui {
 
     private JPanel diskPanel;
     private Color[] disk;
+    private JLabel process;
+    private JPanel ready;
+    private JPanel execute;
+    private JPanel blocking;
+    private JLabel time_slice;
+
+    private JPanel p1;
 
     public MainGui() {
         // 创建主界面
@@ -44,7 +53,7 @@ public class MainGui {
         Mframe.setResizable(false);
         Mframe.setBackground(Color.white);
 
-        JPanel p1 = new JPanel();
+        p1 = new JPanel();
         p1.setSize(600, 310);
         p1.setBackground(Color.white);
         p1.setLocation(10, 50);
@@ -53,32 +62,18 @@ public class MainGui {
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
 
-
-        //将队列值封装到List<String> ProcessScheduling.runing
-
-        List<String> blockList = ProcessScheduling.blocking.stream().map(x -> String.valueOf(x.pcb.pcbId)).collect(Collectors.toList());
-        List<String> readyList = ProcessScheduling.readyQueues.stream().map(x -> String.valueOf(x.pcb.pcbId)).collect(Collectors.toList());
-        System.out.println(blockList);
-        System.out.println(readyList);
-
-        JPanel ready = createWindow("就绪队列", readyList);
-        JPanel blocking = createWindow("阻塞队列", blockList);
-        //@W 取消使用执行指令
-//        JPanel execute = createWindow("执行指令", dataList);
-
-        //TODO
-        JLabel process = new JLabel("运行进程:");
-        process.setText(String.valueOf(ProcessScheduling.runing));
+        //? SK 延迟初始化
+        ready = createWindow("就绪队列", List.of("", ""));
+        blocking = createWindow("阻塞队列", List.of("", ""));
+        execute = createWindow("######", List.of("", ""));        //@W 取消使用执行指令
+        process = new JLabel("运行进程:");
+        time_slice = new JLabel("时间片");
 
         JTextField out_text = new JTextField();
         out_text.setEditable(false);
         out_text.setFocusable(false);
         out_text.setPreferredSize(new Dimension(230, 30));
         out_text.setBackground(Color.white);
-
-        //TODO
-        JLabel time_slice = new JLabel("时间片");
-//        process.setText(String.valueOf(ProcessScheduling.runing));
 
         JTextField Ttime_slice = new JTextField();
         Ttime_slice.setEditable(false);
@@ -88,8 +83,7 @@ public class MainGui {
 
         p1.add(ready);
         p1.add(blocking);
-        // ?
-//        p1.add(execute);
+        p1.add(execute); // ? W取消使用功能
         p1.add(ready);
         p1.add(process);
         p1.add(out_text);
@@ -170,7 +164,9 @@ public class MainGui {
             //* temp 注入进程系统
             ApplicationContext context = new ClassPathXmlApplicationContext("spring-config.xml");
             ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
-            processScheduling.commandExecution(input);
+//            processScheduling.commandExecution(input);
+            //? static
+            commandExecution(input);
             input_text.setText("");       // 清空输入框
         });
 
@@ -182,12 +178,13 @@ public class MainGui {
             popup.setVisible(true);
         });
 
-        //? 创建一个按钮用来手动刷新树状结构
+        //? 创建一个按钮用来手动刷新树状结构 + 进程
         JButton showTreeButton = new JButton("刷新");
         showTreeButton.addActionListener(e -> {
             String[] path = givePath2Front();
             treeExample.updateTree(path);
-
+            //刷新进程
+            updateProcess();
         });
 
         input_text.setPreferredSize(new Dimension(360, 30));
@@ -314,9 +311,71 @@ public class MainGui {
 
             //刷新时间
             updateTime();
+
+            //刷新进程
+            updateProcess();
         });
         timer.start();
 
+    }
+
+    //? SK 进程刷新:
+    private void updateProcess() {
+
+        //将队列值封装到List<String> ProcessScheduling.runing
+        //使用向量存储队列值
+        List<String> blockList = new ArrayList<>(10);
+        List<String> readyList = new ArrayList<>(10);
+        String runnning = "";
+        String timeSlice = "";
+
+        if (ProcessScheduling.runing != null) {
+            runnning = String.valueOf(ProcessScheduling.runing.pcb.pcbId);
+            timeSlice = ProcessScheduling.runing.pcb.lines;
+        }
+
+
+        linkedList.forEach((k, v) -> {
+            if (v.pcb.state == 2) {
+                blockList.add(String.valueOf(v.pcb.pcbId));
+            } else if (v.pcb.state == 0) {
+                readyList.add(String.valueOf(v.pcb.pcbId));
+            }
+/*            else if (v.pcb.state == 1) {
+                //运行队列
+            }*/
+        });
+
+        ready = createWindow("就绪队列", readyList);
+        blocking = createWindow("阻塞队列", blockList);
+        execute = createWindow("######", List.of("*****"));
+        process = new JLabel("运行进程");
+        time_slice = new JLabel("时间片");
+        process.setText(runnning);
+        time_slice.setText(timeSlice);
+
+        JTextField out_text = new JTextField();
+        out_text.setEditable(false);
+        out_text.setFocusable(false);
+        out_text.setPreferredSize(new Dimension(230, 30));
+        out_text.setBackground(Color.white);
+
+        JTextField Ttime_slice = new JTextField();
+        Ttime_slice.setEditable(false);
+        Ttime_slice.setFocusable(false);
+        Ttime_slice.setPreferredSize(new Dimension(170, 30));
+        Ttime_slice.setBackground(Color.white);
+
+        p1.add(ready);
+        p1.add(blocking);
+        p1.add(execute); // ? W取消使用功能
+        p1.add(ready);
+        p1.add(process);
+        p1.add(out_text);
+        p1.add(time_slice);
+        p1.add(Ttime_slice);
+
+        Mframe.add(p1);
     }
 
     //需求：根据实参标颜色的方式表示磁盘使用情况，
