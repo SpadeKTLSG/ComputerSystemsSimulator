@@ -8,7 +8,9 @@ import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import static css.core.process.ProcessScheduling.linkedList;
 
+
 public class commandProcess {
+    //bugfix : 提取公共注入bean方法规避反复注入问题
     static ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
     static DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");

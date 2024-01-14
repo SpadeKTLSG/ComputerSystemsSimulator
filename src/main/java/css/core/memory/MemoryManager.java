@@ -6,6 +6,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static css.core.process.ProcessScheduling.linkedList;
+import static css.out.file.api.toFrontApiList.giveBlockStatus2Front;
 
 
 @Slf4j
@@ -116,7 +117,18 @@ public class MemoryManager {
         }
 
 //        System.out.println("空闲空间:"+status);
-        return status;
+        return status; //返回空闲空间
+    }
+
+    public static int getSystemMemoryUsage() {
+        List<Integer> usage = giveBlockStatus2Front();
+        List<Integer> temp = new ArrayList<>();
+        for (Integer e : usage) {
+            if (e == 3) {
+                temp.add(e);
+            }
+        }
+        return temp.size();
     }
 
     public static List<Integer> givememorystatus() {
@@ -136,9 +148,7 @@ public class MemoryManager {
             greatmemory.add(1);
         }
 
-        //这里需要吴冰的所有进程
-        //TODO FIXME
-        //使用linkedList
+        //TODO
         List<String> blockList = new ArrayList<>(10);
         List<String> readyList = new ArrayList<>(10);
 
@@ -149,6 +159,18 @@ public class MemoryManager {
                 readyList.add(String.valueOf(v.pcb.pcbId));
             }
         });
+
+        //占用 = 就绪 + 阻塞
+
+
+        //正在运行 = 当前指令
+
+
+        //系统占用固定...
+        int systemBlock = 2 * getSystemMemoryUsage(); // 设置系统模块盘块占用内存为2 * 盘块数( 2 * 64B = 128B)
+
+
+
 
         if (displayMemory() != 0) {
             for (int i = 0; i < 64 - displayMemory(); i++) {
