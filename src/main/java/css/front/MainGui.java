@@ -1,10 +1,11 @@
 package css.front;
 
+import css.core.memory.MemoryManager;
 import css.core.process.ProcessScheduling;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
-import java.util.Arrays;
+
 import java.util.List;
 
 import javax.swing.*;
@@ -13,7 +14,6 @@ import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
 import javax.swing.event.TreeSelectionEvent;
 import javax.swing.event.TreeSelectionListener;
-import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -21,7 +21,9 @@ import java.util.ArrayList;
 import java.util.Date;
 import java.util.Random;
 
+import static css.out.file.api.toFrontApiList.giveBlockStatus2Front;
 import static css.out.file.api.toFrontApiList.givePath2Front;
+import static css.out.file.entiset.GF.Null_Pointer;
 
 @Slf4j
 public class MainGui {
@@ -35,7 +37,7 @@ public class MainGui {
     private JPanel diskPanel;
     private Color[] disk;
 
-    public MainGui() {
+    public  MainGui() {
         // 创建主界面
         Mframe = new JFrame("模拟操作系统");
         Mframe.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
@@ -53,6 +55,7 @@ public class MainGui {
         // 使用流式布局，左对齐，水平和垂直间隔均为20
         p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
+        //这里需要吴冰的list把相应的list放到对应区域就行
 
         List<String> dataList = List.of("Item 1", "Item 2", "Item 3", "Item 4", "Item 5");
 
@@ -190,7 +193,8 @@ public class MainGui {
 
         // 初始化硬盘颜色数组
         ram = new Color[64];
-        initializeram(ram);
+
+        initializeram(ram, MemoryManager.givememorystatus());
 
         updateRam(); // 初始更新硬盘视图
 
@@ -263,7 +267,7 @@ public class MainGui {
 
         // 初始化硬盘颜色数组
         disk = new Color[128];
-        initializeram(disk);
+        initializeram(disk,giveBlockStatus2Front());
         updateDisk(); // 初始更新硬盘视图
         p6.add(diskPanel);
         Mframe.add(p6);
@@ -271,9 +275,9 @@ public class MainGui {
 
         // 设置定时器，每隔一段时间更新视图
         Timer timer = new Timer(1000, e -> {
-            initializeram(ram); // 随机改变硬盘颜色
+            initializeram(ram,MemoryManager.givememorystatus()); // 随机改变硬盘颜色
             updateRam(); // 更新硬盘视图
-            initializeram(disk); // 随机改变硬盘颜色
+            initializeram(disk,giveBlockStatus2Front()); // 随机改变硬盘颜色
             updateDisk(); // 更新硬盘视图
             updateTime();
             String path[]=givePath2Front();
@@ -285,12 +289,12 @@ public class MainGui {
     }
 
     //需求：根据实参标颜色的方式表示磁盘使用情况，
-    private void initializeram(Color[] color) {
+    private void initializeram(Color[] color,List<Integer>list) {
         Random random = new Random();
 
         for (int i = 0; i < color.length; i++) {
-            int rand = random.nextInt(4); // 随机选择一种颜色
-            switch (rand) {
+
+            switch (list.get(i)) {
                 case 0:
                     color[i] = Color.GRAY; // 未占用，灰色
                     break;
