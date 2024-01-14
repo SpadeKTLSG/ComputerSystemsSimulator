@@ -2,7 +2,6 @@ package css.out.device;
 
 
 import css.core.process.Pcb;
-import css.core.process.ProcessA;
 import css.core.process.ProcessScheduling;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
@@ -11,6 +10,7 @@ import java.util.concurrent.ArrayBlockingQueue;
 
 
 public class Device {
+    //? 问题 FIXME
     ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");

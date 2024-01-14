@@ -1,6 +1,7 @@
 package css.front;
 
 import css.core.process.ProcessA;
+import css.out.device.Device;
 import css.out.file.FileApp;
 import css.out.file.entity.dir;
 import css.out.file.entity.file;
@@ -20,13 +21,16 @@ public class Main {
         // 运行图形化主界面线程
         FileApp app = new FileApp();
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
-        file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "#EXE", FILE_EXTEND.get(5), "b=3\nb++\nb++\nb++\nend\n");
+        file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "#EXE", FILE_EXTEND.get(5), "!A1\nb=3\nb++\nb++\nend\n");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
         addContent(test_exe);
         addContent(test_dir);
+        new Device("A").start();
+        new Device("B").start();
         new ProcessA("src/main/java/css/core/process/api/info.txt").start();
         new ProcessA("src/main/java/css/core/process/api/info.txt").start();
+
 //        new ProcessA("src/main/java/css/core/memory/api/info.txt").start();
 //        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
 //        new ProcessA("src/main/java/css/core/process/api/info.txt").start();

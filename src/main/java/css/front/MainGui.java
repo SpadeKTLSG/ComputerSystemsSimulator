@@ -2,11 +2,13 @@ package css.front;
 
 import css.core.memory.MemoryManager;
 import css.core.process.ProcessScheduling;
+import css.out.device.DeviceManagement;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.support.ClassPathXmlApplicationContext;
 
 import javax.swing.*;
+import javax.swing.Timer;
 import javax.swing.border.EtchedBorder;
 import javax.swing.border.LineBorder;
 import javax.swing.border.TitledBorder;
@@ -15,8 +17,7 @@ import javax.swing.event.TreeSelectionListener;
 import javax.swing.tree.TreePath;
 import java.awt.*;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Date;
+import java.util.*;
 import java.util.List;
 
 import static css.core.process.ProcessScheduling.linkedList;
@@ -53,19 +54,18 @@ public class MainGui {
         Mframe.setResizable(false);
         Mframe.setBackground(Color.white);
 
-        p1 = new JPanel();
+
+        //? SK 延迟初始化
+        /*p1 = new JPanel();
         p1.setSize(600, 310);
         p1.setBackground(Color.white);
         p1.setLocation(10, 50);
-
-        // 使用流式布局，左对齐，水平和垂直间隔均为20
-        p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));
+        p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));        // 使用流式布局，左对齐，水平和垂直间隔均为20
         p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
 
-        //? SK 延迟初始化
         ready = createWindow("就绪队列", List.of("", ""));
         blocking = createWindow("阻塞队列", List.of("", ""));
-        execute = createWindow("######", List.of("", ""));        //@W 取消使用执行指令
+        execute = createWindow("     ", List.of("     "));
         process = new JLabel("运行进程:");
         time_slice = new JLabel("时间片");
 
@@ -81,6 +81,7 @@ public class MainGui {
         Ttime_slice.setPreferredSize(new Dimension(170, 30));
         Ttime_slice.setBackground(Color.white);
 
+        //? SK 延迟初始化
         p1.add(ready);
         p1.add(blocking);
         p1.add(execute); // ? W取消使用功能
@@ -90,7 +91,7 @@ public class MainGui {
         p1.add(time_slice);
         p1.add(Ttime_slice);
 
-        Mframe.add(p1);
+        Mframe.add(p1);*/
 
         //显示时间
         JPanel timepanel = new JPanel();
@@ -183,8 +184,6 @@ public class MainGui {
         showTreeButton.addActionListener(e -> {
             String[] path = givePath2Front();
             treeExample.updateTree(path);
-            //刷新进程
-            updateProcess();
         });
 
         input_text.setPreferredSize(new Dimension(360, 30));
@@ -225,6 +224,23 @@ public class MainGui {
         p4.setBorder(new TitledBorder(new EtchedBorder(), "外围设备"));
 
         //TODO 设备展示
+        //接收devices -> Map : 设备名字 + 使用的进程
+
+        Map<String, String> devices = new HashMap<>();
+
+        ApplicationContext context =
+                new ClassPathXmlApplicationContext("spring-config.xml");
+        ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
+        DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
+
+
+        //Stream拷贝devices 到 devices
+        deviceManagement.devices.forEach((k, v) -> {
+            devices.put(k, String.valueOf(v.nowProcessPcb.pcbId));
+        });
+
+        System.out.println(devices);
+
         JLabel A1 = new JLabel("A1:");
         JPanel deviceA1 = device("");
         p4.add(A1);
@@ -321,6 +337,26 @@ public class MainGui {
 
     //? SK 进程刷新:
     private void updateProcess() {
+        //? SK 延迟初始化
+        p1 = new JPanel();
+        p1.setSize(600, 310);
+        p1.setBackground(Color.white);
+        p1.setLocation(10, 50);
+        p1.setLayout(new FlowLayout(FlowLayout.LEADING, 20, 10));        // 使用流式布局，左对齐，水平和垂直间隔均为20
+        p1.setBorder(new TitledBorder(new EtchedBorder(), "进程管理"));
+
+
+        JTextField out_text = new JTextField();
+        out_text.setEditable(false);
+        out_text.setFocusable(false);
+        out_text.setPreferredSize(new Dimension(230, 30));
+        out_text.setBackground(Color.white);
+
+        JTextField Ttime_slice = new JTextField();
+        Ttime_slice.setEditable(false);
+        Ttime_slice.setFocusable(false);
+        Ttime_slice.setPreferredSize(new Dimension(170, 30));
+        Ttime_slice.setBackground(Color.white);
 
         //将队列值封装到List<String> ProcessScheduling.runing
         //使用向量存储队列值
@@ -348,23 +384,13 @@ public class MainGui {
 
         ready = createWindow("就绪队列", readyList);
         blocking = createWindow("阻塞队列", blockList);
-        execute = createWindow("######", List.of("*****"));
+        execute = createWindow("     ", List.of("     "));
         process = new JLabel("运行进程");
-        time_slice = new JLabel("时间片");
         process.setText(runnning);
+        time_slice = new JLabel("时间片");
         time_slice.setText(timeSlice);
 
-        JTextField out_text = new JTextField();
-        out_text.setEditable(false);
-        out_text.setFocusable(false);
-        out_text.setPreferredSize(new Dimension(230, 30));
-        out_text.setBackground(Color.white);
-
-        JTextField Ttime_slice = new JTextField();
-        Ttime_slice.setEditable(false);
-        Ttime_slice.setFocusable(false);
-        Ttime_slice.setPreferredSize(new Dimension(170, 30));
-        Ttime_slice.setBackground(Color.white);
+        //TODO 刷新后导致运行进程和时间片字样丢失
 
         p1.add(ready);
         p1.add(blocking);
