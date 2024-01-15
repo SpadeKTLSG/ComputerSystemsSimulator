@@ -109,7 +109,7 @@ public class ProcessA extends Thread {
                     stop = true;
                 }
 
-                Thread.sleep(1000); //睡一秒
+                Thread.sleep(2000); //
 
                 pcb.state = 0;
                 processScheduling.readyQueues.add(processScheduling.runing);

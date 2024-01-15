@@ -223,7 +223,7 @@ public class MainGui {
         p4.setLayout(new FlowLayout(FlowLayout.LEADING));
         p4.setBorder(new TitledBorder(new EtchedBorder(), "外围设备"));
 
-        //TODO 设备展示
+
         //接收devices -> Map : 设备名字 + 使用的进程
 
         Map<String, String> devices = new HashMap<>();
@@ -233,7 +233,6 @@ public class MainGui {
         ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
         DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
 
-        //TODO 设备打印到界面 寄
 
         //Stream拷贝devices 到 devices
         deviceManagement.devices.forEach((k, v) -> {
@@ -241,29 +240,30 @@ public class MainGui {
         });
 
 
-        System.out.println(devices);
+//        System.out.println(devices);
 
-        JLabel A1 = new JLabel("A1:");
+        //? 非常好设备
+        JLabel A1 = new JLabel("A  ");
         JPanel deviceA1 = device("");
         p4.add(A1);
         p4.add(deviceA1);
 
-        JLabel A2 = new JLabel("A2:");
+        JLabel A2 = new JLabel("B  ");
         JPanel deviceA2 = device("");
         p4.add(A2);
         p4.add(deviceA2);
 
-        JLabel B1 = new JLabel("B1:");
+        JLabel B1 = new JLabel("C  ");
         JPanel deviceB1 = device("");
         p4.add(B1);
         p4.add(deviceB1);
 
-        JLabel B2 = new JLabel("B2:");
+        JLabel B2 = new JLabel("D  ");
         JPanel deviceB2 = device("");
         p4.add(B2);
         p4.add(deviceB2);
 
-        JLabel C = new JLabel("C  :");
+        JLabel C = new JLabel("E  ");
         JPanel deviceC = device("");
         p4.add(C);
         p4.add(deviceC);
