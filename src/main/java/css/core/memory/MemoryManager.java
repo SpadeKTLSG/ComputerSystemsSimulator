@@ -1,5 +1,6 @@
 package css.core.memory;
 
+import css.core.process.ProcessScheduling;
 import lombok.extern.slf4j.Slf4j;
 
 import java.util.ArrayList;
@@ -135,18 +136,27 @@ public class MemoryManager {
         List<Integer> greatmemory = new ArrayList<>();
         // 0: 空闲 1:占用 2:正在使用  3: 系统-> DTO FAT
 
-        //初始化
-        for (int i = 0; i < 64; i++) {
-            greatmemory.add(0);
-        }
-        //设置系统占用为3
-        greatmemory.set(0, 3);
-        greatmemory.set(1, 3);
-        greatmemory.set(2, 3);
 
-        for (int i = 0; i < displayMemory(); i++) {
+
+        //3. 返回值, 二区段的List<Integer> : K is Item, V is Status {0,1,2}
+        int systemBlock = 2 * getSystemMemoryUsage(); // 设置系统模块盘块占用内存为2 * 盘块数( 2 * 64B = 128B)
+        for (int i=0;i<systemBlock;i++){
+            greatmemory.add(3);
+        }
+
+        for (int i = 0; i < 64 - displayMemory()-systemBlock; i++) {
             greatmemory.add(1);
         }
+        for (int i = 0; i < displayMemory(); i++) {
+            greatmemory.add(0);
+        }
+
+
+
+        if (ProcessScheduling.runing != null) {
+            greatmemory.add(2);
+        }
+
 
         //TODO
         List<String> blockList = new ArrayList<>(10);
@@ -167,16 +177,7 @@ public class MemoryManager {
 
 
         //系统占用固定...
-        int systemBlock = 2 * getSystemMemoryUsage(); // 设置系统模块盘块占用内存为2 * 盘块数( 2 * 64B = 128B)
 
-
-
-
-        if (displayMemory() != 0) {
-            for (int i = 0; i < 64 - displayMemory(); i++) {
-                greatmemory.add(2);
-            }
-        }
 
 
         return greatmemory;
