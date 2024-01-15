@@ -138,6 +138,8 @@ public class MemoryManager {
 
 
 
+
+
         //3. 返回值, 二区段的List<Integer> : K is Item, V is Status {0,1,2}
         int systemBlock = 2 * getSystemMemoryUsage(); // 设置系统模块盘块占用内存为2 * 盘块数( 2 * 64B = 128B)
         for (int i=0;i<systemBlock;i++){
