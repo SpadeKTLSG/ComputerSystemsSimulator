@@ -12,11 +12,13 @@ import java.io.*;
 import java.util.Iterator;
 import java.util.Map;
 
+
 public class ProcessA extends Thread {
     ApplicationContext context =
             new ClassPathXmlApplicationContext("spring-config.xml");
     ProcessScheduling processScheduling = (ProcessScheduling) context.getBean("processScheduling");
     DeviceManagement deviceManagement = (DeviceManagement) context.getBean("deviceManagement");
+
 
     volatile public boolean stop = false;
     public Pcb pcb;
@@ -34,12 +36,12 @@ public class ProcessA extends Thread {
     public void run() {
         try {
             System.out.println(processScheduling);
-            synchronized (this){
+            synchronized (this) {
                 ProcessScheduling.readyQueues.add(this);
-                ProcessScheduling.linkedList.put(this.pcb.pcbId,this);
+                ProcessScheduling.linkedList.put(this.pcb.pcbId, this);
                 this.wait();
             }
-            int i =1;
+            int i = 1;
             while (!stop) {
                 CPU();
             }
@@ -65,50 +67,55 @@ public class ProcessA extends Thread {
 
     @Transactional
     public void CPU() throws IOException, InterruptedException {
-        synchronized (this){
-        if (pcb.state == 1) {
-            String s = bufferedReader.readLine();
-            System.out.println(s);
-            MemoryManager.allocateMemory(pcb.pcbId,s);
-            MemoryManager.displayMemory();
-            pcb.lines = s;
-            if (s == null) {
-                pcb.state = 3;
-                processScheduling.runing = null;
-                processScheduling.getReadyToRun();
-                this.stop = true;
-            } else if (s.contains("=")) {
-                String[] split = s.split("=");
-                pcb.register.put(split[0], Integer.valueOf(split[1]));
-            } else if (s.contains("++")) {
-                String[] split = s.split("\\+\\+");
-                Integer integer = pcb.register.get(split[0]);
-                pcb.register.put(split[0], integer + 1);
-            } else if (s.contains("--")) {
-                String[] split = s.split("--");
-                Integer integer = pcb.register.get(split[0]);
-                pcb.register.put(split[0], integer - 1);
-            } else if (s.startsWith("!")) {
-                char c = s.charAt(2);
-                //放入设备的等待队列中
-                deviceManagement.devices.get(c).arrayBlockingQueue.put(new ProcessDeviceUse(this, s.charAt(2) - '0'));
+        synchronized (this) {
+            if (pcb.state == 1) {
+                String s = bufferedReader.readLine();
+                System.out.println(s);
+                MemoryManager.allocateMemory(pcb.pcbId, s);
+                MemoryManager.displayMemory();
+                pcb.lines = s;
+                if (s == null) {
+                    pcb.state = 3;
+                    processScheduling.runing = null;
+                    processScheduling.getReadyToRun();
+                    this.stop = true;
+                } else if (s.contains("=")) {
+                    String[] split = s.split("=");
+                    pcb.register.put(split[0], Integer.valueOf(split[1]));
+                } else if (s.contains("++")) {
+                    String[] split = s.split("\\+\\+");
+                    Integer integer = pcb.register.get(split[0]);
+                    pcb.register.put(split[0], integer + 1);
+                } else if (s.contains("--")) {
+                    String[] split = s.split("--");
+                    Integer integer = pcb.register.get(split[0]);
+                    pcb.register.put(split[0], integer - 1);
+                } else if (s.startsWith("!")) {
+                    String c = String.valueOf(s.charAt(1));
+                    System.out.println(deviceManagement.devices.size());
+                    //放入设备的等待队列中
+                    deviceManagement.devices.get(c).arrayBlockingQueue.put(new ProcessDeviceUse(this, s.charAt(2) - '0'));
 
-                //将其设为阻塞状态
-                pcb.state = 2;
-                //从就绪队列中选一个进程运行
-                processScheduling.blocking.add(this);
+                    //将其设为阻塞状态
+                    pcb.state = 2;
+                    //从就绪队列中选一个进程运行
+                    processScheduling.blocking.add(this);
+                    processScheduling.runing = null;
+                    this.wait();
+                } else if (s.equals("end")) {
+                    bufferedReader.close();
+                    file.close();
+                    wirth();
+                    stop = true;
+                }
+
+                Thread.sleep(2000); //
+
+                pcb.state = 0;
+                processScheduling.readyQueues.add(processScheduling.runing);
                 processScheduling.runing = null;
-                this.wait();
-            } else if (s.equals("end")) {
-                bufferedReader.close();
-                file.close();
-                wirth();
-                stop = true;
             }
-            pcb.state = 0;
-            processScheduling.readyQueues.add(processScheduling.runing);
-            processScheduling.runing = null;
-        }
+
         }
     }
 

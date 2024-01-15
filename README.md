@@ -1,32 +1,38 @@
 # ComputerSystemsSimulator
 
-计算机系统课程设计-模拟计算机系统
+计算机系统课程设计-模拟计算机系统 CSS
 
-## 文档
+## 介绍 Intro
 
-- [开发文档](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/blob/develop/public/doc/CSS%E5%BC%80%E5%8F%91%E6%96%87%E6%A1%A3%20v1.0.md)
+本项目为计算机系统课程设计的模拟计算机系统, 目前项目已经宣告完结
 
-## 协作
+多人合作开发 - 三个Java后端轮番上阵
+
+## 文档 Docs
+
+- 开发文档 public/doc/CSS开发文档 v1.0.md
+
+## 协作 Cowork
 
 核心 Core
 
-- [进程管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/process)
-- [内存管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/core/memory)
+- 进程管理 src/main/java/css/core/process
+- 内存管理 src/main/java/css/core/memory
 
 外围 Out
 
-- [文件管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/file)
-- [设备管理](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/out/device)
+- 文件管理 src/main/java/css/out/file
+- 设备管理 src/main/java/css/out/device
 
 展示 Front
 
-- [展示](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator/tree/develop/src/main/java/css/front)
+- 页面 src/main/java/css/front
 
-## 信息
+## 日历 Calendar
 
 November:
 
-* ~~完成前期知识储备~~
+* ~~20-25 完成前期知识储备~~
 * ~~预先调配人员~~
 
 December:
@@ -43,13 +49,23 @@ January:
 
 * ~~1.1 - 1.9 考试以及假期~~
 * ~~1.10-1.14 联调cowork~~
-* 1.14 - 1.15 - a.m. 演示准备视频, 论文大纲制作
-* 1.15 独立个人论文拼接 +
-  * 资料(展示视频+代码)压缩包 + 期末独立论文
-* 1.16 - 17 仓库整理, 论功行赏
+* ~~1.15 独立个人论文拼接 +~~
+    * ~~资料(展示视频+代码)压缩包 + 期末独立论文~~
+* ~~1.16 - 17 仓库整理, 论功行赏~~
 
-## 链接
+## 链接 Links
 
-[Gitee](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator)
+- 仓库 Repo
+    - [Gitee](https://gitee.com/SpadeKTLSG/ComputerSystemsSimulator)
+    - [Github](https://github.com/SpadeKTLSG/ComputerSystemsSimulator)
 
-[Github](https://github.com/SpadeKTLSG/ComputerSystemsSimulator)
+Glory to CSS and developers!
+
+- C - 文件 + 组长
+    - [Github](https://github.com/SpadeKTLSG)
+- A - 界面 + 内存
+    - [Gitee](https://gitee.com/d3athm)
+- W - 进程 + 设备
+    - [Gitee](https://gitee.com/wfedsfsdewfegegwdasdaswqeq)
+- Z - 辅助 + 测试
+    - [Gitee](https://gitee.com/sleep034)

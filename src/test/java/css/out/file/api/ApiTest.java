@@ -1,11 +1,13 @@
 package css.out.file.api;
 
+import css.core.process.ProcessA;
 import css.out.file.FileApp;
 import css.out.file.entity.dir;
 import css.out.file.entity.file;
 import css.out.file.enums.ROOT_PATH;
 import org.junit.Test;
 
+import java.io.IOException;
 import java.util.Arrays;
 
 import static css.out.file.FileApp.addContent;
@@ -75,13 +77,18 @@ public class ApiTest {
     }
 
     @Test
-    public void frontApiTest1() {
+    public void frontApiTest1() throws IOException {
         System.out.println("test交互式文件-前端传递");
         FileApp app = new FileApp();
         file test_file = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Crazy", FILE_EXTEND.get(1), "I want to  surpass humanity -- with your blood!");
+        file test_exe = new file(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "#EXE", FILE_EXTEND.get(5), "b=3\nb++\nb++\nb++\nend\n");
         dir test_dir = new dir(str2Path(String.valueOf(ROOT_PATH.tmp)) + ':' + "Guys", DIR_EXTEND.get(0));
         addContent(test_file);
+        addContent(test_exe);
         addContent(test_dir);
 //        getFrontRequest("create Crazy.txt /tmp");
+        new ProcessA("src/main/java/css/core/memory/api/info.txt").start();
+        new ProcessA("src/main/java/css/core/process/api/info.txt").start();
+
     }
 }
