@@ -69,3 +69,9 @@ Glory to CSS and developers!
     - [Gitee](https://gitee.com/wfedsfsdewfegegwdasdaswqeq)
 - Z - 辅助 + 测试
     - [Gitee](https://gitee.com/sleep034)
+ 
+## 反省 Rethink
+
+我(SK / C)之前协同开发时候称, 选择merge与rebase两个没关系, 但是事实上有的人选择rebase, 有的人选择merge, 导致提交树长歪了...大概也是那时候只能选择强推的根源
+
+自裁罢, SK!
